@@ -3,7 +3,8 @@
 Comprehensive reference documentation for developers building with the Claude API.
 
 **Last full crawl:** 2026-05-30  
-**SDK versions:** Python v0.105.2, TypeScript aws-sdk v0.3.1  
+**Last incremental update:** 2026-06-01  
+**SDK versions:** Python `anthropic` v0.105.2, TypeScript `@anthropic-ai/sdk` v0.100.1  
 **Primary sources:** anthropic-sdk-python, anthropic-sdk-typescript, anthropic-cookbook
 
 > **Coverage note:** The Anthropic documentation site (docs.anthropic.com / platform.claude.com/docs)
@@ -28,10 +29,10 @@ Comprehensive reference documentation for developers building with the Claude AP
 
 | File | Description | Last Updated |
 |------|-------------|-------------|
-| [MODELS.md](./MODELS.md) | Current model IDs, capabilities, context windows, pricing notes | 2026-05-30 |
+| [MODELS.md](./MODELS.md) | Current model IDs, capabilities, context windows, pricing notes | 2026-06-01 |
 | [QUICK-REFERENCE.md](./QUICK-REFERENCE.md) | Common code patterns: auth, messages, streaming, tools, caching | 2026-05-30 |
 | [authentication.md](./authentication.md) | API keys, HTTP headers, SDK setup, third-party platforms | 2026-05-30 |
-| [messages-api.md](./messages-api.md) | Messages endpoint: params, content blocks, response format | 2026-05-30 |
+| [messages-api.md](./messages-api.md) | Messages endpoint: params, content blocks, response format | 2026-06-01 |
 | [streaming.md](./streaming.md) | SSE events, delta types, streaming SDK helpers | 2026-05-30 |
 | [rate-limits-errors.md](./rate-limits-errors.md) | Error codes, retry logic, rate limit headers | 2026-05-30 |
 | [token-counting.md](./token-counting.md) | Count tokens before sending, context window management | 2026-05-30 |
@@ -42,7 +43,7 @@ Comprehensive reference documentation for developers building with the Claude AP
 | File | Description | Status | Last Updated |
 |------|-------------|--------|-------------|
 | [tool-use.md](./tool-use.md) | Function calling, agentic loop, tool choice, built-in tools | Stable | 2026-05-30 |
-| [prompt-caching.md](./prompt-caching.md) | cache_control, TTL, pricing, multi-turn caching | Stable | 2026-05-30 |
+| [prompt-caching.md](./prompt-caching.md) | cache_control, TTL, pricing, multi-turn caching | Stable | 2026-06-01 |
 | [extended-thinking.md](./extended-thinking.md) | Thinking blocks, budget_tokens, adaptive mode | Stable | 2026-05-30 |
 | [vision.md](./vision.md) | Image inputs: base64, URL, formats, limits | Stable | 2026-05-30 |
 | [pdf-support.md](./pdf-support.md) | PDF document inputs, Files API for PDFs | Stable | 2026-05-30 |
@@ -77,6 +78,13 @@ Comprehensive reference documentation for developers building with the Claude AP
 claude-opus-4-8              # Most capable (added 2026-05-28)
 claude-sonnet-4-6            # Balanced — recommended default
 claude-haiku-4-5-20251001    # Fastest / lowest cost
+
+# Preview
+claude-mythos-preview        # Experimental preview model
+
+# Previous generation (still supported)
+claude-opus-4-7              # Previous Opus (added 2026-04-16)
+claude-opus-4-6              # Older Opus
 ```
 
 ## API Base URL

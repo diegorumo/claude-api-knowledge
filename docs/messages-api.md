@@ -1,6 +1,6 @@
 # Messages API
 
-> **Last updated:** 2026-05-30
+> **Last updated:** 2026-06-01
 
 ## Overview
 
@@ -25,10 +25,48 @@ The Messages API is the primary interface for interacting with Claude. It accept
 | `top_k` | integer | No | Top-k sampling |
 | `stop_sequences` | array | No | Custom stop strings |
 | `metadata` | object | No | User ID for abuse detection |
+| `container` | string | No | Container ID for request reuse (execution environment) |
+| `inference_geo` | string | No | Geographic region hint for inference routing |
+| `service_tier` | string | No | `"auto"` or `"standard_only"` — capacity tier selection |
+| `output_config` | object | No | Output format/effort configuration (see below) |
+
+## output_config Parameter
+
+Control output quality/effort and structured JSON format:
+
+```python
+# Set effort level (affects quality vs latency tradeoff)
+message = client.messages.create(
+    model="claude-sonnet-4-6",
+    max_tokens=1024,
+    output_config={"effort": "high"},  # "low", "medium", "high", "xhigh", "max"
+    messages=[{"role": "user", "content": "Analyze this complex problem..."}],
+)
+
+# Structured JSON output with schema
+message = client.messages.create(
+    model="claude-sonnet-4-6",
+    max_tokens=1024,
+    output_config={
+        "format": {
+            "type": "json_schema",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string"},
+                    "age": {"type": "integer"}
+                },
+                "required": ["name", "age"]
+            }
+        }
+    },
+    messages=[{"role": "user", "content": "Extract: John is 30 years old."}],
+)
+```
 
 ## Message Format
 
-Each message has a `role` (`"user"` or `"assistant"`) and `content` (string or array of content blocks).
+Each message has a `role` (`"user"`, `"assistant"`, or `"system"` for mid-conversation) and `content` (string or array of content blocks).
 
 ```python
 messages = [
@@ -37,6 +75,30 @@ messages = [
     {"role": "user", "content": "Tell me a joke."},
 ]
 ```
+
+### Mid-Conversation System Blocks (SDK v0.105.0+)
+
+You can inject system-level instructions at any point in a conversation using `role: "system"` with a `MidConversationSystemBlock`:
+
+```python
+messages = [
+    {"role": "user", "content": "Translate the following text."},
+    {"role": "assistant", "content": "Sure, what would you like me to translate?"},
+    # Inject new instructions mid-conversation
+    {
+        "role": "system",
+        "content": [
+            {
+                "type": "mid_conv_system",
+                "content": [{"type": "text", "text": "Always respond in formal English only."}],
+            }
+        ],
+    },
+    {"role": "user", "content": "Translate: Bonjour le monde"},
+]
+```
+
+The `mid_conv_system` block can also carry `cache_control` for caching those instructions.
 
 ## Content Block Types
 
@@ -155,13 +217,54 @@ response2 = client.messages.create(model="claude-sonnet-4-6", max_tokens=1024, m
   "model": "claude-sonnet-4-6",
   "stop_reason": "end_turn",
   "stop_sequence": null,
+  "stop_details": null,
   "usage": {
     "input_tokens": 10,
     "output_tokens": 25,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
     "cache_creation_input_tokens": 0,
-    "cache_read_input_tokens": 0
+    "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 0
+    },
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
   }
 }
+```
+
+### stop_details
+
+When a response is refused, `stop_details` is populated:
+
+```json
+{
+  "stop_reason": "end_turn",
+  "stop_details": {
+    "type": "refusal",
+    "category": "cyber",
+    "explanation": "This request was refused due to policy."
+  }
+}
+```
+
+| Field | Values | Description |
+|-------|--------|-------------|
+| `type` | `"refusal"` | Always `"refusal"` when present |
+| `category` | `"cyber"`, `"bio"`, `null` | Policy category that triggered refusal |
+| `explanation` | string or null | Human-readable reason (may change over time) |
+
+### output_tokens_details
+
+When extended thinking is enabled, `output_tokens_details.thinking_tokens` shows how many output tokens were internal reasoning:
+
+```python
+usage = response.usage
+if usage.output_tokens_details:
+    print(f"Thinking tokens: {usage.output_tokens_details.thinking_tokens}")
+    print(f"Response tokens: {usage.output_tokens - usage.output_tokens_details.thinking_tokens}")
 ```
 
 ## Stop Reasons

@@ -1,6 +1,6 @@
 # Prompt Caching
 
-> **Last updated:** 2026-05-30  
+> **Last updated:** 2026-06-01  
 > **Source:** Anthropic cookbook — demonstrated 3.3x speedup on 187K-token document
 
 ## Overview
@@ -142,14 +142,19 @@ while True:
 
 ## Usage Tracking
 
-The response `usage` object shows cache performance:
+The response `usage` object shows cache performance. The `cache_creation` field breaks down writes by TTL type:
 
 ```python
 usage = response.usage
 print(f"Input tokens (non-cached): {usage.input_tokens}")
-print(f"Cache write tokens: {usage.cache_creation_input_tokens}")
+print(f"Cache write tokens (total): {usage.cache_creation_input_tokens}")
 print(f"Cache read tokens: {usage.cache_read_input_tokens}")
 print(f"Output tokens: {usage.output_tokens}")
+
+# Granular cache write breakdown (by TTL)
+if usage.cache_creation:
+    print(f"  5-min cache writes: {usage.cache_creation.ephemeral_5m_input_tokens}")
+    print(f"  1-hour cache writes: {usage.cache_creation.ephemeral_1h_input_tokens}")
 ```
 
 ## Pricing Structure

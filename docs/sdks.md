@@ -1,6 +1,6 @@
 # SDKs (Python & TypeScript)
 
-> **Last updated:** 2026-05-30
+> **Last updated:** 2026-06-08
 
 ## Python SDK
 
@@ -250,10 +250,34 @@ parsed = client.messages.parse(
 print(parsed.parsed_output.items)
 ```
 
+## TypeScript Middleware (v0.101.0+)
+
+```typescript
+const client = new Anthropic({
+  middleware: [
+    async (request, next) => {
+      console.log('Before request:', request.url);
+      const response = await next(request);
+      console.log('After request:', response.status);
+      return response;
+    },
+  ],
+});
+```
+
+Middleware runs before request signing. Request timeout applies to the inner fetch only, not the full middleware chain.
+
 ## SDK Version History
 
-- Python: v0.105.2 (2026-05-29) — latest
-- TypeScript: aws-sdk v0.3.1 (2026-05-29) — latest
+| SDK | Latest Version | Date | Changes |
+|-----|----------------|------|---------|
+| Python | v0.107.1 | 2026-06-07 | Foundry x-api-key header fix |
+| Python | v0.107.0 | 2026-06-06 | Managed Agents type updates |
+| Python | v0.106.0 | 2026-06-05 | Mark claude-opus-4-1 deprecated; Foundry client fixes |
+| Python | v0.105.0 | 2026-05-28 | Add claude-opus-4-8, mid-conversation system blocks, output_tokens_details |
+| TypeScript | v0.102.0 | 2026-06-06 | Managed Agents type updates; middleware before request signing |
+| TypeScript | v0.101.0 | 2026-06-05 | Middleware support; streaming stop_details fix; scientific notation JSON fix |
+| TypeScript | v0.100.0 | 2026-05-28 | Add claude-opus-4-8, mid-conversation system blocks, output_tokens_details |
 
 ## Related
 

@@ -3,7 +3,8 @@
 Comprehensive reference documentation for developers building with the Claude API.
 
 **Last full crawl:** 2026-05-30  
-**SDK versions:** Python v0.105.2, TypeScript aws-sdk v0.3.1  
+**Last incremental update:** 2026-06-08  
+**SDK versions:** Python v0.107.1, TypeScript v0.102.0  
 **Primary sources:** anthropic-sdk-python, anthropic-sdk-typescript, anthropic-cookbook
 
 > **Coverage note:** The Anthropic documentation site (docs.anthropic.com / platform.claude.com/docs)
@@ -28,26 +29,26 @@ Comprehensive reference documentation for developers building with the Claude AP
 
 | File | Description | Last Updated |
 |------|-------------|-------------|
-| [MODELS.md](./MODELS.md) | Current model IDs, capabilities, context windows, pricing notes | 2026-05-30 |
-| [QUICK-REFERENCE.md](./QUICK-REFERENCE.md) | Common code patterns: auth, messages, streaming, tools, caching | 2026-05-30 |
+| [MODELS.md](./MODELS.md) | Current model IDs, capabilities, context windows, pricing notes | 2026-06-08 |
+| [QUICK-REFERENCE.md](./QUICK-REFERENCE.md) | Common code patterns: auth, messages, streaming, tools, caching | 2026-06-08 |
 | [authentication.md](./authentication.md) | API keys, HTTP headers, SDK setup, third-party platforms | 2026-05-30 |
 | [messages-api.md](./messages-api.md) | Messages endpoint: params, content blocks, response format | 2026-05-30 |
 | [streaming.md](./streaming.md) | SSE events, delta types, streaming SDK helpers | 2026-05-30 |
 | [rate-limits-errors.md](./rate-limits-errors.md) | Error codes, retry logic, rate limit headers | 2026-05-30 |
 | [token-counting.md](./token-counting.md) | Count tokens before sending, context window management | 2026-05-30 |
-| [sdks.md](./sdks.md) | Python and TypeScript SDK reference, async, pagination | 2026-05-30 |
+| [sdks.md](./sdks.md) | Python and TypeScript SDK reference, async, pagination | 2026-06-08 |
 
 ### Features
 
 | File | Description | Status | Last Updated |
 |------|-------------|--------|-------------|
-| [tool-use.md](./tool-use.md) | Function calling, agentic loop, tool choice, built-in tools | Stable | 2026-05-30 |
+| [tool-use.md](./tool-use.md) | Function calling, agentic loop, tool choice, built-in tools | Stable | 2026-06-08 |
 | [prompt-caching.md](./prompt-caching.md) | cache_control, TTL, pricing, multi-turn caching | Stable | 2026-05-30 |
 | [extended-thinking.md](./extended-thinking.md) | Thinking blocks, budget_tokens, adaptive mode | Stable | 2026-05-30 |
 | [vision.md](./vision.md) | Image inputs: base64, URL, formats, limits | Stable | 2026-05-30 |
 | [pdf-support.md](./pdf-support.md) | PDF document inputs, Files API for PDFs | Stable | 2026-05-30 |
 | [batch-api.md](./batch-api.md) | Async batch processing, results retrieval | Stable | 2026-05-30 |
-| [web-search.md](./web-search.md) | Built-in web search tool, usage tracking | Stable | 2026-05-30 |
+| [web-search.md](./web-search.md) | Built-in web search and web fetch tools, usage tracking | Stable | 2026-06-08 |
 | [files-api.md](./files-api.md) | File upload, reference by ID | Beta | 2026-05-30 |
 | [citations.md](./citations.md) | Inline document citations | Beta | 2026-05-30 |
 | [mcp.md](./mcp.md) | Model Context Protocol server integration | Beta | 2026-05-30 |
@@ -74,9 +75,15 @@ Comprehensive reference documentation for developers building with the Claude AP
 ## Current Model IDs (Quick Reference)
 
 ```
-claude-opus-4-8              # Most capable (added 2026-05-28)
+claude-opus-4-8              # Highest capability
+claude-opus-4-7              # High capability
+claude-mythos-preview        # New model family — preview/experimental
+claude-opus-4-6              # Recommended Opus (used in SDK examples)
 claude-sonnet-4-6            # Balanced — recommended default
 claude-haiku-4-5-20251001    # Fastest / lowest cost
+
+# Deprecated (June 2026):
+# claude-opus-4-1 / claude-opus-4-1-20250805 → migrate to claude-opus-4-6
 ```
 
 ## API Base URL

@@ -1,6 +1,6 @@
 # Tool Use / Function Calling
 
-> **Last updated:** 2026-05-30
+> **Last updated:** 2026-06-08
 
 ## Overview
 
@@ -237,15 +237,42 @@ tool_results.append({
 
 ## Built-in Tools
 
-The API includes server-side tools that don't require local execution:
+The API includes server-side tools that don't require local execution. Use the **latest** type version for each tool family:
 
 ```python
 # Web search (Claude searches the web)
-tools = [{"type": "web_search_20250305", "name": "web_search"}]
+tools = [{"type": "web_search_20260209", "name": "web_search"}]  # latest; also: web_search_20250305
+
+# Web fetch (Claude fetches a URL)
+tools = [{"type": "web_fetch_20260309", "name": "web_fetch"}]  # latest; also: web_fetch_20260209
 
 # Code execution (runs code in a sandbox)
-tools = [{"type": "code_execution_20250522", "name": "code_execution"}]
+tools = [{"type": "code_execution_20260120", "name": "code_execution"}]  # latest; also: 20250522, 20250825
+
+# Memory (persistent agent memory)
+tools = [{"type": "memory_20250818", "name": "memory"}]
+
+# Text editor (file editing operations)
+tools = [{"type": "text_editor_20250728", "name": "str_replace_based_edit_tool"}]
+
+# BM25 search over provided documents
+tools = [{"type": "search_bm25_20251119", "name": "bm25_search"}]
+
+# Regex search over provided documents
+tools = [{"type": "search_regex_20251119", "name": "regex_search"}]
+
+# Bash execution
+tools = [{"type": "bash_20250124", "name": "bash"}]
 ```
+
+**Version history for key tools:**
+
+| Tool | Versions (newest first) |
+|------|------------------------|
+| Web Search | `web_search_20260209`, `web_search_20250305` |
+| Web Fetch | `web_fetch_20260309`, `web_fetch_20260209` |
+| Code Execution | `code_execution_20260120`, `code_execution_20250825`, `code_execution_20250522` |
+| Text Editor | `text_editor_20250728`, `text_editor_20250429`, `text_editor_20250124` |
 
 ## Tool Use Response Content Block
 

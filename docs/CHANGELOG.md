@@ -1,5 +1,38 @@
 # Knowledge Base Changelog
 
+## 2026-06-08 — Incremental Update
+
+Sources: Python SDK v0.105.2→v0.107.1 changelog, TypeScript SDK v0.100.1→v0.102.0 changelog, SDK `model_param.py` / `messages.ts` type definitions, both SDK READMEs.
+
+> **Note:** Anthropic documentation site (platform.claude.com/docs, docs.anthropic.com) continues to return HTTP 403 from this environment. Data sourced from official GitHub SDK repos as before.
+
+### Changes
+
+- **New model: `claude-opus-4-6`** — Now used as the primary Opus example model in both Python and TypeScript SDK READMEs. Added to `MODELS.md` and `QUICK-REFERENCE.md`.
+- **New model: `claude-opus-4-7`** — Identified in SDK type definitions. Added to `MODELS.md` and `QUICK-REFERENCE.md`.
+- **New model: `claude-mythos-preview`** — Completely new model family. Identified in SDK type definitions (June 2026); full capability details not yet published. Added to `MODELS.md` and `QUICK-REFERENCE.md` with experimental notice.
+- **Deprecated: `claude-opus-4-1` / `claude-opus-4-1-20250805`** — Marked deprecated in Python SDK v0.106.0 (2026-06-05). Updated `MODELS.md` and `QUICK-REFERENCE.md`.
+- **Added older models to history** — `claude-opus-4-5`, `claude-opus-4-0`, `claude-sonnet-4-0`, `claude-3-haiku-20240307` added to `MODELS.md` previous models table.
+- **New built-in tool versions** — `tool-use.md` and `web-search.md` updated with latest type strings: `web_search_20260209`, `web_fetch_20260309`, `web_fetch_20260209`, `code_execution_20260120`, `memory_20250818`, `text_editor_20250728`, `search_bm25_20251119`, `search_regex_20251119`.
+- **Web Fetch tool** — New built-in tool for URL retrieval added to `web-search.md`.
+- **TypeScript SDK middleware** — `sdks.md` updated with middleware API example (v0.101.0+).
+- **SDK versions updated** — `sdks.md` version history table updated to Python v0.107.1, TypeScript v0.102.0.
+- **Python SDK Foundry improvements** — `copy()` and `with_options()` fixed; x-api-key header bug fixed for Foundry API-key auth (v0.107.1).
+- **TypeScript streaming fix** — `stop_details` now carried through beta `message_delta` accumulation (v0.101.0).
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `MODELS.md` | Added claude-opus-4-6/4-7, claude-mythos-preview; deprecated claude-opus-4-1; expanded history table |
+| `QUICK-REFERENCE.md` | Updated model IDs table |
+| `tool-use.md` | Updated built-in tools section with latest type versions |
+| `web-search.md` | Updated tool type strings; added web fetch tool section |
+| `sdks.md` | Added middleware example; updated version history table |
+| `README.md` | Updated last-updated dates; updated SDK versions |
+
+---
+
 ## 2026-05-30 — Initial Full Crawl
 
 Initial comprehensive crawl of Claude API documentation from public sources:

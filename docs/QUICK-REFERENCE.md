@@ -1,6 +1,6 @@
 # Quick Reference
 
-> **Last updated:** 2026-05-30  
+> **Last updated:** 2026-06-08  
 > Common patterns for developers building with the Claude API.
 
 ## Authentication
@@ -47,9 +47,14 @@ console.log(response.content[0].text);
 
 | Model | ID | Use For |
 |-------|-----|--------|
-| Opus 4.8 | `claude-opus-4-8` | Most capable |
+| Opus 4.8 | `claude-opus-4-8` | Highest capability |
+| Opus 4.7 | `claude-opus-4-7` | High capability |
+| Mythos (preview) | `claude-mythos-preview` | New family — experimental |
+| Opus 4.6 | `claude-opus-4-6` | Recommended Opus |
 | Sonnet 4.6 | `claude-sonnet-4-6` | Balanced (default choice) |
 | Haiku 4.5 | `claude-haiku-4-5-20251001` | Fastest / cheapest |
+
+> **Deprecated:** `claude-opus-4-1` — migrate to `claude-opus-4-6`.
 
 ---
 

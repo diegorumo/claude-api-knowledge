@@ -1,13 +1,16 @@
 # Web Search Tool
 
-> **Last updated:** 2026-05-30
+> **Last updated:** 2026-06-08
 
 ## Overview
 
-The web search tool is a built-in server-side tool that lets Claude search the internet. Unlike custom tools, you don't need to execute it — the API handles it internally.
+The web search and web fetch tools are built-in server-side tools that let Claude search the internet or fetch URLs. Unlike custom tools, you don't need to execute them — the API handles them internally.
 
-**Tool name:** `web_search`  
-**Tool type:** `web_search_20250305`
+**Web Search tool name:** `web_search`  
+**Latest web search type:** `web_search_20260209` (also: `web_search_20250305`)
+
+**Web Fetch tool name:** `web_fetch`  
+**Latest web fetch type:** `web_fetch_20260309` (also: `web_fetch_20260209`)
 
 ## Basic Usage
 
@@ -22,7 +25,7 @@ message = client.messages.create(
     messages=[{"role": "user", "content": "What are the latest Claude model releases?"}],
     tools=[
         {
-            "type": "web_search_20250305",
+            "type": "web_search_20260209",  # latest; use web_search_20250305 for older compat
             "name": "web_search",
         }
     ],
@@ -45,13 +48,28 @@ const message = await client.messages.create({
   model: 'claude-sonnet-4-6',
   max_tokens: 1024,
   messages: [{ role: 'user', content: 'What is the current price of Bitcoin?' }],
-  tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+  tools: [{ type: 'web_search_20260209', name: 'web_search' }],
 });
 
 for (const block of message.content) {
   if (block.type === 'text') console.log(block.text);
 }
 ```
+
+## Web Fetch Tool
+
+The web fetch tool lets Claude retrieve and read the contents of specific URLs:
+
+```python
+message = client.messages.create(
+    model="claude-sonnet-4-6",
+    max_tokens=2048,
+    messages=[{"role": "user", "content": "Fetch and summarize https://example.com"}],
+    tools=[{"type": "web_fetch_20260309", "name": "web_fetch"}],
+)
+```
+
+---
 
 ## Streaming with Web Search
 
@@ -60,7 +78,7 @@ with client.messages.stream(
     model="claude-sonnet-4-6",
     max_tokens=1024,
     messages=[{"role": "user", "content": "What happened in tech news today?"}],
-    tools=[{"type": "web_search_20250305", "name": "web_search"}],
+    tools=[{"type": "web_search_20260209", "name": "web_search"}],
 ) as stream:
     for text in stream.text_stream:
         print(text, end="", flush=True)

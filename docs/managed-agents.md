@@ -1,8 +1,8 @@
 # Managed Agents (Beta)
 
-> **Last updated:** 2026-05-30  
+> **Last updated:** 2026-06-15  
 > **Status:** Beta — active development  
-> **SDK changelog:** v0.100.0+ (May 2026)
+> **SDK changelog:** v0.100.0+ (May 2026), v0.109.0 (June 2026)
 
 ## Overview
 
@@ -196,12 +196,40 @@ await client.beta.environments.work.worker({
 
 **Standard toolset includes:** `bash`, `read`, `write`, `edit`, `glob`, `grep` (requires Node 22+)
 
+## Deployments (v0.109.0+)
+
+Python SDK v0.109.0 added support for **Managed Agents deployments** — a way to run agent workloads using environment variable credentials without passing API keys explicitly in code.
+
+```python
+import anthropic
+
+# Credentials resolved from env: ANTHROPIC_API_KEY + deployment-specific vars
+client = anthropic.Anthropic()
+
+# Create a deployment-backed session
+session = client.beta.sessions.create(
+    agent_id="agent_...",
+    environment_id=os.environ["ANTHROPIC_ENVIRONMENT_ID"],
+)
+
+for event in client.beta.sessions.events.stream(session_id=session.id):
+    if event.type == "agent.message":
+        for block in event.content:
+            if block.type == "text":
+                print(block.text)
+    elif event.type == "session.status_idle":
+        break
+```
+
+Deployment configurations are defined server-side; the client discovers them via the API rather than specifying them inline. This allows ops teams to manage model, tools, and environment separately from application code.
+
 ## Gotchas
 
 - Managed Agents is under active development — check SDK changelogs for new features
 - Sessions have inactivity timeouts — implement keep-alive or reconnection logic
 - Custom tool results must be returned promptly or the session may timeout
 - v0.103.0+: self-hosted sandboxes supported
+- v0.109.0+: deployments with environment variable credentials supported
 
 ## Related
 

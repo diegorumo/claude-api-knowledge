@@ -3,8 +3,8 @@
 Comprehensive reference documentation for developers building with the Claude API.
 
 **Last full crawl:** 2026-05-30  
-**Last incremental update:** 2026-06-08  
-**SDK versions:** Python v0.107.1, TypeScript v0.102.0  
+**Last incremental update:** 2026-06-15  
+**SDK versions:** Python v0.109.1, TypeScript v0.104.1  
 **Primary sources:** anthropic-sdk-python, anthropic-sdk-typescript, anthropic-cookbook
 
 > **Coverage note:** The Anthropic documentation site (docs.anthropic.com / platform.claude.com/docs)
@@ -29,14 +29,14 @@ Comprehensive reference documentation for developers building with the Claude AP
 
 | File | Description | Last Updated |
 |------|-------------|-------------|
-| [MODELS.md](./MODELS.md) | Current model IDs, capabilities, context windows, pricing notes | 2026-06-08 |
-| [QUICK-REFERENCE.md](./QUICK-REFERENCE.md) | Common code patterns: auth, messages, streaming, tools, caching | 2026-06-08 |
+| [MODELS.md](./MODELS.md) | Current model IDs, capabilities, context windows, pricing notes | 2026-06-15 |
+| [QUICK-REFERENCE.md](./QUICK-REFERENCE.md) | Common code patterns: auth, messages, streaming, tools, caching | 2026-06-15 |
 | [authentication.md](./authentication.md) | API keys, HTTP headers, SDK setup, third-party platforms | 2026-05-30 |
 | [messages-api.md](./messages-api.md) | Messages endpoint: params, content blocks, response format | 2026-05-30 |
 | [streaming.md](./streaming.md) | SSE events, delta types, streaming SDK helpers | 2026-05-30 |
 | [rate-limits-errors.md](./rate-limits-errors.md) | Error codes, retry logic, rate limit headers | 2026-05-30 |
 | [token-counting.md](./token-counting.md) | Count tokens before sending, context window management | 2026-05-30 |
-| [sdks.md](./sdks.md) | Python and TypeScript SDK reference, async, pagination | 2026-06-08 |
+| [sdks.md](./sdks.md) | Python and TypeScript SDK reference, async, pagination | 2026-06-15 |
 
 ### Features
 
@@ -53,7 +53,7 @@ Comprehensive reference documentation for developers building with the Claude AP
 | [citations.md](./citations.md) | Inline document citations | Beta | 2026-05-30 |
 | [mcp.md](./mcp.md) | Model Context Protocol server integration | Beta | 2026-05-30 |
 | [computer-use.md](./computer-use.md) | GUI automation, screenshot, mouse/keyboard | Beta | 2026-05-30 |
-| [managed-agents.md](./managed-agents.md) | Persistent agents, sessions, environments | Beta | 2026-05-30 |
+| [managed-agents.md](./managed-agents.md) | Persistent agents, sessions, environments | Beta | 2026-06-15 |
 
 ### Guides
 
@@ -75,12 +75,16 @@ Comprehensive reference documentation for developers building with the Claude AP
 ## Current Model IDs (Quick Reference)
 
 ```
-claude-opus-4-8              # Highest capability
+claude-fable-5               # New top-tier model family (June 2026)
+claude-mythos-5              # New model — production mythos (June 2026)
+claude-opus-4-8              # Highest Opus capability
 claude-opus-4-7              # High capability
-claude-mythos-preview        # New model family — preview/experimental
 claude-opus-4-6              # Recommended Opus (used in SDK examples)
 claude-sonnet-4-6            # Balanced — recommended default
 claude-haiku-4-5-20251001    # Fastest / lowest cost
+
+# Preview/Experimental:
+# claude-mythos-preview      → predecessor to claude-mythos-5
 
 # Deprecated (June 2026):
 # claude-opus-4-1 / claude-opus-4-1-20250805 → migrate to claude-opus-4-6

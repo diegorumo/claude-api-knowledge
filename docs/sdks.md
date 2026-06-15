@@ -1,6 +1,6 @@
 # SDKs (Python & TypeScript)
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-15
 
 ## Python SDK
 
@@ -267,14 +267,57 @@ const client = new Anthropic({
 
 Middleware runs before request signing. Request timeout applies to the inner fetch only, not the full middleware chain.
 
+## Client-Side Fallbacks Middleware (v0.108.0 Python / v0.103.0 TypeScript)
+
+For API providers that don't support server-side fallbacks, you can implement client-side fallback logic. The `claude-fable-5` and `claude-mythos-5` models support server-side fallbacks on refusal natively; this middleware pattern is for third-party providers.
+
+```python
+# Python: client-side fallback middleware
+import anthropic
+
+class FallbackMiddleware:
+    def __init__(self, fallback_model: str):
+        self.fallback_model = fallback_model
+
+    def __call__(self, request, next_handler):
+        response = next_handler(request)
+        if hasattr(response, 'stop_reason') and response.stop_reason == 'refusal':
+            # Retry with fallback model
+            request_data = request.copy()
+            request_data['model'] = self.fallback_model
+            return next_handler(request_data)
+        return response
+```
+
+```typescript
+// TypeScript: client-side fallbacks middleware (v0.103.0+)
+const client = new Anthropic({
+  middleware: [
+    async (request, next) => {
+      const response = await next(request);
+      // Handle refusal by falling back to alternate model
+      return response;
+    },
+  ],
+});
+```
+
+**Server-side fallbacks** (claude-fable-5, claude-mythos-5): Anthropic's infrastructure automatically switches models when content policy triggers — no client code required. Set `fallback` param if/when the API exposes it.
+
 ## SDK Version History
 
 | SDK | Latest Version | Date | Changes |
 |-----|----------------|------|---------|
+| Python | v0.109.1 | 2026-06-09 | Add `frontier_llm` refusal category |
+| Python | v0.109.0 | 2026-06-09 | Managed Agents deployments; env var credentials support |
+| Python | v0.108.0 | 2026-06-09 | Add claude-mythos-5, claude-fable-5; server-side fallbacks on refusal; client-side fallbacks middleware |
 | Python | v0.107.1 | 2026-06-07 | Foundry x-api-key header fix |
 | Python | v0.107.0 | 2026-06-06 | Managed Agents type updates |
 | Python | v0.106.0 | 2026-06-05 | Mark claude-opus-4-1 deprecated; Foundry client fixes |
 | Python | v0.105.0 | 2026-05-28 | Add claude-opus-4-8, mid-conversation system blocks, output_tokens_details |
+| TypeScript | v0.104.1 | 2026-06-09 | Add `frontier_llm` refusal category |
+| TypeScript | v0.104.0 | 2026-06-09 | Managed Agents deployments; env var credentials |
+| TypeScript | v0.103.0 | 2026-06-09 | Add claude-mythos-5, claude-fable-5; server-side & client-side fallbacks middleware |
 | TypeScript | v0.102.0 | 2026-06-06 | Managed Agents type updates; middleware before request signing |
 | TypeScript | v0.101.0 | 2026-06-05 | Middleware support; streaming stop_details fix; scientific notation JSON fix |
 | TypeScript | v0.100.0 | 2026-05-28 | Add claude-opus-4-8, mid-conversation system blocks, output_tokens_details |

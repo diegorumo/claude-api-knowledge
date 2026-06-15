@@ -1,5 +1,33 @@
 # Knowledge Base Changelog
 
+## 2026-06-15 — Incremental Update
+
+Sources: Python SDK v0.107.1→v0.109.1 changelog, TypeScript SDK v0.102.0→v0.104.1 changelog, SDK `model_param.py` type definitions.
+
+> **Note:** Anthropic documentation site (platform.claude.com/docs, docs.anthropic.com) continues to return HTTP 403 from this environment. Data sourced from official GitHub SDK repos.
+
+### Changes
+
+- **New model: `claude-fable-5`** — Completely new top-tier model family introduced in Python SDK v0.108.0 and TypeScript SDK v0.103.0 (2026-06-09). Supports **server-side fallbacks on refusal**. Context window and pricing TBD — check Anthropic's official docs. Added to `MODELS.md`, `QUICK-REFERENCE.md`, `README.md`.
+- **New model: `claude-mythos-5`** — Production version of the mythos family (same SDK release as above). Supersedes `claude-mythos-preview`. Also supports server-side fallbacks on refusal. Added to all model references.
+- **Server-side fallbacks on refusal** — New capability for `claude-fable-5` and `claude-mythos-5`: Anthropic's infrastructure can automatically switch models when a content policy triggers, without any client-side logic needed.
+- **Client-side fallbacks middleware** — New pattern for providers that don't have server-side fallback support (Python SDK v0.108.0, TypeScript SDK v0.103.0). Documented in `sdks.md`.
+- **Managed Agents deployments** — Python SDK v0.109.0 / TypeScript SDK v0.104.0 added support for deployment-based agent sessions with environment variable credentials. Added new "Deployments" section to `managed-agents.md`.
+- **`frontier_llm` refusal category** — New stop/refusal reason added to the API (Python v0.109.1, TypeScript v0.104.1). Relevant when handling `stop_reason == "refusal"` responses.
+- **SDK versions updated** — Python v0.107.1→v0.109.1, TypeScript v0.102.0→v0.104.1. Version history table in `sdks.md` updated.
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `MODELS.md` | Added claude-fable-5, claude-mythos-5; updated capability table; updated source/date |
+| `QUICK-REFERENCE.md` | Added claude-fable-5, claude-mythos-5 to model IDs table |
+| `managed-agents.md` | Added Deployments section (v0.109.0+); updated gotchas |
+| `sdks.md` | Added fallbacks middleware section; updated version history table |
+| `README.md` | Updated last-updated dates; SDK versions; model ID quick reference |
+
+---
+
 ## 2026-06-08 — Incremental Update
 
 Sources: Python SDK v0.105.2→v0.107.1 changelog, TypeScript SDK v0.100.1→v0.102.0 changelog, SDK `model_param.py` / `messages.ts` type definitions, both SDK READMEs.

@@ -1,7 +1,7 @@
 # Claude Models Reference
 
-> **Last updated:** 2026-06-15  
-> **Source:** GitHub SDK repos, SDK changelogs (Python v0.109.1, TypeScript v0.104.1)
+> **Last updated:** 2026-06-22  
+> **Source:** GitHub SDK repos, SDK changelogs (Python v0.111.0, TypeScript v0.105.0)
 
 ## Current Model IDs
 
@@ -36,6 +36,8 @@
 | Claude 3 Haiku | `claude-3-haiku-20240307` | Legacy Claude 3; still works |
 
 > **Deprecation notice:** `claude-opus-4-1` was marked deprecated in Python SDK v0.106.0 (2026-06-05). Migrate to `claude-opus-4-6` or higher.
+>
+> **Retired models cleanup (June 2026):** Python SDK v0.109.2 and TypeScript SDK v0.104.2 (2026-06-15) removed retired model identifiers from the SDK type definitions. Any models not listed in the tables above should be considered unsupported.
 
 ## Model Capabilities
 

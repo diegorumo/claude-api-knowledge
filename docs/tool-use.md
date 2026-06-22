@@ -1,6 +1,6 @@
 # Tool Use / Function Calling
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-22
 
 ## Overview
 
@@ -237,42 +237,80 @@ tool_results.append({
 
 ## Built-in Tools
 
-The API includes server-side tools that don't require local execution. Use the **latest** type version for each tool family:
+Anthropic provides **server tools** (execute on Anthropic's infrastructure) and **client tools** (Anthropic defines the schema, you handle execution). Use the **latest** type version for each tool family:
 
 ```python
-# Web search (Claude searches the web)
-tools = [{"type": "web_search_20260209", "name": "web_search"}]  # latest; also: web_search_20250305
+# Web search — Claude searches the web (server-side)
+tools = [{"type": "web_search_20260318", "name": "web_search"}]
 
-# Web fetch (Claude fetches a URL)
-tools = [{"type": "web_fetch_20260309", "name": "web_fetch"}]  # latest; also: web_fetch_20260209
+# Web fetch — Claude fetches a URL (server-side)
+tools = [{"type": "web_fetch_20260318", "name": "web_fetch"}]
 
-# Code execution (runs code in a sandbox)
-tools = [{"type": "code_execution_20260120", "name": "code_execution"}]  # latest; also: 20250522, 20250825
+# Code execution — runs Python/Bash in a sandbox (server-side)
+tools = [{"type": "code_execution_20260521", "name": "code_execution"}]
 
-# Memory (persistent agent memory)
+# Memory — persistent agent memory (client-side)
 tools = [{"type": "memory_20250818", "name": "memory"}]
 
-# Text editor (file editing operations)
+# Text editor — file editing for Claude 4 models (client-side)
 tools = [{"type": "text_editor_20250728", "name": "str_replace_based_edit_tool"}]
 
-# BM25 search over provided documents
-tools = [{"type": "search_bm25_20251119", "name": "bm25_search"}]
+# Tool search — discover deferred tools on demand (server-side)
+tools = [{"type": "tool_search_tool_bm25_20251119", "name": "tool_search"}]
 
-# Regex search over provided documents
-tools = [{"type": "search_regex_20251119", "name": "regex_search"}]
-
-# Bash execution
+# Bash execution (client-side)
 tools = [{"type": "bash_20250124", "name": "bash"}]
 ```
 
 **Version history for key tools:**
 
-| Tool | Versions (newest first) |
-|------|------------------------|
-| Web Search | `web_search_20260209`, `web_search_20250305` |
-| Web Fetch | `web_fetch_20260309`, `web_fetch_20260209` |
-| Code Execution | `code_execution_20260120`, `code_execution_20250825`, `code_execution_20250522` |
-| Text Editor | `text_editor_20250728`, `text_editor_20250429`, `text_editor_20250124` |
+| Tool | Versions (newest first) | Notes |
+|------|------------------------|-------|
+| Web Search | `web_search_20260318`, `web_search_20260209`, `web_search_20250305` | 20260209+ adds dynamic content filtering; 20260318 adds response-inclusion control |
+| Web Fetch | `web_fetch_20260318`, `web_fetch_20260309`, `web_fetch_20260209`, `web_fetch_20250910` | 20260309 adds cache-bypass; 20260318 adds response-inclusion control |
+| Code Execution | `code_execution_20260521`, `code_execution_20260120`, `code_execution_20250825`, `code_execution_20250522` | 20260120+ enables [programmatic tool calling](./programmatic-tool-calling.md); 20260521 discloses per-cell time limit |
+| Text Editor | `text_editor_20250728` (Claude 4), `text_editor_20250124` (earlier models) | |
+| Tool Search | `tool_search_tool_bm25_20251119`, `tool_search_tool_regex_20251119` | Two search algorithms, not version-keyed |
+
+## Tool Definition Properties
+
+Every tool (including user-defined tools) accepts optional properties that compose freely:
+
+| Property | Purpose | Applies To |
+|----------|---------|------------|
+| `cache_control` | Set a prompt-cache breakpoint at this tool definition | All tools |
+| `strict` | Guarantee schema validation on tool names and inputs | All tools except `mcp_toolset` |
+| `defer_loading` | Exclude tool from initial context; load on-demand via tool search | All tools |
+| `allowed_callers` | Restrict which callers can invoke the tool | All tools except `mcp_toolset` |
+| `input_examples` | Provide example inputs to help Claude call the tool correctly | User-defined and client tools only |
+| `eager_input_streaming` | Enable fine-grained incremental input streaming for this tool | User-defined tools only |
+
+### `allowed_callers` values
+
+| Value | Meaning |
+|-------|---------|
+| `"direct"` | Claude invokes this tool in a standard `tool_use` block (default) |
+| `"code_execution_20260120"` | Code running in a `code_execution_20260120`+ sandbox can call this tool |
+
+Omitting `"direct"` guides Claude to only call the tool from code. See [Programmatic Tool Calling](./programmatic-tool-calling.md).
+
+### `defer_loading` and prompt caching
+
+Tools with `defer_loading: true` are stripped before the prompt cache key is computed, so adding deferred tools never invalidates an existing cache entry. They are discovered on-demand when tool search returns a `tool_reference` for them.
+
+```python
+tools = [
+    # Always loaded — fast path
+    {"type": "web_search_20260318", "name": "web_search"},
+    # Only loaded when tool search surfaces it
+    {
+        "name": "rare_admin_tool",
+        "description": "...",
+        "input_schema": {"type": "object", "properties": {}},
+        "defer_loading": True,
+    },
+]
+```
 
 ## Tool Use Response Content Block
 
@@ -326,6 +364,7 @@ const finalMessage = await client.beta.messages.toolRunner({
 
 ## Related
 
+- [Programmatic Tool Calling](./programmatic-tool-calling.md) — call tools from code execution, reduce round-trips
 - [Messages API](./messages-api.md)
 - [Streaming](./streaming.md)
 - [Web Search](./web-search.md)

@@ -1,5 +1,33 @@
 # Knowledge Base Changelog
 
+## 2026-06-22 — Incremental Update
+
+Sources: Python SDK v0.110.0–v0.111.0 changelog, TypeScript SDK v0.105.0 changelog, platform.claude.com/docs (programmatic-tool-calling, tool-reference pages now accessible).
+
+### Changes
+
+- **New feature: Programmatic Tool Calling (GA)** — `code_execution_20260120`+ lets Claude write Python code that calls your tools inside the sandbox without per-tool model round-trips. Reduces billed input tokens 20–40% for multi-tool workflows. Requires `allowed_callers: ["code_execution_20260120"]` on tools. Available on Claude API, Claude Platform on AWS, Microsoft Foundry (not Bedrock/Vertex). Created new `programmatic-tool-calling.md`.
+- **New code execution tool version: `code_execution_20260521`** — Latest version; discloses per-cell time limit in tool description. `code_execution_20260120` is still active (adds programmatic tool calling). Added to `tool-use.md` version table.
+- **New tool definition properties documented** — `allowed_callers`, `eager_input_streaming`, `defer_loading`, `strict`, `input_examples` are all now GA. Updated `tool-use.md` with full property table and `defer_loading` + caching interaction.
+- **Updated tool type strings** — `web_search_20260318` and `web_fetch_20260318` are the newest versions (add response-inclusion control). Added to `tool-use.md` version table.
+- **Retired models removed from SDKs** — Python v0.109.2 and TypeScript v0.104.2 (2026-06-15) removed retired model identifiers from SDK type definitions. Note added to `MODELS.md`.
+- **Refusal-fallback middleware tagging** — Python v0.111.0 (2026-06-18): refusal-fallback middleware requests are now tagged with `fallback-refusal-middleware`. Added to `sdks.md` version table.
+- **Bedrock stream event type fix** — Python v0.110.0 (2026-06-18): Bedrock stream events now preserve correct types. Added to `sdks.md` version table.
+- **TypeScript lazy tool JSON streaming** — TypeScript v0.105.0 (2026-06-18): partial tool JSON input is now lazily parsed during streaming (performance improvement). Added to `sdks.md` version table.
+- **SDK versions updated** — Python v0.109.1→v0.111.0, TypeScript v0.104.1→v0.105.0.
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `programmatic-tool-calling.md` | **New file** — full reference for programmatic tool calling |
+| `tool-use.md` | Updated built-in tool type strings; added Tool Definition Properties section |
+| `sdks.md` | Updated version history table (Python 0.111.0, TypeScript 0.105.0) |
+| `MODELS.md` | Added retired-models cleanup note; updated source date |
+| `README.md` | Added programmatic-tool-calling.md to index; updated SDK versions and last-updated dates |
+
+---
+
 ## 2026-06-15 — Incremental Update
 
 Sources: Python SDK v0.107.1→v0.109.1 changelog, TypeScript SDK v0.102.0→v0.104.1 changelog, SDK `model_param.py` type definitions.

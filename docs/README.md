@@ -3,8 +3,8 @@
 Comprehensive reference documentation for developers building with the Claude API.
 
 **Last full crawl:** 2026-05-30  
-**Last incremental update:** 2026-06-22  
-**SDK versions:** Python v0.111.0, TypeScript v0.105.0  
+**Last incremental update:** 2026-06-29  
+**SDK versions:** Python v0.112.0, TypeScript v0.106.0  
 **Primary sources:** anthropic-sdk-python, anthropic-sdk-typescript, anthropic-cookbook
 
 > **Coverage note:** The Anthropic documentation site (docs.anthropic.com / platform.claude.com/docs)
@@ -32,11 +32,11 @@ Comprehensive reference documentation for developers building with the Claude AP
 | [MODELS.md](./MODELS.md) | Current model IDs, capabilities, context windows, pricing notes | 2026-06-22 |
 | [QUICK-REFERENCE.md](./QUICK-REFERENCE.md) | Common code patterns: auth, messages, streaming, tools, caching | 2026-06-15 |
 | [authentication.md](./authentication.md) | API keys, HTTP headers, SDK setup, third-party platforms | 2026-05-30 |
-| [messages-api.md](./messages-api.md) | Messages endpoint: params, content blocks, response format | 2026-05-30 |
-| [streaming.md](./streaming.md) | SSE events, delta types, streaming SDK helpers | 2026-05-30 |
+| [messages-api.md](./messages-api.md) | Messages endpoint: params, content blocks, response format | 2026-06-29 |
+| [streaming.md](./streaming.md) | SSE events, delta types, streaming SDK helpers | 2026-06-29 |
 | [rate-limits-errors.md](./rate-limits-errors.md) | Error codes, retry logic, rate limit headers | 2026-05-30 |
 | [token-counting.md](./token-counting.md) | Count tokens before sending, context window management | 2026-05-30 |
-| [sdks.md](./sdks.md) | Python and TypeScript SDK reference, async, pagination | 2026-06-22 |
+| [sdks.md](./sdks.md) | Python and TypeScript SDK reference, async, pagination | 2026-06-29 |
 
 ### Features
 
@@ -54,7 +54,7 @@ Comprehensive reference documentation for developers building with the Claude AP
 | [citations.md](./citations.md) | Inline document citations | Beta | 2026-05-30 |
 | [mcp.md](./mcp.md) | Model Context Protocol server integration | Beta | 2026-05-30 |
 | [computer-use.md](./computer-use.md) | GUI automation, screenshot, mouse/keyboard | Beta | 2026-05-30 |
-| [managed-agents.md](./managed-agents.md) | Persistent agents, sessions, environments | Beta | 2026-06-15 |
+| [managed-agents.md](./managed-agents.md) | Persistent agents, sessions, environments | Beta | 2026-06-29 |
 
 ### Guides
 

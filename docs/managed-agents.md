@@ -230,6 +230,7 @@ Deployment configurations are defined server-side; the client discovers them via
 - Custom tool results must be returned promptly or the session may timeout
 - v0.103.0+: self-hosted sandboxes supported
 - v0.109.0+: deployments with environment variable credentials supported
+- v0.112.0+: memory tool now correctly creates parent directories with proper permissions
 
 ## Related
 

@@ -1,6 +1,6 @@
 # SDKs (Python & TypeScript)
 
-> **Last updated:** 2026-06-22
+> **Last updated:** 2026-06-29
 
 ## Python SDK
 
@@ -308,6 +308,7 @@ const client = new Anthropic({
 
 | SDK | Version | Date | Changes |
 |-----|---------|------|---------|
+| Python | v0.112.0 | 2026-06-24 | `system.message` streaming events; `user_profile_id` param → `anthropic-user-profile-id` header (requires `user-profiles` beta); new refusal category; memory tool parent-dir fix |
 | Python | v0.111.0 | 2026-06-18 | Tag refusal-fallback middleware requests with `fallback-refusal-middleware` |
 | Python | v0.110.0 | 2026-06-18 | Support `code_execution_20260120` programmatic tool calling; Bedrock stream event type fix; x-stainless-helper fixes |
 | Python | v0.109.2 | 2026-06-15 | Retired models removed from API and SDKs |
@@ -318,6 +319,7 @@ const client = new Anthropic({
 | Python | v0.107.0 | 2026-06-06 | Managed Agents type updates |
 | Python | v0.106.0 | 2026-06-05 | Mark claude-opus-4-1 deprecated; Foundry client fixes |
 | Python | v0.105.0 | 2026-05-28 | Add claude-opus-4-8, mid-conversation system blocks, output_tokens_details |
+| TypeScript | v0.106.0 | 2026-06-24 | `system.message` streaming events; `user_profile_id` param → `anthropic-user-profile-id` header (requires `user-profiles` beta); new refusal category; x-stainless-helper single source fix |
 | TypeScript | v0.105.0 | 2026-06-18 | Support `code_execution_20260120`; lazy parsing of partial tool JSON input during streaming; removed deprecated model refs |
 | TypeScript | v0.104.2 | 2026-06-15 | Retired model identifiers removed |
 | TypeScript | v0.104.1 | 2026-06-09 | Add `frontier_llm` refusal category |

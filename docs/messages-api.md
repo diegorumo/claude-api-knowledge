@@ -1,6 +1,6 @@
 # Messages API
 
-> **Last updated:** 2026-05-30
+> **Last updated:** 2026-06-29
 
 ## Overview
 
@@ -25,6 +25,7 @@ The Messages API is the primary interface for interacting with Claude. It accept
 | `top_k` | integer | No | Top-k sampling |
 | `stop_sequences` | array | No | Custom stop strings |
 | `metadata` | object | No | User ID for abuse detection |
+| `user_profile_id` | string | No | Attribute request to a specific user profile; sent as `anthropic-user-profile-id` header. Requires `user-profiles` beta header. Added v0.112.0 / TypeScript v0.106.0. |
 
 ## Message Format
 

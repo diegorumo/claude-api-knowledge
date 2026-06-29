@@ -1,5 +1,31 @@
 # Knowledge Base Changelog
 
+## 2026-06-29 — Incremental Update
+
+Sources: Python SDK v0.112.0 changelog, TypeScript SDK v0.106.0 changelog. Docs site (platform.claude.com/docs) returned HTTP 403/404 — data from official GitHub SDK repos.
+
+### Changes
+
+- **`system.message` streaming events (Python v0.112.0 / TypeScript v0.106.0)** — The SSE stream now surfaces `system.message` events emitted by Anthropic's platform infrastructure (notices, alerts). Updated `streaming.md` event types table.
+- **User Profile ID support (Python v0.112.0 / TypeScript v0.106.0)** — New `user_profile_id` parameter on `messages.create()` and `messages.stream()`. Sent as the `anthropic-user-profile-id` HTTP header. Use when acting on behalf of a party other than your organization. Requires the `user-profiles` beta header. Added to `messages-api.md` request parameters table.
+- **New refusal category (API-level, both SDKs)** — Additional internal refusal category added to the API. Complements the previously documented `frontier_llm` category (added v0.109.1 / v0.104.1).
+- **Memory tool parent-directory fix (Python v0.112.0)** — Memory tool in Managed Agents now correctly creates parent directories with proper permissions when writing memory files. Noted in `managed-agents.md` gotchas.
+- **TypeScript x-stainless-helper fix (TypeScript v0.106.0)** — Single-source for `x-stainless-helper` header, corrected append semantics, and fallback middleware tagging unified. Internal SDK hygiene.
+- **SDK versions updated** — Python v0.111.0 → v0.112.0, TypeScript v0.105.0 → v0.106.0.
+- **No new models** — Model list unchanged from 2026-06-22 update.
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `streaming.md` | Added `system.message` event to SSE event types table; updated date |
+| `messages-api.md` | Added `user_profile_id` parameter to request params table; updated date |
+| `sdks.md` | Added Python v0.112.0 and TypeScript v0.106.0 to version history; updated date |
+| `managed-agents.md` | Added memory tool parent-dir fix to gotchas; updated date |
+| `README.md` | Updated last-incremental-update date; updated SDK versions; updated file last-updated dates |
+
+---
+
 ## 2026-06-22 — Incremental Update
 
 Sources: Python SDK v0.110.0–v0.111.0 changelog, TypeScript SDK v0.105.0 changelog, platform.claude.com/docs (programmatic-tool-calling, tool-reference pages now accessible).

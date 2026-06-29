@@ -1,6 +1,6 @@
 # Streaming
 
-> **Last updated:** 2026-05-30
+> **Last updated:** 2026-06-29
 
 ## Overview
 
@@ -113,6 +113,7 @@ Events arrive in this sequence:
 | `content_block_stop` | End of a content block |
 | `message_delta` | Contains `stop_reason`, `stop_sequence`, usage updates |
 | `message_stop` | Stream complete |
+| `system.message` | Platform-level system notification from Anthropic's infrastructure (e.g. notices, alerts). Added in Python v0.112.0 / TypeScript v0.106.0. |
 
 ## Delta Types
 

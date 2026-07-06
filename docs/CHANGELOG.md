@@ -1,5 +1,39 @@
 # Knowledge Base Changelog
 
+## 2026-07-06 — Incremental Update
+
+Sources: Python SDK v0.113.0–v0.116.0 changelog, TypeScript SDK v0.107.0–v0.110.0 changelog. Docs site (platform.claude.com/docs) returned HTTP 404 — data from official GitHub SDK repos.
+
+### Changes
+
+- **New model: `claude-sonnet-5` (Python v0.114.0 / TypeScript v0.108.0, 2026-06-30)** — New Sonnet generation added to SDK. Context window and pricing TBD — check Anthropic's official docs. Added to `MODELS.md`, `QUICK-REFERENCE.md`, `README.md`.
+- **Managed Agents: event delta streaming (Python v0.115.0 / TypeScript v0.109.0, 2026-06-30)** — Session events now emit delta variants (e.g., `agent.message.delta`) for real-time incremental content delivery. Added new "Event Delta Streaming" section to `managed-agents.md`.
+- **Managed Agents: agent overrides (v0.115.0 / v0.109.0, 2026-06-30)** — Sessions can override agent parameters (model, system prompt, max tokens) per-session without modifying the agent definition. Added "Agent Overrides" section to `managed-agents.md`.
+- **Managed Agents: reverse pagination (v0.115.0 / v0.109.0, 2026-06-30)** — List endpoints now accept `order: "desc"` for newest-first pagination. Added "Reverse Pagination" section to `managed-agents.md`.
+- **Managed Agents: vault credential injection scoping (v0.115.0 / v0.109.0, 2026-06-30)** — Vault credentials can now be scoped to specific MCP servers via `credential_scope`. Added "Vault Credential Injection Scoping" section to `managed-agents.md`.
+- **Managed Agents: webhook events for agents and deployments (v0.115.0 / v0.109.0, 2026-06-30)** — Webhook callbacks can now be configured on both agent definitions and deployments. Added "Agent and Deployment Webhook Events" section to `managed-agents.md`.
+- **New beta header: `agent-memory-2026-07-22` (Python v0.116.0 / TypeScript v0.110.0, 2026-07-02)** — Memory Stores API operations now require this beta header (SDK adds it automatically). Updated `managed-agents.md` Memory Stores section and `README.md` beta headers table.
+- **Tool type strings updated to `20260318` (Python v0.113.0 / TypeScript v0.107.0, 2026-06-29)** — `web_search_20260318` and `web_fetch_20260318` are now the current versions. Updated `web-search.md` with correct latest type strings.
+- **`user_profile_id` in `count_tokens` (v0.113.0 / v0.107.0, 2026-06-29)** — `count_tokens` endpoint now accepts `user_profile_id`; SDK sends it as `anthropic-user-profile-id` header. Added note to `token-counting.md`.
+- **Async `count_tokens` bug fix (Python v0.113.0)** — Missing merge block for `output_format`/`output_config` in async Python `count_tokens` fixed. Added gotcha to `token-counting.md`.
+- **TypeScript `BatchCreateParams.Request.params` restored (TypeScript v0.107.0)** — Type that was accidentally dropped during a codegen merge is restored. Noted in `sdks.md` version history.
+- **SDK type cleanup (Python v0.115.1 / TypeScript v0.109.1, 2026-07-01)** — Nonfunctional types removed from both SDKs.
+- **SDK versions updated** — Python v0.112.0 → v0.116.0, TypeScript v0.106.0 → v0.110.0.
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `MODELS.md` | Added `claude-sonnet-5` to current models table and capability table; updated date and source version |
+| `QUICK-REFERENCE.md` | Added `claude-sonnet-5` to model IDs table; updated date |
+| `managed-agents.md` | Added sections: Event Delta Streaming, Agent Overrides, Reverse Pagination, Vault Credential Injection Scoping, Agent and Deployment Webhook Events, Memory Stores beta header; updated gotchas; updated date |
+| `sdks.md` | Added Python v0.113.0–v0.116.0 and TypeScript v0.107.0–v0.110.0 to version history; updated date |
+| `token-counting.md` | Added `user_profile_id` in token counting section; added async bug fix note; updated date |
+| `web-search.md` | Updated tool type strings to `web_search_20260318` / `web_fetch_20260318`; updated date |
+| `README.md` | Updated last-incremental-update date; updated SDK versions; added `claude-sonnet-5` to model quick reference; expanded beta headers table; updated file last-updated dates |
+
+---
+
 ## 2026-06-29 — Incremental Update
 
 Sources: Python SDK v0.112.0 changelog, TypeScript SDK v0.106.0 changelog. Docs site (platform.claude.com/docs) returned HTTP 403/404 — data from official GitHub SDK repos.

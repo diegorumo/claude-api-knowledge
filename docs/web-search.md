@@ -1,16 +1,16 @@
 # Web Search Tool
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-07-06
 
 ## Overview
 
 The web search and web fetch tools are built-in server-side tools that let Claude search the internet or fetch URLs. Unlike custom tools, you don't need to execute them — the API handles them internally.
 
 **Web Search tool name:** `web_search`  
-**Latest web search type:** `web_search_20260209` (also: `web_search_20250305`)
+**Latest web search type:** `web_search_20260318` (also: `web_search_20260209`, `web_search_20250305`)
 
 **Web Fetch tool name:** `web_fetch`  
-**Latest web fetch type:** `web_fetch_20260309` (also: `web_fetch_20260209`)
+**Latest web fetch type:** `web_fetch_20260318` (also: `web_fetch_20260309`, `web_fetch_20260209`)
 
 ## Basic Usage
 
@@ -25,7 +25,7 @@ message = client.messages.create(
     messages=[{"role": "user", "content": "What are the latest Claude model releases?"}],
     tools=[
         {
-            "type": "web_search_20260209",  # latest; use web_search_20250305 for older compat
+            "type": "web_search_20260318",  # latest; use web_search_20260209 / web_search_20250305 for older compat
             "name": "web_search",
         }
     ],
@@ -48,7 +48,7 @@ const message = await client.messages.create({
   model: 'claude-sonnet-4-6',
   max_tokens: 1024,
   messages: [{ role: 'user', content: 'What is the current price of Bitcoin?' }],
-  tools: [{ type: 'web_search_20260209', name: 'web_search' }],
+  tools: [{ type: 'web_search_20260318', name: 'web_search' }],
 });
 
 for (const block of message.content) {
@@ -65,7 +65,7 @@ message = client.messages.create(
     model="claude-sonnet-4-6",
     max_tokens=2048,
     messages=[{"role": "user", "content": "Fetch and summarize https://example.com"}],
-    tools=[{"type": "web_fetch_20260309", "name": "web_fetch"}],
+    tools=[{"type": "web_fetch_20260318", "name": "web_fetch"}],
 )
 ```
 
@@ -78,7 +78,7 @@ with client.messages.stream(
     model="claude-sonnet-4-6",
     max_tokens=1024,
     messages=[{"role": "user", "content": "What happened in tech news today?"}],
-    tools=[{"type": "web_search_20260209", "name": "web_search"}],
+    tools=[{"type": "web_search_20260318", "name": "web_search"}],
 ) as stream:
     for text in stream.text_stream:
         print(text, end="", flush=True)

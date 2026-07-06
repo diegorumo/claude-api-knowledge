@@ -1,6 +1,6 @@
 # Token Counting
 
-> **Last updated:** 2026-05-30
+> **Last updated:** 2026-07-06
 
 ## Overview
 
@@ -96,12 +96,29 @@ def trim_messages(messages, model, max_tokens=MAX_CONTEXT):
     return messages
 ```
 
+## User Profile ID in Token Counting (v0.113.0+)
+
+The `count_tokens` endpoint accepts `user_profile_id` (Python SDK v0.113.0 / TypeScript SDK v0.107.0). Pass this when acting on behalf of a specific user profile to get accurate token estimates that account for the profile context.
+
+```python
+result = client.messages.count_tokens(
+    model="claude-sonnet-4-6",
+    messages=[{"role": "user", "content": "Hello!"}],
+    user_profile_id="profile_abc123",  # Optional; requires user-profiles beta header
+)
+```
+
+This sends the `anthropic-user-profile-id` header alongside the count request.
+
+**Bug fix (v0.113.0):** Async Python `count_tokens` previously had a missing merge block for `output_format`/`output_config` parameters — this caused those fields to be silently dropped in async calls. Fixed in Python SDK v0.113.0.
+
 ## Gotchas
 
 - Token counts may differ slightly from actual billed tokens (±1–2%) due to formatting
 - Tool definitions and system prompts add tokens beyond visible text — always count the full request
 - Images add variable tokens based on dimensions; use `count_tokens` with the actual image for accuracy
 - Cache control markers themselves add a small number of overhead tokens
+- Python async `count_tokens`: use SDK v0.113.0+ to avoid the `output_format`/`output_config` drop bug
 
 ## Related
 

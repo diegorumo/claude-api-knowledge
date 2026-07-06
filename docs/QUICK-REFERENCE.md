@@ -1,6 +1,6 @@
 # Quick Reference
 
-> **Last updated:** 2026-06-15  
+> **Last updated:** 2026-07-06  
 > Common patterns for developers building with the Claude API.
 
 ## Authentication
@@ -52,11 +52,13 @@ console.log(response.content[0].text);
 | Opus 4.8 | `claude-opus-4-8` | Highest Opus capability |
 | Opus 4.7 | `claude-opus-4-7` | High capability |
 | Opus 4.6 | `claude-opus-4-6` | Recommended Opus |
+| Sonnet 5 | `claude-sonnet-5` | New Sonnet generation (June 2026) |
 | Sonnet 4.6 | `claude-sonnet-4-6` | Balanced (default choice) |
 | Haiku 4.5 | `claude-haiku-4-5-20251001` | Fastest / cheapest |
 
 > **Deprecated:** `claude-opus-4-1` — migrate to `claude-opus-4-6`.  
-> **New:** `claude-fable-5` and `claude-mythos-5` support server-side fallbacks on refusal.
+> **New:** `claude-fable-5` and `claude-mythos-5` support server-side fallbacks on refusal.  
+> **New:** `claude-sonnet-5` added June 2026 — check Anthropic docs for full capability details.
 
 ---
 

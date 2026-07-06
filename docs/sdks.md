@@ -1,6 +1,6 @@
 # SDKs (Python & TypeScript)
 
-> **Last updated:** 2026-06-29
+> **Last updated:** 2026-07-06
 
 ## Python SDK
 
@@ -308,6 +308,11 @@ const client = new Anthropic({
 
 | SDK | Version | Date | Changes |
 |-----|---------|------|---------|
+| Python | v0.116.0 | 2026-07-02 | Add `agent-memory-2026-07-22` beta header for Memory Stores API |
+| Python | v0.115.1 | 2026-07-01 | Remove nonfunctional types from SDK |
+| Python | v0.115.0 | 2026-06-30 | Managed Agents: event delta streaming, agent overrides, reverse pagination, vault credential injection scoping, agent and deployment webhook events |
+| Python | v0.114.0 | 2026-06-30 | Add `claude-sonnet-5`; agent-toolset: allow absolute paths resolving inside workdir |
+| Python | v0.113.0 | 2026-06-29 | Support `web_search_20260318` and `web_fetch_20260318` tool types; fix async `count_tokens` missing `output_format`/`output_config`; accept `user_profile_id` in `count_tokens` |
 | Python | v0.112.0 | 2026-06-24 | `system.message` streaming events; `user_profile_id` param → `anthropic-user-profile-id` header (requires `user-profiles` beta); new refusal category; memory tool parent-dir fix |
 | Python | v0.111.0 | 2026-06-18 | Tag refusal-fallback middleware requests with `fallback-refusal-middleware` |
 | Python | v0.110.0 | 2026-06-18 | Support `code_execution_20260120` programmatic tool calling; Bedrock stream event type fix; x-stainless-helper fixes |
@@ -319,6 +324,11 @@ const client = new Anthropic({
 | Python | v0.107.0 | 2026-06-06 | Managed Agents type updates |
 | Python | v0.106.0 | 2026-06-05 | Mark claude-opus-4-1 deprecated; Foundry client fixes |
 | Python | v0.105.0 | 2026-05-28 | Add claude-opus-4-8, mid-conversation system blocks, output_tokens_details |
+| TypeScript | v0.110.0 | 2026-07-02 | Add `agent-memory-2026-07-22` beta header for Memory Stores API |
+| TypeScript | v0.109.1 | 2026-07-01 | Remove nonfunctional types from SDK |
+| TypeScript | v0.109.0 | 2026-06-30 | Managed Agents: event delta streaming, agent overrides, reverse pagination, vault credential injection scoping, agent and deployment webhook events |
+| TypeScript | v0.108.0 | 2026-06-30 | Add `claude-sonnet-5`; agent-toolset: allow absolute paths resolving inside workdir |
+| TypeScript | v0.107.0 | 2026-06-29 | Support `web_search_20260318` and `web_fetch_20260318` tool types; accept `user_profile_id` in `count_tokens`; restore `BatchCreateParams.Request.params` type; bound symlink canonicalization hops in agent-toolset |
 | TypeScript | v0.106.0 | 2026-06-24 | `system.message` streaming events; `user_profile_id` param → `anthropic-user-profile-id` header (requires `user-profiles` beta); new refusal category; x-stainless-helper single source fix |
 | TypeScript | v0.105.0 | 2026-06-18 | Support `code_execution_20260120`; lazy parsing of partial tool JSON input during streaming; removed deprecated model refs |
 | TypeScript | v0.104.2 | 2026-06-15 | Retired model identifiers removed |

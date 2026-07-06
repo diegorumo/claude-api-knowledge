@@ -1,7 +1,7 @@
 # Claude Models Reference
 
-> **Last updated:** 2026-06-22  
-> **Source:** GitHub SDK repos, SDK changelogs (Python v0.111.0, TypeScript v0.105.0)
+> **Last updated:** 2026-07-06  
+> **Source:** GitHub SDK repos, SDK changelogs (Python v0.116.0, TypeScript v0.110.0)
 
 ## Current Model IDs
 
@@ -13,12 +13,15 @@
 | Claude Opus 4.7 | `claude-opus-4-7` | 200K tokens | 32K tokens | High capability |
 | Claude Mythos (preview) | `claude-mythos-preview` | TBD | TBD | Preview predecessor to claude-mythos-5 |
 | Claude Opus 4.6 | `claude-opus-4-6` | 200K tokens | 32K tokens | Recommended Opus — used in SDK examples |
+| Claude Sonnet 5 | `claude-sonnet-5` | TBD | TBD | New Sonnet generation (June 2026) |
 | Claude Sonnet 4.6 | `claude-sonnet-4-6` | 200K tokens | 64K tokens | Balanced speed/intelligence |
 | Claude Haiku 4.5 | `claude-haiku-4-5-20251001` | 200K tokens | 8K tokens | Fastest, most cost-efficient |
 
 > **Note:** Always verify current pricing at https://www.anthropic.com/pricing — prices change and are not reproduced here to avoid stale data.
 >
 > **Note on claude-fable-5 / claude-mythos-5:** Both models were added in Python SDK v0.108.0 and TypeScript SDK v0.103.0 (2026-06-09). They support **server-side fallbacks on refusal**, which automatically switches models when content policy triggers. Full capability details (context window, pricing) have not been published yet — treat context window / output figures as TBD until confirmed.
+>
+> **Note on claude-sonnet-5:** Added in Python SDK v0.114.0 and TypeScript SDK v0.108.0 (2026-06-30). Full capability details (context window, pricing) have not been published yet — check Anthropic's official docs for current information.
 
 ## Previous / Also Supported Models
 
@@ -41,18 +44,18 @@
 
 ## Model Capabilities
 
-| Capability | Fable 5 / Mythos 5 | Opus 4.6–4.8 | Sonnet 4.6 | Haiku 4.5 |
-|-----------|---------------------|--------------|------------|-----------|
-| Extended Thinking | TBD | ✅ | ✅ | ❌ |
-| Tool Use | TBD | ✅ | ✅ | ✅ |
-| Vision (images) | TBD | ✅ | ✅ | ✅ |
-| PDF Input | TBD | ✅ | ✅ | ✅ |
-| Prompt Caching | TBD | ✅ | ✅ | ✅ |
-| Streaming | TBD | ✅ | ✅ | ✅ |
-| Batch API | TBD | ✅ | ✅ | ✅ |
-| Server-Side Fallbacks | ✅ | ❌ | ❌ | ❌ |
+| Capability | Fable 5 / Mythos 5 | Sonnet 5 | Opus 4.6–4.8 | Sonnet 4.6 | Haiku 4.5 |
+|-----------|---------------------|----------|--------------|------------|-----------|
+| Extended Thinking | TBD | TBD | ✅ | ✅ | ❌ |
+| Tool Use | TBD | TBD | ✅ | ✅ | ✅ |
+| Vision (images) | TBD | TBD | ✅ | ✅ | ✅ |
+| PDF Input | TBD | TBD | ✅ | ✅ | ✅ |
+| Prompt Caching | TBD | TBD | ✅ | ✅ | ✅ |
+| Streaming | TBD | TBD | ✅ | ✅ | ✅ |
+| Batch API | TBD | TBD | ✅ | ✅ | ✅ |
+| Server-Side Fallbacks | ✅ | TBD | ❌ | ❌ | ❌ |
 
-> Fable 5 / Mythos 5 capability details (context window, features) are not yet fully published. Check https://www.anthropic.com/pricing and SDK release notes for updates.
+> Fable 5 / Mythos 5 / Sonnet 5 capability details (context window, features) are not yet fully published. Check https://www.anthropic.com/pricing and SDK release notes for updates.
 
 ## Prompt Caching Minimum Tokens
 

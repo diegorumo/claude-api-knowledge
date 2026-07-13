@@ -1,6 +1,6 @@
 # SDKs (Python & TypeScript)
 
-> **Last updated:** 2026-07-06
+> **Last updated:** 2026-07-13
 
 ## Python SDK
 
@@ -324,6 +324,7 @@ const client = new Anthropic({
 | Python | v0.107.0 | 2026-06-06 | Managed Agents type updates |
 | Python | v0.106.0 | 2026-06-05 | Mark claude-opus-4-1 deprecated; Foundry client fixes |
 | Python | v0.105.0 | 2026-05-28 | Add claude-opus-4-8, mid-conversation system blocks, output_tokens_details |
+| TypeScript | v0.111.0 | 2026-07-10 | Dreams API (`client.beta.dreams.*`); `evaluated_permission` (allow/ask/deny) on session tool-use events; idle bounding by server `stop_reason` in `SessionToolRunner` |
 | TypeScript | v0.110.0 | 2026-07-02 | Add `agent-memory-2026-07-22` beta header for Memory Stores API |
 | TypeScript | v0.109.1 | 2026-07-01 | Remove nonfunctional types from SDK |
 | TypeScript | v0.109.0 | 2026-06-30 | Managed Agents: event delta streaming, agent overrides, reverse pagination, vault credential injection scoping, agent and deployment webhook events |

@@ -1,5 +1,25 @@
 # Knowledge Base Changelog
 
+## 2026-07-13 — Incremental Update
+
+Sources: TypeScript SDK v0.111.0 changelog (2026-07-10), GitHub code search on anthropics/anthropic-sdk-typescript. Python SDK remains at v0.116.0 (no new release). Docs site (platform.claude.com/docs) returned HTTP 404.
+
+### Changes
+
+- **New API: Dreams (TypeScript v0.111.0, 2026-07-10)** — New beta endpoint for asynchronous memory-consolidation jobs. A Dream reads a memory store plus a set of session transcripts and writes consolidated memories into a new output memory store. Endpoints: `POST /v1/dreams`, `GET /v1/dreams/{dream_id}`, `GET /v1/dreams`, `POST /v1/dreams/{dream_id}/archive`, `POST /v1/dreams/{dream_id}/cancel`. Status lifecycle: `pending → running → completed | failed | canceled`. Requires `agent-memory-2026-07-22` beta header. Python SDK support not yet available. Added "Dreams API" section to `managed-agents.md`.
+- **Session tool call permissions — `evaluated_permission` (TypeScript v0.111.0, 2026-07-10)** — `agent.tool_use` and `agent.mcp_tool_use` session events now carry an `evaluated_permission` field (`'allow' | 'ask' | 'deny'`). `'ask'` holds tool execution until a `user.tool_confirmation` event arrives with `result: 'allow' | 'deny'`. `'deny'` yields the call to consumers but does not execute it. The `SessionToolRunner` helper handles this flow automatically, including idle bounding: it stops after `maxIdleMs` (default 60 s) once `stop_reason: end_turn` is reached, with the countdown paused while confirmations are outstanding. Added "Session Tool Call Permissions" section to `managed-agents.md`.
+- **No new Python SDK version** — Python SDK remains at v0.116.0 (released 2026-07-02). Dreams and `evaluated_permission` are TypeScript-only for now.
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `managed-agents.md` | Added "Dreams API" section (endpoints, types, code example, gotchas); added "Session Tool Call Permissions" section (`evaluated_permission` flow, `user.tool_confirmation`, `SessionToolRunner` idle bounding); updated gotchas list; updated date |
+| `sdks.md` | Added TypeScript v0.111.0 to version history table; updated date |
+| `README.md` | Updated last-incremental-update date (2026-07-13); updated TypeScript SDK version (v0.111.0); updated file last-updated dates for modified files |
+
+---
+
 ## 2026-07-06 — Incremental Update
 
 Sources: Python SDK v0.113.0–v0.116.0 changelog, TypeScript SDK v0.107.0–v0.110.0 changelog. Docs site (platform.claude.com/docs) returned HTTP 404 — data from official GitHub SDK repos.

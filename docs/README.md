@@ -3,8 +3,8 @@
 Comprehensive reference documentation for developers building with the Claude API.
 
 **Last full crawl:** 2026-05-30  
-**Last incremental update:** 2026-07-13  
-**SDK versions:** Python v0.116.0, TypeScript v0.111.0  
+**Last incremental update:** 2026-07-20  
+**SDK versions:** Python v0.117.0, TypeScript v0.112.3  
 **Primary sources:** anthropic-sdk-python, anthropic-sdk-typescript, anthropic-cookbook
 
 > **Coverage note:** The Anthropic documentation site (docs.anthropic.com / platform.claude.com/docs)
@@ -36,7 +36,7 @@ Comprehensive reference documentation for developers building with the Claude AP
 | [streaming.md](./streaming.md) | SSE events, delta types, streaming SDK helpers | 2026-06-29 |
 | [rate-limits-errors.md](./rate-limits-errors.md) | Error codes, retry logic, rate limit headers | 2026-05-30 |
 | [token-counting.md](./token-counting.md) | Count tokens before sending, context window management | 2026-07-06 |
-| [sdks.md](./sdks.md) | Python and TypeScript SDK reference, async, pagination | 2026-07-13 |
+| [sdks.md](./sdks.md) | Python and TypeScript SDK reference, async, pagination | 2026-07-20 |
 
 ### Features
 
@@ -52,9 +52,9 @@ Comprehensive reference documentation for developers building with the Claude AP
 | [web-search.md](./web-search.md) | Built-in web search and web fetch tools, usage tracking | Stable | 2026-07-06 |
 | [files-api.md](./files-api.md) | File upload, reference by ID | Beta | 2026-05-30 |
 | [citations.md](./citations.md) | Inline document citations | Beta | 2026-05-30 |
-| [mcp.md](./mcp.md) | Model Context Protocol server integration | Beta | 2026-05-30 |
+| [mcp.md](./mcp.md) | Model Context Protocol server integration + MCP Tunnels API | Beta | 2026-07-20 |
 | [computer-use.md](./computer-use.md) | GUI automation, screenshot, mouse/keyboard | Beta | 2026-05-30 |
-| [managed-agents.md](./managed-agents.md) | Persistent agents, sessions, environments | Beta | 2026-07-13 |
+| [managed-agents.md](./managed-agents.md) | Persistent agents, sessions, environments | Beta | 2026-07-20 |
 
 ### Guides
 
@@ -119,3 +119,4 @@ content-type: application/json
 | Managed Agents | `anthropic-beta: managed-agents-2026-04-01` |
 | Server-Side Fallback | `anthropic-beta: server-side-fallback-2026-06-01` |
 | Memory Stores | `anthropic-beta: agent-memory-2026-07-22` |
+| MCP Tunnels | `anthropic-beta: mcp-tunnels-2026-06-22` |

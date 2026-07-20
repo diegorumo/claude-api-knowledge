@@ -1,8 +1,8 @@
 # Managed Agents (Beta)
 
-> **Last updated:** 2026-07-13  
+> **Last updated:** 2026-07-20  
 > **Status:** Beta — active development  
-> **SDK changelog:** v0.100.0+ (May 2026), v0.115.0 (June 2026), v0.116.0 (July 2026), v0.111.0 TypeScript (July 2026)
+> **SDK changelog:** v0.100.0+ (May 2026), v0.115.0 (June 2026), v0.116.0 (July 2026), v0.117.0 Python / v0.112.0 TypeScript (July 2026)
 
 ## Overview
 
@@ -353,11 +353,11 @@ for event in client.beta.sessions.events.stream(session_id=session.id):
 
 Deployment configurations are defined server-side; the client discovers them via the API rather than specifying them inline. This allows ops teams to manage model, tools, and environment separately from application code.
 
-## Dreams API (TypeScript v0.111.0+ — Beta)
+## Dreams API (Python v0.117.0+ / TypeScript v0.111.0+ — Beta)
 
 Dreams are **asynchronous memory-consolidation jobs** that read a memory store plus a set of session transcripts and write consolidated memories into a new output memory store. Use them to periodically distill long conversation histories into durable memory.
 
-**Endpoints** (TypeScript only as of 2026-07-13):
+**Endpoints** (both Python and TypeScript as of 2026-07-16):
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -407,7 +407,7 @@ console.log(result.status, result.outputs, result.usage);
 - `usage` — `{ input_tokens, output_tokens, cache_creation_input_tokens, cache_read_input_tokens }`
 - `created_at`, `ended_at`, `archived_at`
 
-**List with filters:**
+**List with filters (TypeScript):**
 ```typescript
 const dreams = await client.beta.dreams.list({
   statuses: ['completed'],
@@ -416,7 +416,17 @@ const dreams = await client.beta.dreams.list({
 });
 ```
 
-> **Note:** Dreams require the `agent-memory-2026-07-22` beta header (same as Memory Stores). The TypeScript SDK adds this header automatically when you pass `betas: ['agent-memory-2026-07-22']`. Python SDK support pending.
+**List with filters (Python):**
+```python
+dreams = client.beta.dreams.list(
+    statuses=["completed"],
+    include_archived=False,
+    created_at_gt="2026-07-01T00:00:00Z",  # filter by date (Python-only parameter)
+    betas=["agent-memory-2026-07-22"],
+)
+```
+
+> **Note:** Dreams require the `agent-memory-2026-07-22` beta header (same as Memory Stores). Both Python (v0.117.0+) and TypeScript (v0.111.0+) SDKs support the Dreams API. Python's `list()` also accepts `created_at_gt` and `created_at_lt` datetime filters.
 
 ## Session Tool Call Permissions — `evaluated_permission` (TypeScript v0.111.0+)
 
@@ -472,10 +482,10 @@ for await (const event of stream) {
 - v0.112.0+: memory tool now correctly creates parent directories with proper permissions
 - v0.115.0+: agent overrides, reverse pagination, vault scoping, webhooks available
 - v0.116.0+ / TypeScript v0.110.0+: Memory Stores require the `agent-memory-2026-07-22` beta header (SDK adds automatically)
-- TypeScript v0.111.0+: Dreams API and `evaluated_permission` on session tool calls (Python support pending)
+- TypeScript v0.111.0+ / Python v0.117.0+: Dreams API and `evaluated_permission` on session tool calls
 - Webhook handlers must be idempotent — events may be delivered more than once
 - Agent overrides are session-scoped only — they do not persist to the agent definition
-- Dreams are TypeScript-only as of July 2026; watch the Python SDK changelog for parity
+- Python Dreams `list()` accepts `created_at_gt`/`created_at_lt` datetime filters; TypeScript does not yet
 
 ## Related
 

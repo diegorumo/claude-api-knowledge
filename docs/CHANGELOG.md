@@ -1,5 +1,27 @@
 # Knowledge Base Changelog
 
+## 2026-07-20 — Incremental Update
+
+Sources: Python SDK v0.117.0 changelog (2026-07-16), TypeScript SDK v0.112.0–v0.112.3 changelog (2026-07-16–17), GitHub code search on both SDK repos. Docs site (platform.claude.com/docs) returned HTTP 404.
+
+### Changes
+
+- **New API: MCP Tunnels (Python v0.117.0 / TypeScript v0.112.0, 2026-07-16)** — New beta resource group for provisioning secure tunnels that expose local MCP servers to Claude's infrastructure. Beta header: `mcp-tunnels-2026-06-22`. Anthropic allocates a globally unique `domain` (hostname) per tunnel; the operator runs a connector using the `tunnel_token`. TLS is enforced via registered CA certificates. Tunnel endpoints: `POST/GET/archive /v1/tunnels`, `reveal_token`, `rotate_token`. Certificate sub-resource: `POST/GET/archive /v1/tunnels/{id}/certificates`. Types: `BetaTunnel` (id `tnl_…`, domain, display_name, created_at, archived_at), `BetaTunnelToken` (id, tunnel_token), `BetaTunnelCertificate` (id `tcrt_…`, fingerprint, tunnel_id, expires_at). Max 2 non-archived certs per tunnel. A tunnel rejects all MCP traffic until at least one cert is registered. Added comprehensive MCP Tunnels section to `mcp.md`.
+- **Dreams API now in Python (Python v0.117.0, 2026-07-16)** — `client.beta.dreams.*` is now available in the Python SDK (was TypeScript-only since v0.111.0). All 5 endpoints supported: `create`, `retrieve`, `list`, `archive`, `cancel`. Python's `list()` additionally accepts `created_at_gt` and `created_at_lt` datetime filters not yet in TypeScript. Requires `agent-memory-2026-07-22` beta header. Updated `managed-agents.md` Dreams section.
+- **SecretStr credential security (Python v0.117.0)** — Sensitive credential fields (e.g., `tunnel_token`) are now wrapped in `SecretStr` to prevent accidental exposure in Python tracebacks / frame locals. Noted in `mcp.md` tunnel gotchas.
+- **TypeScript v0.112.1–v0.112.3 (2026-07-17)** — Documentation updates only; no API or behavior changes.
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `mcp.md` | Added full MCP Tunnels section: concepts, tunnel endpoints, certificate endpoints, Python + TypeScript examples, type tables, gotchas; updated date and status line |
+| `managed-agents.md` | Updated Dreams section header to reflect Python parity (v0.117.0); added Python `list()` example with `created_at_gt` filter; updated gotchas; updated SDK changelog line; updated date |
+| `sdks.md` | Added Python v0.117.0 and TypeScript v0.112.0–v0.112.3 to version history table; updated date |
+| `README.md` | Updated last-incremental-update date (2026-07-20); updated SDK versions (Python v0.117.0, TypeScript v0.112.3); updated mcp.md and managed-agents.md and sdks.md last-updated dates; added `mcp-tunnels-2026-06-22` to beta headers table |
+
+---
+
 ## 2026-07-13 — Incremental Update
 
 Sources: TypeScript SDK v0.111.0 changelog (2026-07-10), GitHub code search on anthropics/anthropic-sdk-typescript. Python SDK remains at v0.116.0 (no new release). Docs site (platform.claude.com/docs) returned HTTP 404.

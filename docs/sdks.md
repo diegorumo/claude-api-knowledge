@@ -1,6 +1,6 @@
 # SDKs (Python & TypeScript)
 
-> **Last updated:** 2026-07-13
+> **Last updated:** 2026-07-20
 
 ## Python SDK
 
@@ -308,6 +308,7 @@ const client = new Anthropic({
 
 | SDK | Version | Date | Changes |
 |-----|---------|------|---------|
+| Python | v0.117.0 | 2026-07-16 | MCP Tunnels API (`client.beta.tunnels.*`, `client.beta.tunnels.certificates.*`; beta `mcp-tunnels-2026-06-22`); Dreams API now available in Python (`client.beta.dreams.*`; was TypeScript-only); `SecretStr` wraps credential fields (e.g., `tunnel_token`) to prevent traceback exposure |
 | Python | v0.116.0 | 2026-07-02 | Add `agent-memory-2026-07-22` beta header for Memory Stores API |
 | Python | v0.115.1 | 2026-07-01 | Remove nonfunctional types from SDK |
 | Python | v0.115.0 | 2026-06-30 | Managed Agents: event delta streaming, agent overrides, reverse pagination, vault credential injection scoping, agent and deployment webhook events |
@@ -324,6 +325,10 @@ const client = new Anthropic({
 | Python | v0.107.0 | 2026-06-06 | Managed Agents type updates |
 | Python | v0.106.0 | 2026-06-05 | Mark claude-opus-4-1 deprecated; Foundry client fixes |
 | Python | v0.105.0 | 2026-05-28 | Add claude-opus-4-8, mid-conversation system blocks, output_tokens_details |
+| TypeScript | v0.112.3 | 2026-07-17 | Documentation updates only |
+| TypeScript | v0.112.2 | 2026-07-17 | Documentation updates only |
+| TypeScript | v0.112.1 | 2026-07-16 | No changes |
+| TypeScript | v0.112.0 | 2026-07-16 | MCP Tunnels API (`client.beta.tunnels.*`, `client.beta.tunnels.certificates.*`; beta `mcp-tunnels-2026-06-22`) |
 | TypeScript | v0.111.0 | 2026-07-10 | Dreams API (`client.beta.dreams.*`); `evaluated_permission` (allow/ask/deny) on session tool-use events; idle bounding by server `stop_reason` in `SessionToolRunner` |
 | TypeScript | v0.110.0 | 2026-07-02 | Add `agent-memory-2026-07-22` beta header for Memory Stores API |
 | TypeScript | v0.109.1 | 2026-07-01 | Remove nonfunctional types from SDK |

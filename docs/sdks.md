@@ -1,6 +1,6 @@
 # SDKs (Python & TypeScript)
 
-> **Last updated:** 2026-07-20
+> **Last updated:** 2026-07-27
 
 ## Python SDK
 
@@ -308,6 +308,9 @@ const client = new Anthropic({
 
 | SDK | Version | Date | Changes |
 |-----|---------|------|---------|
+| Python | v0.120.0 | 2026-07-24 | Add `claude-opus-5` model; tool addition/removal blocks (`tool_addition`/`tool_removal` content block types) and `tool_change` events; expand `fallback_credit_token` to accept object form (`BetaFallbackCreditTokenParam` with `token` + `mode: "strict" \| "best_effort"`); add server-side fallbacks `"default"` string option (requires `fallback-credit-2026-07-01` beta header for object form) |
+| Python | v0.119.0 | 2026-07-23 | Add `model_context_window_exceeded` stop reason; fix binary file handling in agent toolset read/edit operations |
+| Python | v0.118.0 | 2026-07-22 | Managed Agents model effort (`effort` field on `BetaManagedAgentsModelConfig`); initial session events (`initial_events` param on `sessions.create()`); threads delta streaming (`client.beta.sessions.threads.events.stream()`) |
 | Python | v0.117.0 | 2026-07-16 | MCP Tunnels API (`client.beta.tunnels.*`, `client.beta.tunnels.certificates.*`; beta `mcp-tunnels-2026-06-22`); Dreams API now available in Python (`client.beta.dreams.*`; was TypeScript-only); `SecretStr` wraps credential fields (e.g., `tunnel_token`) to prevent traceback exposure |
 | Python | v0.116.0 | 2026-07-02 | Add `agent-memory-2026-07-22` beta header for Memory Stores API |
 | Python | v0.115.1 | 2026-07-01 | Remove nonfunctional types from SDK |
@@ -325,6 +328,11 @@ const client = new Anthropic({
 | Python | v0.107.0 | 2026-06-06 | Managed Agents type updates |
 | Python | v0.106.0 | 2026-06-05 | Mark claude-opus-4-1 deprecated; Foundry client fixes |
 | Python | v0.105.0 | 2026-05-28 | Add claude-opus-4-8, mid-conversation system blocks, output_tokens_details |
+| TypeScript | v0.115.0 | 2026-07-24 | Add `claude-opus-5` model; tool addition/removal blocks and `tool_change` events; expand `fallback_credit_token` to accept object form; server-side fallbacks `"default"` option; fix abort listeners not released when requests settle |
+| TypeScript | v0.114.0 | 2026-07-23 | Add `model_context_window_exceeded` stop reason |
+| TypeScript | v0.113.0 | 2026-07-22 | Managed Agents model effort, initial session events (`initial_events` on `sessions.create()`), threads delta streaming (`client.beta.sessions.threads.events.stream()`) |
+| TypeScript | v0.112.5 | 2026-07-21 | Add support for new refusal category; codegen updates |
+| TypeScript | v0.112.4 | 2026-07-20 | Fix: AWS options and auth mode now preserved across `withOptions()` calls |
 | TypeScript | v0.112.3 | 2026-07-17 | Documentation updates only |
 | TypeScript | v0.112.2 | 2026-07-17 | Documentation updates only |
 | TypeScript | v0.112.1 | 2026-07-16 | No changes |

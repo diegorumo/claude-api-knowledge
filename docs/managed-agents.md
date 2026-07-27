@@ -1,8 +1,8 @@
 # Managed Agents (Beta)
 
-> **Last updated:** 2026-07-20  
+> **Last updated:** 2026-07-27  
 > **Status:** Beta — active development  
-> **SDK changelog:** v0.100.0+ (May 2026), v0.115.0 (June 2026), v0.116.0 (July 2026), v0.117.0 Python / v0.112.0 TypeScript (July 2026)
+> **SDK changelog:** v0.100.0+ (May 2026), v0.115.0 (June 2026), v0.116.0–v0.120.0 Python / v0.110.0–v0.115.0 TypeScript (July 2026)
 
 ## Overview
 
@@ -428,6 +428,115 @@ dreams = client.beta.dreams.list(
 
 > **Note:** Dreams require the `agent-memory-2026-07-22` beta header (same as Memory Stores). Both Python (v0.117.0+) and TypeScript (v0.111.0+) SDKs support the Dreams API. Python's `list()` also accepts `created_at_gt` and `created_at_lt` datetime filters.
 
+## Model Effort (Python v0.118.0+ / TypeScript v0.113.0+)
+
+The `BetaManagedAgentsModelConfig` object (used when creating/updating an agent) now accepts an **`effort`** field that controls how hard Claude works on each turn. It sets `output_config.effort` on every Messages API call the session makes.
+
+**Effort levels** (five tiers):
+- `BetaManagedAgentsEffortLow`
+- `BetaManagedAgentsEffortMedium`
+- `BetaManagedAgentsEffortHigh`
+- `BetaManagedAgentsEffortXhigh`
+- `BetaManagedAgentsEffortMax`
+
+The model config also accepts a **`speed`** field (`"standard"` or `"fast"`). `"fast"` provides significantly faster output token generation at premium pricing; not all models support it.
+
+```python
+agent = client.beta.agents.create(
+    model={
+        "id": "claude-sonnet-4-6",
+        "effort": {"type": "high"},   # sets output_config.effort on every turn
+        "speed": "standard",
+    },
+    name="my-agent",
+)
+```
+
+## Initial Session Events (Python v0.118.0+ / TypeScript v0.113.0+)
+
+The `sessions.create()` call now accepts an **`initial_events`** parameter — an ordered list of events to process at session creation. This eliminates a round-trip for sessions that need to start with a user message or an outcome definition.
+
+**Supported event types:**
+- `user.message`
+- `user.define_outcome`
+
+**Maximum:** 50 initial events.
+
+```python
+session = client.beta.sessions.create(
+    agent_id=agent.id,
+    environment_id=environment.id,
+    initial_events=[
+        {
+            "type": "user.message",
+            "content": "Summarize the attached document.",
+        }
+    ],
+)
+# Session starts processing immediately — no need to call events.send() first
+```
+
+```typescript
+const session = await client.beta.sessions.create({
+  agent_id: agent.id,
+  environment_id: environment.id,
+  initial_events: [
+    { type: 'user.message', content: 'Summarize the attached document.' },
+  ],
+});
+```
+
+## Threads Delta Streaming (Python v0.118.0+ / TypeScript v0.113.0+)
+
+Subagent threads now expose their own event stream, letting you follow a specific thread independently of the parent session stream. Use `client.beta.sessions.threads.events.stream()`.
+
+**Endpoint:** `GET /v1/sessions/{session_id}/threads/{thread_id}/stream`
+
+```python
+# List threads for a session
+threads = client.beta.sessions.threads.list(session_id=session.id)
+for thread in threads.data:
+    print(thread.id, thread.status)  # BetaManagedAgentsSessionThreadStatus
+
+# Stream events from a specific thread
+for event in client.beta.sessions.threads.events.stream(
+    thread_id=thread.id,
+    session_id=session.id,
+    event_deltas=True,   # enable delta streaming for this thread
+):
+    print(event.type, event.model_dump_json())
+```
+
+```typescript
+// Stream events from a specific thread
+const threadStream = client.beta.sessions.threads.events.stream(
+  thread.id,
+  { session_id: session.id, event_deltas: true }
+);
+for await (const event of threadStream) {
+  console.log(event.type, JSON.stringify(event));
+}
+```
+
+**Thread status lifecycle:** `running → idle → rescheduling | terminated`
+
+**Thread endpoints:**
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `threads.retrieve()` | `GET /v1/sessions/{id}/threads/{thread_id}` | Get a thread |
+| `threads.list()` | `GET /v1/sessions/{id}/threads` | List threads (paginated) |
+| `threads.archive()` | `POST /v1/sessions/{id}/threads/{thread_id}/archive` | Archive a thread |
+| `threads.events.list()` | `GET /v1/sessions/{id}/threads/{thread_id}/events` | List thread events |
+| `threads.events.stream()` | `GET /v1/sessions/{id}/threads/{thread_id}/stream` | Stream thread events |
+
+**Key types:**
+- `BetaManagedAgentsSessionThread` — thread object (id, session_id, status, stats, usage)
+- `BetaManagedAgentsSessionThreadStatus` — `"running" | "idle" | "rescheduling" | "terminated"`
+- `BetaManagedAgentsStreamSessionThreadEvents` — union of all thread event types
+- `BetaManagedAgentsSessionThreadCreatedEvent` — fired when a subagent spawns a new thread
+- `BetaManagedAgentsSessionThreadStatusRunningEvent` / `...IdleEvent` / `...TerminatedEvent` / `...RescheduledEvent`
+
 ## Session Tool Call Permissions — `evaluated_permission` (TypeScript v0.111.0+)
 
 Session tool-use events (`agent.tool_use`, `agent.custom_tool_use`, `agent.mcp_tool_use`) now carry an **`evaluated_permission`** field that gates execution:
@@ -483,9 +592,12 @@ for await (const event of stream) {
 - v0.115.0+: agent overrides, reverse pagination, vault scoping, webhooks available
 - v0.116.0+ / TypeScript v0.110.0+: Memory Stores require the `agent-memory-2026-07-22` beta header (SDK adds automatically)
 - TypeScript v0.111.0+ / Python v0.117.0+: Dreams API and `evaluated_permission` on session tool calls
+- Python v0.118.0+ / TypeScript v0.113.0+: `initial_events` on `sessions.create()`, `effort` on model config, threads event streaming
+- Python v0.119.0+: binary file handling fixed in agent toolset read/edit operations
 - Webhook handlers must be idempotent — events may be delivered more than once
 - Agent overrides are session-scoped only — they do not persist to the agent definition
 - Python Dreams `list()` accepts `created_at_gt`/`created_at_lt` datetime filters; TypeScript does not yet
+- `model_context_window_exceeded` stop reason is now possible — handle it by trimming old messages and retrying
 
 ## Related
 

@@ -1,6 +1,6 @@
 # Messages API
 
-> **Last updated:** 2026-06-29
+> **Last updated:** 2026-07-27
 
 ## Overview
 
@@ -173,6 +173,9 @@ response2 = client.messages.create(model="claude-sonnet-4-6", max_tokens=1024, m
 | `max_tokens` | Hit `max_tokens` limit |
 | `tool_use` | Claude is requesting a tool call |
 | `stop_sequence` | Hit a custom stop sequence |
+| `pause_turn` | Long-running turn paused; resend conversation as-is to continue |
+| `refusal` | Streaming classifiers intervened for policy reasons; see `stop_details` |
+| `model_context_window_exceeded` | Conversation exceeded the model's context window (added Python v0.119.0 / TypeScript v0.114.0) |
 
 ## System Prompt as Array (with caching)
 

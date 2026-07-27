@@ -1,5 +1,36 @@
 # Knowledge Base Changelog
 
+## 2026-07-27 — Incremental Update
+
+Sources: Python SDK v0.118.0–v0.120.0 changelog (2026-07-22–24), TypeScript SDK v0.112.4–v0.115.0 changelog (2026-07-20–24), GitHub code search on both SDK repos. Docs site (platform.claude.com/docs) not verified this cycle.
+
+### Changes
+
+- **New model: `claude-opus-5` (Python v0.120.0 / TypeScript v0.115.0, 2026-07-24)** — New Opus-class model added. Context window and pricing TBD — check Anthropic's official docs. Added to `MODELS.md`, `QUICK-REFERENCE.md`, `README.md`.
+- **New stop reason: `model_context_window_exceeded` (Python v0.119.0 / TypeScript v0.114.0, 2026-07-23)** — Added to `StopReason` and `BetaStopReason` type aliases. Returned when the conversation exceeds the model's context window. Handle by trimming old messages before retrying. Added to `messages-api.md` stop reasons table.
+- **Tool addition/removal blocks and `tool_change` events (Python v0.120.0 / TypeScript v0.115.0, 2026-07-24)** — Two new content block types: `tool_addition` (expose a declared tool mid-conversation) and `tool_removal` (withdraw a tool mid-conversation). Reference a tool via `BetaToolChangeToolReferenceParam` (type `"tool"`), `BetaToolChangeMCPToolReferenceParam` (MCP tool), or `BetaToolChangeMCPToolsetReferenceParam` (MCP toolset). A `tool_change` streaming event mirrors these transitions. Added full section to `tool-use.md`.
+- **Managed Agents model effort (Python v0.118.0 / TypeScript v0.113.0, 2026-07-22)** — `BetaManagedAgentsModelConfig` now has an `effort` field (five levels: low/medium/high/xhigh/max) that sets `output_config.effort` on every turn. Also exposes a `speed` field (`"standard"` | `"fast"`). Added section to `managed-agents.md`.
+- **Initial session events (Python v0.118.0 / TypeScript v0.113.0, 2026-07-22)** — `sessions.create()` now accepts `initial_events: []` — up to 50 `user.message` or `user.define_outcome` events processed at session creation, eliminating the first `events.send()` round-trip. Added section to `managed-agents.md`.
+- **Threads delta streaming (Python v0.118.0 / TypeScript v0.113.0, 2026-07-22)** — New `client.beta.sessions.threads.*` sub-resource (retrieve, list, archive threads; list/stream per-thread events). Endpoint: `GET /v1/sessions/{id}/threads/{thread_id}/stream`. `event_deltas=True` enables incremental delta streaming per thread. Full type inventory documented. Added section to `managed-agents.md`.
+- **Expanded `fallback_credit_token` types (Python v0.120.0 / TypeScript v0.115.0, 2026-07-24)** — `fallback_credit_token` now accepts either a bare `str` (existing behavior, mode `"strict"`) or a `BetaFallbackCreditTokenParam` object with `token` + `mode` (`"strict"` | `"best_effort"`). `"best_effort"` serves the retry even if the token redemption fails. Requires `anthropic-beta: fallback-credit-2026-07-01` header for object form. Server-side fallbacks also now accept the string `"default"` for built-in fallback config. Updated `sdks.md`.
+- **Binary file fix in agent toolset (Python v0.119.0, 2026-07-23)** — Agent toolset read/edit operations now correctly handle binary files. Added to `managed-agents.md` gotchas.
+- **New refusal category (TypeScript v0.112.5, 2026-07-21)** — Additional internal refusal category added; no consumer-visible type changes.
+- **AWS `withOptions()` fix (TypeScript v0.112.4, 2026-07-20)** — AWS options and auth mode are now correctly preserved across `withOptions()` calls.
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `MODELS.md` | Added `claude-opus-5` to current models table and capabilities table; updated source version and date |
+| `QUICK-REFERENCE.md` | Added `claude-opus-5` to model IDs table; updated date |
+| `tool-use.md` | Added "Mid-Conversation Tool Changes" section (tool_addition/tool_removal blocks, tool_change events, reference type table); updated date |
+| `managed-agents.md` | Added "Model Effort" section; added "Initial Session Events" section; added "Threads Delta Streaming" section; updated gotchas; updated date and SDK changelog line |
+| `messages-api.md` | Added `pause_turn`, `refusal`, and `model_context_window_exceeded` to stop reasons table; updated date |
+| `sdks.md` | Added Python v0.118.0–v0.120.0 and TypeScript v0.112.4–v0.115.0 to version history table; updated date |
+| `README.md` | Updated last-incremental-update date (2026-07-27); updated SDK versions (Python v0.120.0, TypeScript v0.115.0); added `claude-opus-5` to model quick reference; updated file last-updated dates |
+
+---
+
 ## 2026-07-20 — Incremental Update
 
 Sources: Python SDK v0.117.0 changelog (2026-07-16), TypeScript SDK v0.112.0–v0.112.3 changelog (2026-07-16–17), GitHub code search on both SDK repos. Docs site (platform.claude.com/docs) returned HTTP 404.

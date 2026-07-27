@@ -1,6 +1,6 @@
 # Tool Use / Function Calling
 
-> **Last updated:** 2026-06-22
+> **Last updated:** 2026-07-27
 
 ## Overview
 
@@ -361,6 +361,54 @@ const finalMessage = await client.beta.messages.toolRunner({
   max_tokens: 1024,
 });
 ```
+
+## Mid-Conversation Tool Changes (v0.120.0+)
+
+Python SDK v0.120.0 / TypeScript SDK v0.115.0 added two new **content block types** you can inject into a conversation to dynamically add or remove tools mid-turn. This avoids invalidating the cache or resending the full tool list.
+
+**`tool_addition`** — make a declared tool available to Claude from this point forward:
+
+```python
+messages = [
+    {"role": "user", "content": "Help me with the admin task."},
+    {
+        "role": "user",
+        "content": [
+            {
+                "type": "tool_addition",
+                "tool": {
+                    "type": "tool",   # BetaToolChangeToolReferenceParam
+                    "name": "admin_tool",
+                },
+            }
+        ],
+    },
+]
+```
+
+**`tool_removal`** — withdraw a tool (Claude can no longer call it from this point):
+
+```python
+{
+    "type": "tool_removal",
+    "tool": {
+        "type": "tool",
+        "name": "admin_tool",  # tool declared in tools[]
+    },
+}
+```
+
+**Tool reference types** for `tool`/`mcp_tool`/`mcp_toolset`:
+
+| Reference Type | `type` field | Identifies |
+|----------------|--------------|------------|
+| `BetaToolChangeToolReferenceParam` | `"tool"` | A tool declared directly in `tools[]` |
+| `BetaToolChangeMCPToolReferenceParam` | `"mcp_tool"` | A single MCP-resolved tool |
+| `BetaToolChangeMCPToolsetReferenceParam` | `"mcp_toolset"` | An entire MCP toolset |
+
+> **Note:** `tool_addition` and `tool_removal` blocks do NOT accept the composed `{server}_{name}` form the API assigns to MCP-resolved tools. Use `mcp_tool_reference` or `mcp_toolset_reference` for MCP tools. Both block types accept an optional `cache_control` field for cache breakpoints.
+
+The `tool_change` event is also emitted during streaming to reflect these dynamic changes.
 
 ## Related
 

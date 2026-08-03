@@ -1,6 +1,6 @@
 # SDKs (Python & TypeScript)
 
-> **Last updated:** 2026-07-27
+> **Last updated:** 2026-08-03
 
 ## Python SDK
 
@@ -308,6 +308,8 @@ const client = new Anthropic({
 
 | SDK | Version | Date | Changes |
 |-----|---------|------|---------|
+| Python | v0.120.2 | 2026-07-28 | Support MCP SDK v2 alongside v1 (dual-version compatibility; reverts the v2 pin from v0.120.1) |
+| Python | v0.120.1 | 2026-07-28 | Pin `mcp` extra to `<2` (temporary constraint pending full MCP SDK v2 compatibility) |
 | Python | v0.120.0 | 2026-07-24 | Add `claude-opus-5` model; tool addition/removal blocks (`tool_addition`/`tool_removal` content block types) and `tool_change` events; expand `fallback_credit_token` to accept object form (`BetaFallbackCreditTokenParam` with `token` + `mode: "strict" \| "best_effort"`); add server-side fallbacks `"default"` string option (requires `fallback-credit-2026-07-01` beta header for object form) |
 | Python | v0.119.0 | 2026-07-23 | Add `model_context_window_exceeded` stop reason; fix binary file handling in agent toolset read/edit operations |
 | Python | v0.118.0 | 2026-07-22 | Managed Agents model effort (`effort` field on `BetaManagedAgentsModelConfig`); initial session events (`initial_events` param on `sessions.create()`); threads delta streaming (`client.beta.sessions.threads.events.stream()`) |

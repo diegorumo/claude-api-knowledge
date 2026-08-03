@@ -1,5 +1,25 @@
 # Knowledge Base Changelog
 
+## 2026-08-03 — Incremental Update
+
+Sources: Python SDK v0.120.1–v0.120.2 changelog (2026-07-28), PyPI release history. TypeScript SDK remains at v0.115.0 (no new release). Docs site (platform.claude.com/docs) returned HTTP 404.
+
+### Changes
+
+- **Python SDK v0.120.2 (2026-07-28) — MCP SDK v2 dual-compatibility:** The `anthropic[mcp]` extra now supports MCP SDK v1 and v2 simultaneously, superseding the pin from v0.120.1. Developers using the Python SDK's MCP integration can upgrade to MCP SDK v2 without being blocked. Updated `mcp.md` gotchas; updated `sdks.md` version history.
+- **Python SDK v0.120.1 (2026-07-28) — MCP extra version pin:** Intermediate release that pinned `mcp<2` to prevent accidental breakage from MCP SDK v2. Superseded by v0.120.2. Added to `sdks.md` version history for completeness.
+- **No new models or API changes** — TypeScript SDK unchanged at v0.115.0; no model additions or deprecations this cycle.
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `sdks.md` | Added Python v0.120.1 and v0.120.2 to version history table; updated date |
+| `mcp.md` | Added MCP SDK v2 compatibility note to Gotchas section; updated date |
+| `README.md` | Updated last-incremental-update date (2026-08-03); updated Python SDK version (v0.120.2); updated file last-updated dates |
+
+---
+
 ## 2026-07-27 — Incremental Update
 
 Sources: Python SDK v0.118.0–v0.120.0 changelog (2026-07-22–24), TypeScript SDK v0.112.4–v0.115.0 changelog (2026-07-20–24), GitHub code search on both SDK repos. Docs site (platform.claude.com/docs) not verified this cycle.

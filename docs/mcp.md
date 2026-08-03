@@ -1,6 +1,6 @@
 # MCP (Model Context Protocol) Integration
 
-> **Last updated:** 2026-07-20  
+> **Last updated:** 2026-08-03  
 > **Status:** Beta (`anthropic-beta: mcp-client-2025-04-04` for client; `mcp-tunnels-2026-06-22` for tunnels)
 
 ## Overview
@@ -127,6 +127,7 @@ mcp_servers=[
 - Requires `anthropic-beta: mcp-client-2025-04-04` header
 - MCP servers must be publicly accessible (HTTPS for production)
 - SSE connections have timeouts; long-running tool calls may fail
+- **MCP SDK v2 compatibility (Python ≥ v0.120.2):** The `anthropic[mcp]` extra now supports both MCP SDK v1 and v2 simultaneously. If you are on v0.120.1, upgrade to v0.120.2 — the intermediate release pinned `mcp<2` which is too restrictive.
 
 ---
 

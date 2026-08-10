@@ -308,6 +308,7 @@ const client = new Anthropic({
 
 | SDK | Version | Date | Changes |
 |-----|---------|------|---------|
+| Python | v0.121.0 | 2026-08-07 | `mid-conversation-tool-changes-2026-07-01` beta header; Skills API (`client.beta.skills.*`); session budgets (`budget_limit`); advisor tool (`advisor_20260301`); GitHub repository skills auto-loading; add major version constraints to all dependencies; retire `claude-opus-4-1` / `claude-opus-4-1-20250805` from type definitions |
 | Python | v0.120.2 | 2026-07-28 | Support MCP SDK v2 alongside v1 (dual-version compatibility; reverts the v2 pin from v0.120.1) |
 | Python | v0.120.1 | 2026-07-28 | Pin `mcp` extra to `<2` (temporary constraint pending full MCP SDK v2 compatibility) |
 | Python | v0.120.0 | 2026-07-24 | Add `claude-opus-5` model; tool addition/removal blocks (`tool_addition`/`tool_removal` content block types) and `tool_change` events; expand `fallback_credit_token` to accept object form (`BetaFallbackCreditTokenParam` with `token` + `mode: "strict" \| "best_effort"`); add server-side fallbacks `"default"` string option (requires `fallback-credit-2026-07-01` beta header for object form) |
@@ -330,6 +331,7 @@ const client = new Anthropic({
 | Python | v0.107.0 | 2026-06-06 | Managed Agents type updates |
 | Python | v0.106.0 | 2026-06-05 | Mark claude-opus-4-1 deprecated; Foundry client fixes |
 | Python | v0.105.0 | 2026-05-28 | Add claude-opus-4-8, mid-conversation system blocks, output_tokens_details |
+| TypeScript | v0.116.0 | 2026-08-07 | `mid-conversation-tool-changes-2026-07-01` beta header; Skills API (`client.beta.skills.*`); session budgets (`budget_limit`); advisor tool (`advisor_20260301`); GitHub repository skills auto-loading; bash timeout/abort errors now matchable by class; hardcoded User-Agent strings; retire `claude-opus-4-1` models; Babel v7.29.7 |
 | TypeScript | v0.115.0 | 2026-07-24 | Add `claude-opus-5` model; tool addition/removal blocks and `tool_change` events; expand `fallback_credit_token` to accept object form; server-side fallbacks `"default"` option; fix abort listeners not released when requests settle |
 | TypeScript | v0.114.0 | 2026-07-23 | Add `model_context_window_exceeded` stop reason |
 | TypeScript | v0.113.0 | 2026-07-22 | Managed Agents model effort, initial session events (`initial_events` on `sessions.create()`), threads delta streaming (`client.beta.sessions.threads.events.stream()`) |

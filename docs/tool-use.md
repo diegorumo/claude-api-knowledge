@@ -1,6 +1,6 @@
 # Tool Use / Function Calling
 
-> **Last updated:** 2026-07-27
+> **Last updated:** 2026-08-10
 
 ## Overview
 
@@ -362,9 +362,17 @@ const finalMessage = await client.beta.messages.toolRunner({
 });
 ```
 
-## Mid-Conversation Tool Changes (v0.120.0+)
+## Mid-Conversation Tool Changes (v0.120.0+ / beta header v0.121.0+)
 
 Python SDK v0.120.0 / TypeScript SDK v0.115.0 added two new **content block types** you can inject into a conversation to dynamically add or remove tools mid-turn. This avoids invalidating the cache or resending the full tool list.
+
+**Required beta header** (Python v0.121.0+ / TypeScript v0.116.0+): `anthropic-beta: mid-conversation-tool-changes-2026-07-01`
+
+```python
+client = anthropic.Anthropic()
+# SDK adds the beta header automatically when you use tool_addition/tool_removal blocks
+# For raw HTTP, add: anthropic-beta: mid-conversation-tool-changes-2026-07-01
+```
 
 **`tool_addition`** — make a declared tool available to Claude from this point forward:
 

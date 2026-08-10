@@ -1,5 +1,32 @@
 # Knowledge Base Changelog
 
+## 2026-08-10 — Incremental Update
+
+Sources: Python SDK v0.121.0 changelog (2026-08-07), TypeScript SDK v0.116.0 changelog (2026-08-07), GitHub SDK type definitions. Docs site (platform.claude.com/docs) returned HTTP 404.
+
+### Changes
+
+- **Skills API — new beta resource (Python v0.121.0 / TypeScript v0.116.0, 2026-08-07)** — New `client.beta.skills.*` resource for uploading, listing, retrieving, and deleting reusable skill packages. A skill is a directory of files that must include a `SKILL.md` descriptor at the root; uploaded via multipart form. Response object fields: `id` (`skill_01…`), `type: "skill"`, `source` (`"custom" | "anthropic"`), `display_title`, `latest_version`, `created_at`, `updated_at`. Skills are referenced in Managed Agents sessions via `skills: [{ type: "anthropic"|"custom", skill_id, version }]`. Anthropic also maintains curated skills (e.g. `"xlsx"`) accessible via `type: "anthropic"`. Created `skills-api.md`; updated `managed-agents.md`.
+- **Session Budgets (Python v0.121.0 / TypeScript v0.116.0, 2026-08-07)** — Sessions now accept a `budget_limit` parameter with `type: "limit"` and `max_list_cost` (`BetaMonetaryAmount` with `amount` + `currency`). When the session's accumulated list cost reaches the limit, no further model requests are issued. Added "Session Budgets" section to `managed-agents.md`.
+- **Advisor Tool — `advisor_20260301` (Python v0.121.0 / TypeScript v0.116.0, 2026-08-07)** — New built-in tool type `"advisor_20260301"` (name must be `"advisor"`) lets the session's primary thread consult a second Claude model mid-turn. The advisor model is specified via the `model` field; optional `max_tokens` and `max_uses` cap its usage. Can also be configured via the session roster (`advisor: { type: "advisor", model: "..." }`). Max 1 advisor per session; reserved name `anthropic.advisor`. Result appears as `BetaAdvisorResultBlock` / `BetaAdvisorRedactedResultBlock` in the primary thread. Added "Advisor Tool" section to `managed-agents.md`.
+- **GitHub Repository Skills Auto-Loading (Python v0.121.0 / TypeScript v0.116.0, 2026-08-07)** — Sessions can reference a GitHub repository resource (`BetaManagedAgentsGitHubRepositoryResourceConfig`) to auto-load skills stored in the repo. Added to `managed-agents.md` and `skills-api.md`.
+- **Official beta header: `mid-conversation-tool-changes-2026-07-01`** — The tool_addition/tool_removal blocks (documented 2026-07-27) now have an official beta header. SDK adds it automatically when the feature is used; for raw HTTP add `anthropic-beta: mid-conversation-tool-changes-2026-07-01`. Updated `tool-use.md` and `README.md` beta headers table.
+- **Retired models removed from SDK type definitions (Python v0.121.0 / TypeScript v0.116.0, 2026-08-07)** — `claude-opus-4-1` and `claude-opus-4-1-20250805` formally removed. Migrate to `claude-opus-4-6` or newer.
+- **TypeScript: bash errors matchable by class (TypeScript v0.116.0, 2026-08-07)** — Bash timeout and abort errors in the agent toolset now expose their class for pattern-matched error handling. Added to `sdks.md`.
+- **No new models** — No new Claude model IDs in this SDK release cycle.
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `skills-api.md` | **New file** — full reference for Skills API (create, retrieve, list, delete; skill object; session integration; GitHub auto-loading) |
+| `managed-agents.md` | Added "Session Budgets" section; added "Advisor Tool" section; added "Skills in Sessions" section; added "GitHub Repository Resource" section; updated gotchas; updated date and SDK changelog line |
+| `tool-use.md` | Added official `mid-conversation-tool-changes-2026-07-01` beta header note to Mid-Conversation Tool Changes section; updated date |
+| `sdks.md` | Added Python v0.121.0 and TypeScript v0.116.0 to version history table |
+| `README.md` | Updated last-incremental-update date (2026-08-10); updated SDK versions (Python v0.121.0, TypeScript v0.116.0); added `skills-api.md` to Features index; updated `managed-agents.md`, `tool-use.md`, `sdks.md` last-updated dates; added `mid-conversation-tool-changes-2026-07-01` to beta headers table |
+
+---
+
 ## 2026-08-03 — Incremental Update
 
 Sources: Python SDK v0.120.1–v0.120.2 changelog (2026-07-28), PyPI release history. TypeScript SDK remains at v0.115.0 (no new release). Docs site (platform.claude.com/docs) returned HTTP 404.

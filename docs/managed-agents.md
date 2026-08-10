@@ -1,8 +1,8 @@
 # Managed Agents (Beta)
 
-> **Last updated:** 2026-07-27  
+> **Last updated:** 2026-08-10  
 > **Status:** Beta — active development  
-> **SDK changelog:** v0.100.0+ (May 2026), v0.115.0 (June 2026), v0.116.0–v0.120.0 Python / v0.110.0–v0.115.0 TypeScript (July 2026)
+> **SDK changelog:** v0.100.0+ (May 2026), v0.115.0 (June 2026), v0.116.0–v0.121.0 Python / v0.110.0–v0.116.0 TypeScript (July–Aug 2026)
 
 ## Overview
 
@@ -581,6 +581,116 @@ for await (const event of stream) {
 - `"deny"` calls are yielded with `{ confirmation: 'deny', posted: false }` but not executed
 - Idle bounding: the runner stops after `maxIdleMs` (default 60 s) of inactivity once the session reaches `stop_reason: { type: "end_turn" }`. The countdown is paused while any tool confirmation is outstanding.
 
+## Session Budgets (Python v0.121.0+ / TypeScript v0.116.0+)
+
+Set a **hard spend ceiling** on a session so it stops issuing new model requests once the tracked cost reaches the limit.
+
+```python
+session = client.beta.sessions.create(
+    agent_id=agent.id,
+    environment_id=environment.id,
+    budget_limit={
+        "type": "limit",
+        "max_list_cost": {
+            "amount": "10.00",
+            "currency": "USD",
+        },
+    },
+)
+```
+
+When the session's accumulated list cost reaches `max_list_cost`, no further model requests are issued. The session enters idle state; you can check usage stats and decide whether to extend or end the session.
+
+**`BetaManagedAgentsBudgetLimit` fields:**
+- `type` (required): `"limit"`
+- `max_list_cost` (`BetaMonetaryAmount`): monetary threshold with `amount` (decimal string) and `currency` (ISO 4217 code)
+
+## Advisor Tool (Python v0.121.0+ / TypeScript v0.116.0+)
+
+The **advisor tool** lets the session's primary thread consult a second Claude model mid-turn — useful for peer review, fact-checking, or specialized reasoning without a full subagent thread.
+
+### Adding to a tool definition
+
+```python
+agent = client.beta.agents.create(
+    model="claude-sonnet-4-6",
+    name="advised-agent",
+    tools=[
+        {"type": "agent_toolset_20260401"},
+        {
+            "type": "advisor_20260301",  # advisor tool type string
+            "name": "advisor",           # must be "advisor"
+            "model": "claude-opus-5",    # model to consult
+            "max_tokens": 1024,          # optional: cap advisor output
+            "max_uses": 5,               # optional: cap invocations per request
+        },
+    ],
+)
+```
+
+### Session roster entry
+
+Alternatively, configure the advisor at the session level via the advisor roster:
+
+```python
+session = client.beta.sessions.create(
+    agent_id=agent.id,
+    environment_id=environment.id,
+    advisor={
+        "type": "advisor",
+        "model": "claude-opus-5",    # model to consult
+    },
+)
+```
+
+**`BetaManagedAgentsAdvisor` / `BetaManagedAgentsAdvisorParams` fields:**
+- `type` (required): `"advisor"`
+- `model` (required): Claude model ID; must be permitted as an advisor for the session's primary model
+
+**Result blocks:**  
+The primary thread receives `BetaAdvisorResultBlock` and `BetaAdvisorRedactedResultBlock` content blocks in response to advisor invocations.
+
+**Constraints:**
+- Maximum **one** advisor per session roster
+- Reserved roster name: `anthropic.advisor`
+- Advisor model must be permitted by the primary model's policy
+
+## Skills in Sessions (Python v0.121.0+ / TypeScript v0.116.0+)
+
+Sessions can load skills at creation time. See [Skills API](./skills-api.md) for how to upload custom skills.
+
+```python
+session = client.beta.sessions.create(
+    agent_id=agent.id,
+    environment_id=environment.id,
+    skills=[
+        # Anthropic-managed skill
+        {"type": "anthropic", "skill_id": "xlsx"},
+        # Your custom skill
+        {"type": "custom", "skill_id": "skill_01XJ5...", "version": "1.0.0"},
+    ],
+)
+```
+
+**`BetaManagedAgentsAnthropicSkill` fields:** `type: "anthropic"`, `skill_id` (e.g. `"xlsx"`), `version` (optional, default latest)  
+**`BetaManagedAgentsCustomSkill` fields:** `type: "custom"`, `skill_id` (e.g. `"skill_01XJ5..."`), `version` (optional, default latest)
+
+## GitHub Repository Resource (Python v0.121.0+ / TypeScript v0.116.0+)
+
+Sessions can auto-load skills from a GitHub repository. Configure the repository as a resource on the environment or pass it at session creation via `BetaManagedAgentsGitHubRepositoryResourceConfig`.
+
+```python
+session = client.beta.sessions.create(
+    agent_id=agent.id,
+    environment_id=environment.id,
+    github_repository={
+        # GitHub repository config fields (resolved server-side)
+    },
+)
+```
+
+See [Skills API](./skills-api.md) for full GitHub auto-loading details.
+
 ## Gotchas
 
 - Managed Agents is under active development — check SDK changelogs for new features
@@ -594,14 +704,18 @@ for await (const event of stream) {
 - TypeScript v0.111.0+ / Python v0.117.0+: Dreams API and `evaluated_permission` on session tool calls
 - Python v0.118.0+ / TypeScript v0.113.0+: `initial_events` on `sessions.create()`, `effort` on model config, threads event streaming
 - Python v0.119.0+: binary file handling fixed in agent toolset read/edit operations
+- Python v0.121.0+ / TypeScript v0.116.0+: session budgets (`budget_limit`), advisor tool, skills in sessions, GitHub repository resource
+- `claude-opus-4-1` / `claude-opus-4-1-20250805` formally removed from SDK type definitions as of v0.121.0 / v0.116.0 — migrate to claude-opus-4-6 or newer
 - Webhook handlers must be idempotent — events may be delivered more than once
 - Agent overrides are session-scoped only — they do not persist to the agent definition
 - Python Dreams `list()` accepts `created_at_gt`/`created_at_lt` datetime filters; TypeScript does not yet
 - `model_context_window_exceeded` stop reason is now possible — handle it by trimming old messages and retrying
+- Budget limits stop new model requests but do not interrupt a turn already in progress
 
 ## Related
 
 - [Tool Use](./tool-use.md)
+- [Skills API](./skills-api.md)
 - [MCP Integration](./mcp.md)
 - [Files API](./files-api.md)
 - [Agent Patterns](./agent-patterns.md)

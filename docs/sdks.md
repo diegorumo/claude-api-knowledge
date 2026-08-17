@@ -1,6 +1,6 @@
 # SDKs (Python & TypeScript)
 
-> **Last updated:** 2026-08-03
+> **Last updated:** 2026-08-17
 
 ## Python SDK
 
@@ -308,6 +308,7 @@ const client = new Anthropic({
 
 | SDK | Version | Date | Changes |
 |-----|---------|------|---------|
+| Python | v0.122.0 | 2026-08-13 | `output_behavior` param for dream creation (create new memory store or update input store in place); fix SigV4 signing in async Bedrock clients; expose `beta.messages.parse`, `stream`, `tool_runner` in Bedrock client; expose beta methods in Vertex client; add missing models to client; maintain token exchange binding across `copy()`; handle PathLike file contents in file tuples; treat empty `ANTHROPIC_API_KEY`/`ANTHROPIC_AUTH_TOKEN` as unset; fix malformed tool input JSON error context in streaming; apply all `message_delta` fields during accumulation; emit `input_json` events for server tool use blocks; preserve omitted content block fields in accumulated messages; run request transformation once in `messages.stream()`; silence pydantic warnings on `message_stop` events; reject symlink loops and special skill-archive members in tool paths; inference_geo pinning support |
 | Python | v0.121.0 | 2026-08-07 | `mid-conversation-tool-changes-2026-07-01` beta header; Skills API (`client.beta.skills.*`); session budgets (`budget_limit`); advisor tool (`advisor_20260301`); GitHub repository skills auto-loading; add major version constraints to all dependencies; retire `claude-opus-4-1` / `claude-opus-4-1-20250805` from type definitions |
 | Python | v0.120.2 | 2026-07-28 | Support MCP SDK v2 alongside v1 (dual-version compatibility; reverts the v2 pin from v0.120.1) |
 | Python | v0.120.1 | 2026-07-28 | Pin `mcp` extra to `<2` (temporary constraint pending full MCP SDK v2 compatibility) |
@@ -331,6 +332,8 @@ const client = new Anthropic({
 | Python | v0.107.0 | 2026-06-06 | Managed Agents type updates |
 | Python | v0.106.0 | 2026-06-05 | Mark claude-opus-4-1 deprecated; Foundry client fixes |
 | Python | v0.105.0 | 2026-05-28 | Add claude-opus-4-8, mid-conversation system blocks, output_tokens_details |
+| TypeScript | v0.117.1 | 2026-08-13 | CI improvements for manual npm republishing; internal branch-name tagging for preview builds |
+| TypeScript | v0.117.0 | 2026-08-13 | `output_behavior` param for dream creation; fix build to include dotfiles during distribution flattening; add missing model references to client; enhance message timeout handling for non-streaming requests; correct `message_delta` field accumulation in streaming; tool-runner forwards response container IDs between requests; align path resolution and skill-archive handling with Python SDK; switch from Yarn to pnpm; update docs for optional user profile names in resold profiles; inference_geo pinning support |
 | TypeScript | v0.116.0 | 2026-08-07 | `mid-conversation-tool-changes-2026-07-01` beta header; Skills API (`client.beta.skills.*`); session budgets (`budget_limit`); advisor tool (`advisor_20260301`); GitHub repository skills auto-loading; bash timeout/abort errors now matchable by class; hardcoded User-Agent strings; retire `claude-opus-4-1` models; Babel v7.29.7 |
 | TypeScript | v0.115.0 | 2026-07-24 | Add `claude-opus-5` model; tool addition/removal blocks and `tool_change` events; expand `fallback_credit_token` to accept object form; server-side fallbacks `"default"` option; fix abort listeners not released when requests settle |
 | TypeScript | v0.114.0 | 2026-07-23 | Add `model_context_window_exceeded` stop reason |

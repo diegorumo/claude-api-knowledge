@@ -1,8 +1,8 @@
 # Managed Agents (Beta)
 
-> **Last updated:** 2026-08-10  
+> **Last updated:** 2026-08-17  
 > **Status:** Beta — active development  
-> **SDK changelog:** v0.100.0+ (May 2026), v0.115.0 (June 2026), v0.116.0–v0.121.0 Python / v0.110.0–v0.116.0 TypeScript (July–Aug 2026)
+> **SDK changelog:** v0.100.0+ (May 2026), v0.115.0 (June 2026), v0.116.0–v0.122.0 Python / v0.110.0–v0.117.1 TypeScript (July–Aug 2026)
 
 ## Overview
 
@@ -426,7 +426,31 @@ dreams = client.beta.dreams.list(
 )
 ```
 
-> **Note:** Dreams require the `agent-memory-2026-07-22` beta header (same as Memory Stores). Both Python (v0.117.0+) and TypeScript (v0.111.0+) SDKs support the Dreams API. Python's `list()` also accepts `created_at_gt` and `created_at_lt` datetime filters.
+> **Note:** Dreams require the `agent-memory-2026-07-22` beta header (same as Memory Stores). Both Python (v0.117.0+) and TypeScript (v0.111.0+) SDKs support the Dreams API. Python's `list()` also accepts `created_at_gt` and `created_at_lt` datetime filters. Claude Opus 5 is supported as of Aug 1, 2026; Claude Fable 5 and Sonnet 5 as of Jul 10, 2026.
+
+### Dreams `output_behavior` (Python v0.122.0 / TypeScript v0.117.0)
+
+The `create` call now accepts an `output_behavior` parameter that controls where consolidated memories are written:
+
+```python
+# Create a new memory store for the output (default behavior)
+dream = client.beta.dreams.create(
+    inputs=[...],
+    model="claude-opus-5",
+    output_behavior="create_new",   # creates a fresh memory store
+    betas=["agent-memory-2026-07-22"],
+)
+
+# OR: update the input memory store in place
+dream = client.beta.dreams.create(
+    inputs=[...],
+    model="claude-opus-5",
+    output_behavior="update_input", # overwrites the input memory store
+    betas=["agent-memory-2026-07-22"],
+)
+```
+
+`output_behavior` values: `"create_new"` (default) | `"update_input"`
 
 ## Model Effort (Python v0.118.0+ / TypeScript v0.113.0+)
 
@@ -451,6 +475,44 @@ agent = client.beta.agents.create(
     name="my-agent",
 )
 ```
+
+## Pinned Inference Geo (Python v0.122.0+ / TypeScript v0.117.0+)
+
+Control where model inference runs by setting `inference_geo` inside the `model` object when creating an agent. This is useful for data residency and compliance requirements.
+
+```python
+# Pin inference to US region
+agent = client.beta.agents.create(
+    name="US-only agent",
+    model={
+        "id": "claude-opus-5",
+        "inference_geo": "us",   # "us" or "global"
+    },
+    system="You are a helpful assistant.",
+)
+print(agent.model.inference_geo)  # "us"
+```
+
+```typescript
+const agent = await client.beta.agents.create({
+  name: "US-only agent",
+  model: { id: "claude-opus-5", inference_geo: "us" },
+  system: "You are a helpful assistant.",
+});
+console.log(agent.model.inference_geo); // "us"
+```
+
+**`inference_geo` values:** `"us"` | `"global"` | (omit to use workspace default)
+
+**Important constraints:**
+- The pin is validated against the workspace's `allowed_inference_geos` at save time, session creation, and on every turn
+- If the workspace allowlist narrows after a pin is set, new sessions cannot be created and running sessions refuse further turns
+- Setting a pin on a model that doesn't support geographic inference pinning returns 400
+- In multiagent configurations, all roster members must use the same `inference_geo` or all must be unset
+- To clear a pin, update the agent's `model` object without `inference_geo`
+- Can also be set per-session as an override (see agent-setup docs)
+
+See also [Data residency docs](https://platform.claude.com/docs/en/manage-claude/data-residency).
 
 ## Initial Session Events (Python v0.118.0+ / TypeScript v0.113.0+)
 
@@ -705,12 +767,15 @@ See [Skills API](./skills-api.md) for full GitHub auto-loading details.
 - Python v0.118.0+ / TypeScript v0.113.0+: `initial_events` on `sessions.create()`, `effort` on model config, threads event streaming
 - Python v0.119.0+: binary file handling fixed in agent toolset read/edit operations
 - Python v0.121.0+ / TypeScript v0.116.0+: session budgets (`budget_limit`), advisor tool, skills in sessions, GitHub repository resource
-- `claude-opus-4-1` / `claude-opus-4-1-20250805` formally removed from SDK type definitions as of v0.121.0 / v0.116.0 — migrate to claude-opus-4-6 or newer
+- Python v0.122.0+ / TypeScript v0.117.0+: Dreams `output_behavior` param; inference_geo pinning; `beta.messages.parse/stream/tool_runner` now available in Bedrock and Vertex clients; symlink loop rejection in skill archives
+- `claude-opus-4-1` / `claude-opus-4-1-20250805` formally removed and retired (Aug 5, 2026) — migrate to claude-opus-5 or newer
 - Webhook handlers must be idempotent — events may be delivered more than once
 - Agent overrides are session-scoped only — they do not persist to the agent definition
 - Python Dreams `list()` accepts `created_at_gt`/`created_at_lt` datetime filters; TypeScript does not yet
 - `model_context_window_exceeded` stop reason is now possible — handle it by trimming old messages and retrying
 - Budget limits stop new model requests but do not interrupt a turn already in progress
+- `inference_geo` pin validated against workspace `allowed_inference_geos` on every turn; if workspace restricts geo after pin set, running sessions refuse further turns
+- In multiagent configurations, all roster members must share the same `inference_geo` value or all be unset
 
 ## Related
 

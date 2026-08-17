@@ -1,5 +1,57 @@
 # Knowledge Base Changelog
 
+## 2026-08-17 — Incremental Update
+
+Sources: Python SDK v0.122.0 changelog (2026-08-13), TypeScript SDK v0.117.0/v0.117.1 changelog (2026-08-13), platform.claude.com/docs/en/release-notes/overview, platform.claude.com/docs/en/about-claude/models/overview, platform.claude.com/docs/en/managed-agents/agent-setup.
+
+### Changes
+
+- **Python SDK v0.122.0 (2026-08-13)** — Multiple features and bug fixes:
+  - `output_behavior` parameter for dream creation: `"create_new"` (default, creates a new memory store) or `"update_input"` (overwrites the input store in place)
+  - Fixed SigV4 signing in async Bedrock clients (was running on the event loop)
+  - Exposed `beta.messages.parse`, `stream`, and `tool_runner` in Bedrock client
+  - Exposed beta methods in Vertex client
+  - Added missing models to client
+  - Maintained token exchange binding across `copy()` operations
+  - PathLike file contents now handled in file tuples
+  - Empty `ANTHROPIC_API_KEY` and `ANTHROPIC_AUTH_TOKEN` now treated as unset
+  - Fixed malformed tool input JSON error context in streaming
+  - Applied all `message_delta` fields during message accumulation
+  - Emitted `input_json` events for server tool use blocks
+  - Preserved omitted content block fields in accumulated messages
+  - Ran request transformation once in `messages.stream()` (not twice)
+  - Silenced pydantic warnings on `message_stop` events
+  - Rejected symlink loops and special skill-archive members in tool paths
+  - Inference geo (`inference_geo`) pinning support in Managed Agents model config
+- **TypeScript SDK v0.117.0 (2026-08-13)** — Matching features and fixes:
+  - `output_behavior` parameter for dream creation (same as Python)
+  - Fixed build process to include dotfiles during distribution flattening
+  - Added missing model references to client
+  - Enhanced message timeout handling for non-streaming requests
+  - Corrected `message_delta` field accumulation in streaming
+  - Tool-runner now forwards response container IDs between requests
+  - Aligned path resolution and skill-archive handling with Python SDK
+  - Switched from Yarn to pnpm
+  - Updated documentation for optional user profile names in resold profiles
+- **TypeScript SDK v0.117.1 (2026-08-13)** — CI improvements, no API changes
+- **`anthropic-workspace-id` response header (Aug 11, 2026)** — All Claude API responses now include an `anthropic-workspace-id` response header carrying the `wrkspc_`-prefixed workspace ID. Useful for tracking which workspace a request's API key resolved to, matching against Usage/Cost API reports, and debugging multi-workspace setups. The header is absent on Admin API requests and failed auth (401) responses. Added note to `authentication.md`.
+- **Compliance API: local session transcripts (Aug 11, 2026, Enterprise beta)** — `GET /v1/compliance/apps/sessions/local` lists local Cowork and Claude Code sessions; `GET /v1/compliance/apps/sessions/local/{id}` retrieves metadata; `GET /v1/compliance/apps/sessions/local/{id}/messages` returns transcripts. Uses existing Compliance Access Key with `read:compliance_user_data` scope.
+- **Claude Sonnet 5 pricing confirmed at $2/$10 MTok (Aug 10, 2026)** — The previously scheduled increase to $3/$15 on Sept 1, 2026 will not occur. Price is now standard. Updated `MODELS.md`.
+- **Official model specs now available** — Confirmed from Anthropic docs (previously TBD): Fable 5/Opus 5/Sonnet 5 all have 1M token context windows and 128k max output; Haiku 4.5 has 200k context and 64k max output. Pricing confirmed. Extended thinking marked as deprecated on Opus 4.6 and Sonnet 4.6. Updated `MODELS.md` comprehensively.
+- **Inference geo pinning in Managed Agents** — `inference_geo: "us" | "global"` can be set in the `model` object when creating an agent. Validates against workspace `allowed_inference_geos` on every turn. Can be overridden per-session. Added section to `managed-agents.md`.
+- **No new Claude model IDs** in this SDK release cycle.
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `MODELS.md` | Major update: filled in all TBD fields with confirmed specs; added official pricing; capability table rewritten with correct thinking/effort info; added platform availability table; updated date and source versions |
+| `managed-agents.md` | Added "Pinned Inference Geo" section; added Dreams `output_behavior` subsection; updated gotchas; updated date and SDK changelog line |
+| `sdks.md` | Added Python v0.122.0 and TypeScript v0.117.0/v0.117.1 to version history table; updated date |
+| `README.md` | Updated last-incremental-update date (2026-08-17); updated SDK versions (Python v0.122.0, TypeScript v0.117.1); updated file last-updated dates; added `anthropic-workspace-id` to response headers section |
+
+---
+
 ## 2026-08-10 — Incremental Update
 
 Sources: Python SDK v0.121.0 changelog (2026-08-07), TypeScript SDK v0.116.0 changelog (2026-08-07), GitHub SDK type definitions. Docs site (platform.claude.com/docs) returned HTTP 404.

@@ -58,12 +58,32 @@ curl https://api.anthropic.com/v1/messages \
 
 ## HTTP Headers
 
+### Request headers
+
 | Header | Required | Value |
 |--------|----------|-------|
 | `x-api-key` | Yes | Your API key |
 | `anthropic-version` | Yes | `2023-06-01` (current stable) |
 | `content-type` | Yes | `application/json` |
 | `anthropic-beta` | No | Beta features (e.g. `mcp-client-2025-04-04`) |
+
+### Response headers
+
+| Header | Description |
+|--------|-------------|
+| `request-id` | Unique ID for the request; include in bug reports |
+| `anthropic-organization-id` | Your organization's UUID |
+| `anthropic-workspace-id` | `wrkspc_`-prefixed ID of the workspace the API key resolved to (added Aug 11, 2026). Absent on Admin API requests and failed-auth responses. |
+
+Use `anthropic-workspace-id` to confirm which workspace's rate limits and usage a request counted toward:
+
+```python
+response = client.messages.with_raw_response.create(
+    model="claude-opus-5", max_tokens=100,
+    messages=[{"role": "user", "content": "Hi"}],
+)
+workspace_id = response.headers.get("anthropic-workspace-id")
+```
 
 ## Base URL
 

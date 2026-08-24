@@ -1,7 +1,7 @@
-# Skills API (Beta)
+# Skills API
 
-> **Last updated:** 2026-08-10  
-> **Status:** Beta — active development  
+> **Last updated:** 2026-08-24  
+> **Status:** GA (out of beta as of 2026-08-19)  
 > **SDK support:** Python v0.121.0+ / TypeScript v0.116.0+
 
 ## Overview
@@ -70,10 +70,10 @@ import anthropic
 
 client = anthropic.Anthropic()
 
-# Upload skill files
+# GA: use client.skills (not client.beta.skills)
 with open("skill/SKILL.md", "rb") as skill_md, \
      open("skill/helpers.py", "rb") as helpers:
-    skill = client.beta.skills.create(
+    skill = client.skills.create(
         files=[
             ("files", ("SKILL.md", skill_md, "text/markdown")),
             ("files", ("helpers.py", helpers, "text/plain")),
@@ -92,7 +92,8 @@ import { readFileSync } from 'fs';
 
 const client = new Anthropic();
 
-const skill = await client.beta.skills.create({
+// GA: use client.skills (not client.beta.skills)
+const skill = await client.skills.create({
   files: [
     new File([readFileSync('skill/SKILL.md')], 'SKILL.md', { type: 'text/markdown' }),
     new File([readFileSync('skill/helpers.py')], 'helpers.py', { type: 'text/plain' }),
@@ -106,7 +107,8 @@ console.log(skill.id, skill.latest_version);
 ## Listing Skills
 
 ```python
-skills = client.beta.skills.list()
+# GA: use client.skills (not client.beta.skills)
+skills = client.skills.list()
 for skill in skills.data:
     print(skill.id, skill.source, skill.display_title)
 ```
@@ -172,7 +174,9 @@ session = client.beta.sessions.create(
 - `display_title` is for human-readable UI purposes only — it is NOT included in the system prompt or model context
 - Custom skill IDs start with `skill_01…`; format may change over time
 - Uploading a new version of a skill creates a new `latest_version`; existing pinned sessions are unaffected
-- The Skills API is in beta; check SDK changelogs for new capabilities
+- **GA as of 2026-08-19**: no beta header required; use `client.skills.*` (not `client.beta.skills.*`) in SDK v1.0.0+
+- Requests that send the old beta header continue to work unchanged
+- Check SDK changelogs for new capabilities
 
 ## Related
 

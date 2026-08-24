@@ -1,8 +1,8 @@
 # Managed Agents (Beta)
 
-> **Last updated:** 2026-08-17  
+> **Last updated:** 2026-08-24  
 > **Status:** Beta — active development  
-> **SDK changelog:** v0.100.0+ (May 2026), v0.115.0 (June 2026), v0.116.0–v0.122.0 Python / v0.110.0–v0.117.1 TypeScript (July–Aug 2026)
+> **SDK changelog:** v0.100.0+ (May 2026), v0.115.0 (June 2026), v0.116.0–v1.0.0 Python / v0.110.0–v0.120.0 TypeScript (July–Aug 2026)
 
 ## Overview
 
@@ -753,6 +753,59 @@ session = client.beta.sessions.create(
 
 See [Skills API](./skills-api.md) for full GitHub auto-loading details.
 
+## Web Search / Web Fetch Domain Restrictions (v0.125.0 / v0.120.0)
+
+You can now restrict which domains the `web_search` and `web_fetch` tools in `agent_toolset_20260401` can reach. Set `allowed_domains` or `blocked_domains` in the `configs` array entry for each tool.
+
+```python
+agent = client.beta.agents.create(
+    model="claude-opus-5",
+    tools=[
+        {
+            "type": "agent_toolset_20260401",
+            "configs": [
+                {
+                    "name": "web_search",
+                    "type": "web_search",
+                    "allowed_domains": ["wikipedia.org", "arxiv.org"],  # allowlist
+                    # or: "blocked_domains": ["example.com"]
+                    "user_location": {"country": "US"},  # optional
+                },
+                {
+                    "name": "web_fetch",
+                    "type": "web_fetch",
+                    "allowed_domains": ["wikipedia.org"],
+                    "max_content_tokens": 4096,  # cap tokens per fetch
+                },
+            ],
+        }
+    ],
+)
+```
+
+- Either `allowed_domains` or `blocked_domains` can be specified, but not both
+- `max_content_tokens` on `web_fetch` caps tokens consumed per call
+- `user_location` on `web_search` biases results geographically
+
+## Self-Hosted Sandbox Memory Stores (v0.125.0 / v0.120.0)
+
+Self-hosted sandbox sessions can now attach memory stores. The SDK worker (Python, TypeScript, Go) downloads each attached store to its `mount_path` in the sandbox at session start, and syncs changes back to the store after each turn.
+
+```python
+session = client.beta.sessions.create(
+    agent_id=agent.id,
+    environment_id=environment.id,
+    memory_stores=[
+        {
+            "memory_store_id": memory_store.id,
+            "mount_path": "/workspace/memory",  # where it appears in sandbox
+        }
+    ],
+)
+```
+
+Memory store changes made inside the sandbox (writing files to `mount_path`) are uploaded back to the store's API after each tool-execution pass. Requires the `agent-memory-2026-07-22` beta header (SDK adds it automatically).
+
 ## Gotchas
 
 - Managed Agents is under active development — check SDK changelogs for new features
@@ -768,6 +821,9 @@ See [Skills API](./skills-api.md) for full GitHub auto-loading details.
 - Python v0.119.0+: binary file handling fixed in agent toolset read/edit operations
 - Python v0.121.0+ / TypeScript v0.116.0+: session budgets (`budget_limit`), advisor tool, skills in sessions, GitHub repository resource
 - Python v0.122.0+ / TypeScript v0.117.0+: Dreams `output_behavior` param; inference_geo pinning; `beta.messages.parse/stream/tool_runner` now available in Bedrock and Vertex clients; symlink loop rejection in skill archives
+- Python v0.123.0+ / TypeScript v0.118.0+: additions to files and memory stores; workspace ID helpers in response headers; bug fix: remove unsupported `mid_conv_system` content block; retry tool-result sends for at least lease TTL; run synchronous session tools in worker thread (Python)
+- Python v0.124.0+ / TypeScript v0.119.0+: Files API and Skills API are GA (no beta header); `computer_toolset_20260801` and `browser_toolset_20260801` added
+- Python v0.125.0+ / TypeScript v0.120.0+: web search/fetch domain config (`allowed_domains`, `blocked_domains`); self-hosted sandbox memory store support
 - `claude-opus-4-1` / `claude-opus-4-1-20250805` formally removed and retired (Aug 5, 2026) — migrate to claude-opus-5 or newer
 - Webhook handlers must be idempotent — events may be delivered more than once
 - Agent overrides are session-scoped only — they do not persist to the agent definition

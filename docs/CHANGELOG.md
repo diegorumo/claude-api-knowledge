@@ -1,5 +1,36 @@
 # Knowledge Base Changelog
 
+## 2026-08-24 — Incremental Update
+
+Sources: platform.claude.com/docs/en/release-notes/overview (Aug 18–20, 2026), Python SDK CHANGELOG v0.123.0–v1.0.0 (2026-08-18–20), TypeScript SDK CHANGELOG v0.118.0–v0.120.0 (2026-08-18–19).
+
+### Changes
+
+- **Python SDK v1.0.0 (2026-08-20) — MAJOR BREAKING CHANGES** — The HTTP layer moves from `httpx` to `httpx2` (a maintained, API-compatible fork). Build custom `http_client`, `Timeout`, and transport objects from `httpx2`; call `httpx2.alias_httpx()` if you rely on tracing or mocking libraries that patch `httpx`. Additional breaking changes: Python 3.10+ required (was 3.9+); legacy Text Completions API removed; `temperature`, `top_p`, `top_k` on Messages methods removed; tool runner's client-side `compaction_control` removed; async `.with_raw_response` results now need `await response.parse()`; `AnthropicBedrock` raises error when no AWS region configured (previously defaulted to `us-east-1`). Non-breaking: fix output_format warning on parse/stream/tool_runner; restore streaming event imports; use adaptive thinking in examples. See [MIGRATION.md](https://github.com/anthropics/anthropic-sdk-python/blob/main/MIGRATION.md).
+- **Files API out of beta — GA (2026-08-19)** — `/v1/files` endpoints and Messages API requests referencing uploaded files no longer require the `files-api-2025-04-14` beta header. GA response format adds file expiration (`expires_in_seconds` on upload, `expires_at` on file object) and improved pagination (`page`/`next_page` cursors, `ids[]` filter on list). Requests that still send the beta header continue to work with the previous response format (no expiration fields).
+- **Skills API out of beta — GA (2026-08-19)** — `/v1/skills` endpoints and Messages API requests loading skills via the `container` parameter no longer require the `skills-2025-10-02` beta header. Requests that still send the header continue to work unchanged.
+- **Computer use toolset GA (2026-08-19)** — `computer_toolset_20260801` is out of beta. No beta header required. New capabilities: batch actions (multiple actions per turn), zoom enabled by default, per-member configuration via `configs`. Previous beta versions (`computer_20241022`, `computer_20251124`) remain available under their original beta headers. See [Migrate from `computer_20251124`](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool#migrate-from-computer-20251124).
+- **Browser use toolset launched — GA (2026-08-19)** — New `browser_toolset_20260801` client toolset. Operates within a browser viewport rather than the full desktop. Reads the page's accessibility tree and element structure directly; adds element references, form input, tab management, download reporting, and opt-in file upload on top of screenshot-and-click control. No beta header required.
+- **Both new toolsets available on** Claude Fable 5, Claude Mythos 5, Claude Opus 5, Claude Sonnet 5, Claude Opus 4.8.
+- **Admin API user-management endpoints out of beta (2026-08-19)** — Group and custom-role endpoints no longer require the `ce-user-management-2026-07-13` header. Requests that still send it are accepted unchanged.
+- **Managed Agents web search/fetch domain restrictions (2026-08-19 / Python v0.125.0, TypeScript v0.120.0)** — `web_search` and `web_fetch` tools in `agent_toolset_20260401` now accept `allowed_domains` or `blocked_domains` in their `configs` entries. `web_fetch` also accepts `max_content_tokens`; `web_search` accepts `user_location`. Typed per-tool types added in SDKs.
+- **Self-hosted sandbox memory stores (2026-08-19 / Python v0.125.0, TypeScript v0.120.0)** — Sessions running in a self-hosted sandbox can now attach memory stores. SDK workers download the store to its `mount_path` in the sandbox at session start and sync changes back after each turn.
+- **Console: Workbench → Playground (2026-08-18)** — Workbench is now **Playground** at `platform.claude.com/playground`. Supports every Messages API parameter, includes feature-demo templates, shows the full SDK request and API response. The legacy Workbench (which was sunsetted on Aug 17) and its experimental prompt tools APIs (`/v1/experimental/generate_prompt` etc.) are fully retired.
+- **Python v0.123.0 / TypeScript v0.118.0 (2026-08-18)** — Additions to files and memory stores APIs; updates to skill, files, and user profiles; workspace ID helpers in response headers; bug fixes: remove unsupported `mid_conv_system` content block, compute platform headers without subprocess, export `ServiceUnavailableError`/`DeadlineExceededError`, retry tool-result sends for at least lease TTL, run synchronous session tools in worker thread (Python); TypeScript: bump zod to 4.4.3, warn about blocking tool bodies stalling worker heartbeat.
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `computer-use.md` | **Major rewrite**: added Computer Use Toolset (GA) section for `computer_toolset_20260801`; added Browser Use Toolset (GA) section for `browser_toolset_20260801`; added comparison table; updated status and models; updated date |
+| `files-api.md` | Updated status to GA; added GA migration note (expiration, new pagination); updated code examples to use `client.files.*`; added file expiration section; updated gotchas; updated date |
+| `skills-api.md` | Updated status to GA; updated code examples to use `client.skills.*`; updated gotchas; updated date |
+| `managed-agents.md` | Added "Web Search / Web Fetch Domain Restrictions" section; added "Self-Hosted Sandbox Memory Stores" section; updated gotchas with v0.123.0–v0.125.0 notes; updated SDK changelog version range; updated date |
+| `sdks.md` | Added Python v1.0.0 breaking changes table; added Python v0.123.0–v1.0.0 to version history; added TypeScript v0.118.0–v0.120.0 to version history; updated Python requires to 3.10+; updated date |
+| `README.md` | Updated last-incremental-update date (2026-08-24); updated SDK versions (Python v1.0.0, TypeScript v0.120.0); updated file status and last-updated dates; updated beta headers table to reflect Files API and Skills API GA; added computer_toolset_20260801/browser_toolset_20260801 note |
+
+---
+
 ## 2026-08-17 — Incremental Update
 
 Sources: Python SDK v0.122.0 changelog (2026-08-13), TypeScript SDK v0.117.0/v0.117.1 changelog (2026-08-13), platform.claude.com/docs/en/release-notes/overview, platform.claude.com/docs/en/about-claude/models/overview, platform.claude.com/docs/en/managed-agents/agent-setup.

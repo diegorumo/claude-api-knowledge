@@ -1,13 +1,22 @@
 # Files API
 
-> **Last updated:** 2026-05-30  
-> **Status:** Beta
+> **Last updated:** 2026-08-24  
+> **Status:** GA (out of beta as of 2026-08-19)
 
 ## Overview
 
 The Files API lets you upload files once and reference them by ID across multiple requests. Useful for large documents, PDFs, or images reused in many prompts.
 
 **Base endpoint:** `/v1/files`
+
+## GA Migration Note (2026-08-19)
+
+The Files API is now GA. The `files-api-2025-04-14` beta header is no longer required. The GA response format includes:
+- **File expiration**: set `expires_in_seconds` on upload; `expires_at` on the file object
+- **Improved pagination**: `page` and `next_page` cursors, plus `ids[]` filter when listing
+- Requests that still send the beta header continue to work and return the previous (no-expiration) response format
+
+Use `client.files.*` (not `client.beta.files.*`) in SDK v1.0.0+.
 
 ## Upload a File
 
@@ -16,13 +25,15 @@ import anthropic
 
 client = anthropic.Anthropic()
 
+# Upload with optional expiration (GA: no beta header needed)
 with open("document.pdf", "rb") as f:
-    uploaded = client.beta.files.upload(
+    uploaded = client.files.upload(
         file=("document.pdf", f, "application/pdf"),
+        # expires_in_seconds=86400,  # optional: 1-day TTL
     )
 
 file_id = uploaded.id
-print(f"Uploaded: {file_id}")
+print(f"Uploaded: {file_id}, expires: {uploaded.expires_at}")
 ```
 
 ```typescript
@@ -31,13 +42,15 @@ import * as fs from 'fs';
 
 const client = new Anthropic();
 
-const file = await client.beta.files.upload({
+// GA: no beta header needed
+const file = await client.files.upload({
   file: fs.createReadStream('document.pdf'),
   filename: 'document.pdf',
   type: 'application/pdf',
+  // expiresInSeconds: 86400,  // optional: 1-day TTL
 });
 
-console.log(`File ID: ${file.id}`);
+console.log(`File ID: ${file.id}, expires: ${file.expiresAt}`);
 ```
 
 ## Use File in Messages
@@ -67,16 +80,19 @@ response = client.messages.create(
 ## List / Retrieve / Delete Files
 
 ```python
-# List
-files = client.beta.files.list()
+# List (with pagination and optional ID filter)
+files = client.files.list()
 for f in files.data:
-    print(f"{f.id}: {f.filename} ({f.size} bytes)")
+    print(f"{f.id}: {f.filename} ({f.size} bytes), expires: {f.expires_at}")
+
+# List only specific IDs
+specific = client.files.list(ids=["file_abc123", "file_def456"])
 
 # Retrieve metadata
-file_info = client.beta.files.retrieve(file_id)
+file_info = client.files.retrieve(file_id)
 
 # Delete
-client.beta.files.delete(file_id)
+client.files.delete(file_id)
 ```
 
 ## Supported File Types
@@ -130,9 +146,24 @@ requests = [
 batch = client.messages.batches.create(requests=requests)
 ```
 
+## File Expiration
+
+```python
+# Upload with 24-hour TTL
+with open("temp_doc.pdf", "rb") as f:
+    file = client.files.upload(
+        file=("temp_doc.pdf", f, "application/pdf"),
+        expires_in_seconds=86400,  # 1 day
+    )
+print(file.expires_at)  # ISO 8601 timestamp
+```
+
+Files without `expires_in_seconds` never expire (until manually deleted).
+
 ## Gotchas
 
-- Files API is in beta — enable via `anthropic-beta` header or SDK beta client
+- **GA as of 2026-08-19**: no beta header required; use `client.files.*` (not `client.beta.files.*`) in SDK v1.0.0+
+- If you send the old beta header, the API returns the previous response format (no `expires_at` field)
 - Files are scoped to your API key/organization
 - Deleted files immediately become unavailable
 - File IDs are stable — safe to store in your database for reuse

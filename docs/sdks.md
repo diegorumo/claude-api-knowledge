@@ -1,11 +1,11 @@
 # SDKs (Python & TypeScript)
 
-> **Last updated:** 2026-08-17
+> **Last updated:** 2026-08-24
 
 ## Python SDK
 
 **Package:** `anthropic`  
-**Requires:** Python 3.9+  
+**Requires:** Python 3.10+ (upgraded from 3.9+ in v1.0.0)  
 **License:** MIT
 
 ### Installation
@@ -28,6 +28,25 @@ response = client.messages.create(
 )
 print(response.content[0].text)
 ```
+
+### Python v1.0.0 Breaking Changes (2026-08-20)
+
+v1.0.0 is a **major version** with breaking changes. See the [v1 migration guide](https://github.com/anthropics/anthropic-sdk-python/blob/main/MIGRATION.md) for full before-and-after snippets.
+
+| Area | Change |
+|------|--------|
+| Python version | Now requires Python **3.10+** (was 3.9+) |
+| HTTP layer | `httpx` → `httpx2` (maintained fork; API-compatible). Import from `httpx2`, not `httpx`, when building custom transports/timeouts. Call `httpx2.alias_httpx()` if libraries patch `httpx`. |
+| Text Completions API | **Removed** — migrate to Messages API |
+| `temperature`, `top_p`, `top_k` | **Removed** from `messages.create()` and related methods |
+| Tool runner | Client-side `compaction_control` **removed** |
+| Async `.with_raw_response` | Results now require `await response.parse()` (not just `.parse()`) |
+| `AnthropicBedrock` | Now raises error if no AWS region is configured (previously defaulted to `us-east-1`) |
+
+Non-breaking additions in v1.0.0:
+- Fixed output_format warning on parse/stream/tool_runner helpers
+- Restored streaming event imports in `lib/streaming/_types.py`
+- Updated thinking examples to use adaptive thinking
 
 ### Async Client
 
@@ -308,6 +327,10 @@ const client = new Anthropic({
 
 | SDK | Version | Date | Changes |
 |-----|---------|------|---------|
+| Python | v1.0.0 | 2026-08-20 | **Breaking**: httpx→httpx2; Python 3.10+; remove Text Completions API, temperature/top_p/top_k on messages, client-side compaction_control; async .with_raw_response needs `await response.parse()`; AnthropicBedrock errors if no AWS region. Non-breaking: fix output_format warning; restore streaming event imports. See MIGRATION.md. |
+| Python | v0.125.0 | 2026-08-19 | Managed agents web search/fetch domain config (`allowed_domains`, `blocked_domains`, `max_content_tokens`, `user_location`); self-hosted sandbox memory store support |
+| Python | v0.124.0 | 2026-08-19 | Files and Skills APIs are now GA; add `computer_toolset_20260801` and `browser_toolset_20260801` toolsets |
+| Python | v0.123.0 | 2026-08-18 | Additions to files and memory stores; updates to skill, files, and user profiles; workspace ID helpers in response headers; fix: remove unsupported mid_conv_system content block; compute platform headers without subprocess; export custom status errors; retry tool-result sends for at least lease TTL; run synchronous session tools in worker thread |
 | Python | v0.122.0 | 2026-08-13 | `output_behavior` param for dream creation (create new memory store or update input store in place); fix SigV4 signing in async Bedrock clients; expose `beta.messages.parse`, `stream`, `tool_runner` in Bedrock client; expose beta methods in Vertex client; add missing models to client; maintain token exchange binding across `copy()`; handle PathLike file contents in file tuples; treat empty `ANTHROPIC_API_KEY`/`ANTHROPIC_AUTH_TOKEN` as unset; fix malformed tool input JSON error context in streaming; apply all `message_delta` fields during accumulation; emit `input_json` events for server tool use blocks; preserve omitted content block fields in accumulated messages; run request transformation once in `messages.stream()`; silence pydantic warnings on `message_stop` events; reject symlink loops and special skill-archive members in tool paths; inference_geo pinning support |
 | Python | v0.121.0 | 2026-08-07 | `mid-conversation-tool-changes-2026-07-01` beta header; Skills API (`client.beta.skills.*`); session budgets (`budget_limit`); advisor tool (`advisor_20260301`); GitHub repository skills auto-loading; add major version constraints to all dependencies; retire `claude-opus-4-1` / `claude-opus-4-1-20250805` from type definitions |
 | Python | v0.120.2 | 2026-07-28 | Support MCP SDK v2 alongside v1 (dual-version compatibility; reverts the v2 pin from v0.120.1) |
@@ -332,6 +355,9 @@ const client = new Anthropic({
 | Python | v0.107.0 | 2026-06-06 | Managed Agents type updates |
 | Python | v0.106.0 | 2026-06-05 | Mark claude-opus-4-1 deprecated; Foundry client fixes |
 | Python | v0.105.0 | 2026-05-28 | Add claude-opus-4-8, mid-conversation system blocks, output_tokens_details |
+| TypeScript | v0.120.0 | 2026-08-19 | Managed agents web search/fetch domain config; self-hosted sandbox memory support; single pnpm workspace lockfile |
+| TypeScript | v0.119.0 | 2026-08-19 | Files and Skills APIs are now GA; add `computer_toolset_20260801` and `browser_toolset_20260801` toolsets |
+| TypeScript | v0.118.0 | 2026-08-18 | Additions to files and memory stores; updates to skill, files, and user profiles; workspace ID helpers in response headers; fix: remove unsupported mid_conv_system content block; retry tool-result sends for at least lease TTL; bump zod to 4.4.3 |
 | TypeScript | v0.117.1 | 2026-08-13 | CI improvements for manual npm republishing; internal branch-name tagging for preview builds |
 | TypeScript | v0.117.0 | 2026-08-13 | `output_behavior` param for dream creation; fix build to include dotfiles during distribution flattening; add missing model references to client; enhance message timeout handling for non-streaming requests; correct `message_delta` field accumulation in streaming; tool-runner forwards response container IDs between requests; align path resolution and skill-archive handling with Python SDK; switch from Yarn to pnpm; update docs for optional user profile names in resold profiles; inference_geo pinning support |
 | TypeScript | v0.116.0 | 2026-08-07 | `mid-conversation-tool-changes-2026-07-01` beta header; Skills API (`client.beta.skills.*`); session budgets (`budget_limit`); advisor tool (`advisor_20260301`); GitHub repository skills auto-loading; bash timeout/abort errors now matchable by class; hardcoded User-Agent strings; retire `claude-opus-4-1` models; Babel v7.29.7 |

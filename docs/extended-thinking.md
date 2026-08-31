@@ -1,6 +1,6 @@
 # Extended Thinking
 
-> **Last updated:** 2026-05-30
+> **Last updated:** 2026-08-31
 
 ## Overview
 
@@ -62,6 +62,7 @@ for (const block of message.content) {
 | `{"type": "enabled", "budget_tokens": N}` | Explicit budget; Claude uses up to N tokens |
 | `{"type": "adaptive"}` | Claude decides how much to think (no explicit budget) |
 | `{"type": "disabled"}` | No thinking (default) |
+| `{"type": "enabled", "display": "updates"}` | *(Beta, Python v1.1.0 / TypeScript v0.121.0)* Returns incremental thinking-state updates as the model reasons; useful for streaming applications that want to show live reasoning progress. Use with `display: "updates"` alongside an explicit `budget_tokens`. |
 
 ## Budget Tokens
 

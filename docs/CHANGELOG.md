@@ -1,5 +1,34 @@
 # Knowledge Base Changelog
 
+## 2026-08-31 — Incremental Update
+
+Sources: platform.claude.com/docs/en/release-notes/overview (Aug 26–27, 2026), Python SDK CHANGELOG v1.1.0–v1.2.0 (2026-08-26–27), TypeScript SDK CHANGELOG v0.121.0–v0.122.0 (2026-08-26–27).
+
+### Changes
+
+- **Personal keys and service account keys (2026-08-27)** — Three key types now exist in the Claude Console: legacy workspace API keys, **personal keys** (tied to your account, same permissions, stop working if you leave the org), and **service account keys** (tied to a service account). Both new types can be scoped to a specific workspace or to admin endpoints across any workspace. Admins can more easily audit per-account usage. API key expiration (set when creating a key) is also now available. Updated `authentication.md`.
+- **`client.beta.files` and `client.beta.skills` use GA shapes (Python v1.2.0 / TypeScript v0.122.0, 2026-08-27)** — The beta namespaces no longer send the `files-api-2025-04-14` and `skills-2025-10-02` beta headers and return the same shapes as `client.files` and `client.skills`. Breaking change: **`BetaSkill`** (the container Skill reference in Messages) is renamed **`BetaContainerSkill`**; update any imports. `client.beta.skills.delete()` now deletes all versions. Requests that still send the old beta headers keep receiving the old shapes. See official migration guides. Updated `files-api.md`, `skills-api.md`.
+- **`"updates"` thinking display mode (Python v1.1.0 / TypeScript v0.121.0, 2026-08-26)** — New beta thinking display mode `display: "updates"` streams incremental reasoning-state updates as the model thinks. Useful for streaming applications that want live reasoning progress. Must be combined with an explicit `budget_tokens`. Updated `extended-thinking.md`.
+- **Organization API endpoints in SDKs (Python v1.1.0 / TypeScript v0.121.0, 2026-08-26)** — `client.beta.organization.*` covers organization info, members, invites, workspaces and workspace members, API keys, rate limits, service accounts, workload identity federation issuers and rules, and customer-managed encryption keys. Reads an Admin API key from `ANTHROPIC_API_KEY` or an `org:admin` OAuth token from `ANTHROPIC_AUTH_TOKEN`. Usage/cost reports and Enterprise user-management/analytics endpoints remain curl-only.
+- **Standard Schema support for structured outputs and tools (TypeScript v0.121.0, 2026-08-26)** — The TypeScript SDK now accepts Standard Schema-compatible types (in addition to Zod schemas) for structured outputs and tool input schemas. Updated `sdks.md`.
+- **`SessionToolRunner` continues on `pause_turn` events (Python v1.1.0 / TypeScript v0.121.0, 2026-08-26)** — Previously the tool runner could stall when the agent returned `stop_reason: "pause_turn"`; it now continues operation correctly. Updated `sdks.md`.
+- **Compliance API session endpoints out of beta (2026-08-26)** — Session transcript endpoints for Cowork and Claude Code are now GA. Local session endpoints (added 2026-08-11) now also return transcripts for Claude Science sessions (`product_surface: "claude_science"`) and Claude for Microsoft 365 sessions (`product_surface` values beginning with `"office_agents"`), in beta for Claude Enterprise organizations, using the existing `Compliance-Access-Key` with `read:compliance_user_data` scope.
+- **Python v1.2.0 additional fixes (2026-08-27)** — Bedrock binary uploads now sign raw bytes; session event accumulator forward-compatible with new event types; tools can read file sections beyond size limit via `view_range`; exact file bytes preserved (no newline translation); webhook `unwrap()` requires `headers` parameter.
+- **TypeScript v0.122.0 additional fixes (2026-08-27)** — Improved error classification for cross-realm `DOMException` abort/timeout; SSE parse errors respect configured logger; event accumulator forward-compatible with new event types; file read `view_range` for large files; bare Blob filenames default correctly on skills endpoints; webhook `unwrap()` requires `headers`. TypeScript 5.0 documented as minimum supported version.
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `authentication.md` | Added "API Key Types" section (personal keys, service account keys, table); updated key-creation steps to mention key type and expiration; updated date |
+| `extended-thinking.md` | Added `"updates"` display mode row to Thinking Modes table; updated date |
+| `files-api.md` | Added note that `client.beta.files.*` now uses GA shapes in v1.2.0+; updated gotchas; updated date |
+| `skills-api.md` | Added note about `BetaSkill` → `BetaContainerSkill` rename and `client.beta.skills.delete()` all-versions behavior in v1.2.0+; updated gotchas; updated date |
+| `sdks.md` | Added Python v1.1.0 and v1.2.0; added TypeScript v0.121.0 and v0.122.0 to version history table; updated date |
+| `README.md` | Updated last-incremental-update date (2026-08-31); updated SDK versions (Python v1.2.0, TypeScript v0.122.0); updated file last-updated dates |
+
+---
+
 ## 2026-08-24 — Incremental Update
 
 Sources: platform.claude.com/docs/en/release-notes/overview (Aug 18–20, 2026), Python SDK CHANGELOG v0.123.0–v1.0.0 (2026-08-18–20), TypeScript SDK CHANGELOG v0.118.0–v0.120.0 (2026-08-18–19).

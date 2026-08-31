@@ -1,6 +1,6 @@
 # Files API
 
-> **Last updated:** 2026-08-24  
+> **Last updated:** 2026-08-31  
 > **Status:** GA (out of beta as of 2026-08-19)
 
 ## Overview
@@ -163,7 +163,8 @@ Files without `expires_in_seconds` never expire (until manually deleted).
 ## Gotchas
 
 - **GA as of 2026-08-19**: no beta header required; use `client.files.*` (not `client.beta.files.*`) in SDK v1.0.0+
-- If you send the old beta header, the API returns the previous response format (no `expires_at` field)
+- **SDK v1.2.0+ (Python) / v0.122.0+ (TypeScript)**: `client.beta.files.*` now uses the GA shape and no longer sends the `files-api-2025-04-14` beta header. Migrate to `client.files.*` to ensure you always get GA response shapes.
+- If you send the old `files-api-2025-04-14` beta header, the API returns the previous response format (no `expires_at` field)
 - Files are scoped to your API key/organization
 - Deleted files immediately become unavailable
 - File IDs are stable — safe to store in your database for reuse

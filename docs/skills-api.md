@@ -1,6 +1,6 @@
 # Skills API
 
-> **Last updated:** 2026-08-24  
+> **Last updated:** 2026-08-31  
 > **Status:** GA (out of beta as of 2026-08-19)  
 > **SDK support:** Python v0.121.0+ / TypeScript v0.116.0+
 
@@ -175,7 +175,8 @@ session = client.beta.sessions.create(
 - Custom skill IDs start with `skill_01…`; format may change over time
 - Uploading a new version of a skill creates a new `latest_version`; existing pinned sessions are unaffected
 - **GA as of 2026-08-19**: no beta header required; use `client.skills.*` (not `client.beta.skills.*`) in SDK v1.0.0+
-- Requests that send the old beta header continue to work unchanged
+- **SDK v1.2.0+ (Python) / v0.122.0+ (TypeScript)**: `client.beta.skills.*` now uses the GA shape and no longer sends the `skills-2025-10-02` beta header. `client.beta.skills.delete()` now deletes **all versions** of the skill. The beta Messages type `BetaSkill` (the container Skill reference) is renamed **`BetaContainerSkill`**. Update any code that imports or references `BetaSkill` for the container context.
+- Requests that send the old `skills-2025-10-02` beta header continue to work and return the previous shape
 - Check SDK changelogs for new capabilities
 
 ## Related

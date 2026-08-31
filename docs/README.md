@@ -3,8 +3,8 @@
 Comprehensive reference documentation for developers building with the Claude API.
 
 **Last full crawl:** 2026-05-30  
-**Last incremental update:** 2026-08-24  
-**SDK versions:** Python v1.0.0, TypeScript v0.120.0  
+**Last incremental update:** 2026-08-31  
+**SDK versions:** Python v1.2.0, TypeScript v0.122.0  
 **Primary sources:** anthropic-sdk-python, anthropic-sdk-typescript, anthropic-cookbook
 
 > **Coverage note:** The Anthropic documentation site (docs.anthropic.com / platform.claude.com/docs)
@@ -31,27 +31,27 @@ Comprehensive reference documentation for developers building with the Claude AP
 |------|-------------|-------------|
 | [MODELS.md](./MODELS.md) | Current model IDs, capabilities, context windows, pricing notes | 2026-08-17 |
 | [QUICK-REFERENCE.md](./QUICK-REFERENCE.md) | Common code patterns: auth, messages, streaming, tools, caching | 2026-07-27 |
-| [authentication.md](./authentication.md) | API keys, HTTP headers (incl. anthropic-workspace-id response header), SDK setup, third-party platforms | 2026-08-17 |
+| [authentication.md](./authentication.md) | API keys (workspace/personal/service-account), HTTP headers, SDK setup, third-party platforms | 2026-08-31 |
 | [messages-api.md](./messages-api.md) | Messages endpoint: params, content blocks, response format | 2026-07-27 |
 | [streaming.md](./streaming.md) | SSE events, delta types, streaming SDK helpers | 2026-06-29 |
 | [rate-limits-errors.md](./rate-limits-errors.md) | Error codes, retry logic, rate limit headers | 2026-05-30 |
 | [token-counting.md](./token-counting.md) | Count tokens before sending, context window management | 2026-07-06 |
-| [sdks.md](./sdks.md) | Python and TypeScript SDK reference, async, pagination; Python v1.0.0 breaking changes | 2026-08-24 |
+| [sdks.md](./sdks.md) | Python and TypeScript SDK reference, async, pagination; Python v1.0.0 breaking changes; Organization API; Standard Schema support | 2026-08-31 |
 
 ### Features
 
 | File | Description | Status | Last Updated |
 |------|-------------|--------|-------------|
 | [tool-use.md](./tool-use.md) | Function calling, agentic loop, tool choice, built-in tools, tool definition properties, mid-conversation tool changes | Stable | 2026-08-10 |
-| [skills-api.md](./skills-api.md) | Upload and manage reusable skill packages; use Anthropic and custom skills in sessions | **GA** | 2026-08-24 |
+| [skills-api.md](./skills-api.md) | Upload and manage reusable skill packages; BetaSkill renamed BetaContainerSkill in v1.2.0+ | **GA** | 2026-08-31 |
 | [programmatic-tool-calling.md](./programmatic-tool-calling.md) | Call tools from code execution sandbox, reduce round-trips and token usage | Stable | 2026-06-22 |
 | [prompt-caching.md](./prompt-caching.md) | cache_control, TTL, pricing, multi-turn caching | Stable | 2026-05-30 |
-| [extended-thinking.md](./extended-thinking.md) | Thinking blocks, budget_tokens, adaptive mode | Stable | 2026-05-30 |
+| [extended-thinking.md](./extended-thinking.md) | Thinking blocks, budget_tokens, adaptive mode, `updates` display mode | Stable | 2026-08-31 |
 | [vision.md](./vision.md) | Image inputs: base64, URL, formats, limits | Stable | 2026-05-30 |
 | [pdf-support.md](./pdf-support.md) | PDF document inputs, Files API for PDFs | Stable | 2026-05-30 |
 | [batch-api.md](./batch-api.md) | Async batch processing, results retrieval | Stable | 2026-05-30 |
 | [web-search.md](./web-search.md) | Built-in web search and web fetch tools, usage tracking | Stable | 2026-07-06 |
-| [files-api.md](./files-api.md) | File upload, reference by ID; file expiration, GA pagination | **GA** | 2026-08-24 |
+| [files-api.md](./files-api.md) | File upload, reference by ID; file expiration, GA pagination; beta.files uses GA shapes in v1.2.0+ | **GA** | 2026-08-31 |
 | [citations.md](./citations.md) | Inline document citations | Beta | 2026-05-30 |
 | [mcp.md](./mcp.md) | Model Context Protocol server integration + MCP Tunnels API | Beta | 2026-08-03 |
 | [computer-use.md](./computer-use.md) | GUI automation (computer_toolset_20260801 GA); browser use toolset (browser_toolset_20260801 GA) | **GA** | 2026-08-24 |

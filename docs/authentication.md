@@ -1,16 +1,30 @@
 # Authentication & API Keys
 
-> **Last updated:** 2026-05-30
+> **Last updated:** 2026-08-31
 
 ## Overview
 
 The Claude API uses API keys for authentication. All requests must include your API key.
 
+## API Key Types (Updated Aug 27, 2026)
+
+Three key types are now available in the Claude Console:
+
+| Type | Tied to | Scope |
+|------|---------|-------|
+| **Workspace API key** | Workspace (legacy) | One workspace; anonymous |
+| **Personal key** | Your account | Same permissions as your account; stops working if you leave the org |
+| **Service account key** | A [service account](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation#service-accounts) | Same permissions as the service account; stops working if service account is removed |
+
+Personal keys and service account keys can be scoped to a specific workspace or granted admin access across workspaces. Organization admins can track usage per account using personal/service-account keys. Workspace API keys remain supported as a legacy option.
+
 ## Getting an API Key
 
 1. Sign in at https://console.anthropic.com
 2. Navigate to **API Keys** in settings
-3. Create a new key and store it securely — it won't be shown again
+3. Choose the key type (workspace key, personal key, or service account key)
+4. Optionally set an expiration (preset, custom duration, or Never)
+5. Create the key and store it securely — it won't be shown again
 
 ## Setting Your API Key
 

@@ -1,27 +1,56 @@
 # Claude Models Reference
 
-> **Last updated:** 2026-08-17  
-> **Source:** platform.claude.com/docs/en/about-claude/models/overview (Python v0.122.0, TypeScript v0.117.0)
+> **Last updated:** 2026-09-07  
+> **Source:** platform.claude.com/docs/en/about-claude/models/overview (Python v1.4.0, TypeScript v0.124.0)
 
 ## Current Models (Recommended)
 
 | Model | API ID | Alias | Context | Max Output | Price (input/output MTok) | Best For |
 |-------|--------|-------|---------|------------|---------------------------|----------|
-| Claude Fable 5 | `claude-fable-5` | `claude-fable-5` | 1M tokens | 128k tokens | $10 / $50 | Most capable; long-running agents (always-on adaptive thinking) |
+| Claude Fable 5.1 | `claude-fable-5-1` | `claude-fable-5-1` | 1M tokens | 128k tokens | $10 / $50 | Most capable; demanding reasoning and long-horizon agentic work (always-on adaptive thinking) |
 | Claude Opus 5 | `claude-opus-5` | `claude-opus-5` | 1M tokens | 128k tokens | $5 / $25 | Complex agentic coding and enterprise work |
 | Claude Sonnet 5 | `claude-sonnet-5` | `claude-sonnet-5` | 1M tokens | 128k tokens | $2 / $10 | Best balance of speed and intelligence |
 | Claude Haiku 4.5 | `claude-haiku-4-5-20251001` | `claude-haiku-4-5` | 200k tokens | 64k tokens | $1 / $5 | Fastest; high-volume, latency-sensitive apps |
 
-> **Tokenizer note (Fable 5, Sonnet 5, Opus 4.7+):** Claude Fable 5 and Claude Sonnet 5 use the tokenizer introduced with Claude Opus 4.7. Compared to models before Opus 4.7, the same text produces **roughly 30% more tokens**. Measure your prompts with the [token counting API](./token-counting.md) when migrating.
+> **Tokenizer note (Fable 5.1, Fable 5, Sonnet 5, Opus 4.7+):** These models use the tokenizer introduced with Claude Opus 4.7. Compared to models before Opus 4.7, the same text produces **roughly 30% more tokens**. Measure your prompts with the [token counting API](./token-counting.md) when migrating.
 >
 > **Pricing note:** Sonnet 5 pricing is locked at $2/$10 per MTok (the scheduled Sept 1, 2026 increase to $3/$15 was cancelled on Aug 10, 2026).
 >
-> **Claude Mythos 5** (`claude-mythos-5`) shares Fable 5's specs and pricing but is invitation-only (Project Glasswing). Not generally available.
+> **Claude Mythos 5.1** (`claude-mythos-5-1`) shares Fable 5.1's specs and pricing but is invitation-only (Project Glasswing). Not generally available.
+>
+> **Claude Fable 5** (`claude-fable-5`) is now legacy (still available) — see Legacy table below.
+
+## ⚠️ Fable 5.1 / Mythos 5.1 API Restrictions
+
+These models have specific constraints not present on earlier models:
+
+**`tool_choice` restrictions:**
+- `tool_choice: {type: "any"}` and `tool_choice: {type: "tool"}` are **not supported** (return 400)
+- `tool_choice: {type: "auto"}` and `tool_choice: {type: "none"}` remain available
+- For schema-constrained outputs, use [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs) instead
+
+**Thinking block binding:**
+- Thinking blocks are preserved only for the model that produced them or newer models
+- The API silently drops thinking blocks replayed to an older model
+- **New accounts (created on/after Aug 31, 2026):** Replaying thinking blocks after changing `system`, `tools`, or earlier messages returns 400
+- Use beta header `thinking-binding-controls-2026-08-01` to get reports of dropped blocks in `input_transformations` and to control behavior via `thinking.block_binding.prefix_mismatch_behavior`
+
+**Prompt cache read pricing:**
+- Cache reads cost **2.5% of base input price** ($0.25/MTok) — vs. 10% on other models
+
+**Data retention:**
+- Fable 5.1 and Mythos 5.1 require **30-day data retention**
+- Not available under zero data retention unless expressly authorized by Anthropic
+
+**Content watermarking:**
+- Text output carries Anthropic's text watermark
+- Images, video, audio produced via code execution carry C2PA Content Credentials when retrieved via Files API
 
 ## Legacy / Also-Available Models
 
 | Model | API ID | Context | Max Output | Price (input/output MTok) |
 |-------|--------|---------|------------|---------------------------|
+| Claude Fable 5 | `claude-fable-5` | 1M tokens | 128k tokens | $10 / $50 |
 | Claude Opus 4.8 | `claude-opus-4-8` | 1M tokens | 128k tokens | $5 / $25 |
 | Claude Opus 4.7 | `claude-opus-4-7` | 1M tokens | 128k tokens | $5 / $25 |
 | Claude Opus 4.6 | `claude-opus-4-6` | 1M tokens | 128k tokens | $5 / $25 |
@@ -62,21 +91,24 @@
 
 ## Model Capabilities
 
-| Capability | Fable 5 / Mythos 5 | Opus 5 | Sonnet 5 | Haiku 4.5 | Opus 4.8 | Opus 4.6–4.7 | Sonnet 4.6 |
-|-----------|---------------------|--------|----------|-----------|----------|--------------|------------|
-| Adaptive thinking (always-on) | ✅ (always on) | ✅ | ✅ | ❌ | ✅ | ✅ | ✅ |
-| Extended thinking (explicit) | ❌ | ❌ | ❌ | ✅ | ❌ | ✅ (deprecated) | ✅ (deprecated) |
-| Tool Use | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Vision (images) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| PDF Input | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Prompt Caching | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Streaming | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Batch API | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Server-Side Fallbacks | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| Computer Use | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Mid-conv tool changes | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ |
+| Capability | Fable 5.1 / Mythos 5.1 | Fable 5 / Mythos 5 | Opus 5 | Sonnet 5 | Haiku 4.5 | Opus 4.8 | Opus 4.6–4.7 | Sonnet 4.6 |
+|-----------|------------------------|---------------------|--------|----------|-----------|----------|--------------|------------|
+| Adaptive thinking (always-on) | ✅ (always on) | ✅ (always on) | ✅ | ✅ | ❌ | ✅ | ✅ | ✅ |
+| Extended thinking (explicit) | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ✅ (deprecated) | ✅ (deprecated) |
+| Tool Use | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `tool_choice: any/tool` | ❌ (400 error) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Vision (images) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| PDF Input | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Prompt Caching | ✅ (2.5% reads) | ✅ (10% reads) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Streaming | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Batch API | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Server-Side Fallbacks | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Computer Use | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Mid-conv tool changes | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ |
+| Content Watermarking | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
 **Knowledge cutoffs:**
+- Fable 5.1 / Mythos 5.1: reliable Jun 2026, training Jun 2026
 - Fable 5 / Mythos 5: reliable Jan 2026, training Jan 2026
 - Opus 5: reliable May 2026, training May 2026  
 - Sonnet 5: reliable Jan 2026, training Jan 2026
@@ -87,9 +119,8 @@
 
 **Effort defaults:**
 - Opus 4.8: defaults to `high` on all surfaces
-- Opus 5 / Sonnet 5: defaults to `high` on Claude API and Claude Code
-- On Opus 5: `thinking: {type: "disabled"}` only allowed at effort `high` or below
-- Fable 5: adaptive thinking is always on; `thinking: {type: "disabled"}` returns 400
+- Opus 5 / Sonnet 5 / Fable 5.1: defaults to `high` on Claude API and Claude Code
+- Fable 5 / Fable 5.1: adaptive thinking is always on; `thinking: {type: "disabled"}` returns 400
 
 ## Prompt Caching Minimum Tokens
 

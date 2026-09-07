@@ -1,6 +1,6 @@
 # Extended Thinking
 
-> **Last updated:** 2026-08-31
+> **Last updated:** 2026-09-07
 
 ## Overview
 
@@ -191,12 +191,80 @@ response2 = client.messages.create(
 - Creative writing (thinking adds cost without benefit)
 - Tasks where latency matters more than accuracy
 
+## Thinking Block Binding (Fable 5.1 / Mythos 5.1)
+
+Thinking blocks are **model-specific**: they are preserved only when replayed to the model that produced them or a newer model. Older models receive the messages with those blocks silently dropped.
+
+**For accounts created on/after August 31, 2026:** Replaying thinking blocks to a request where `system`, `tools`, or earlier messages have changed returns a **400 error** instead of silently dropping them. Use the beta header to control this behavior:
+
+```python
+# Beta header for thinking block binding controls
+client.messages.create(
+    model="claude-fable-5-1",
+    max_tokens=4096,
+    thinking={"type": "adaptive"},
+    extra_headers={"anthropic-beta": "thinking-binding-controls-2026-08-01"},
+    # Returns input_transformations field showing dropped blocks
+    # Configure: thinking.block_binding.prefix_mismatch_behavior
+    messages=[...],
+)
+```
+
+**Accepted thinking blocks on Fable 5.1 / Mythos 5.1:** Thinking blocks produced by Claude Opus 5, Claude Fable 5, Claude Mythos 5, Claude Fable 5.1, Claude Mythos 5.1, and any earlier Claude model.
+
+## Per-Message Effort Changes (Beta)
+
+Available on Claude Fable 5.1, Mythos 5.1, and Opus 5. Add a mid-conversation system message to change effort without invalidating prompt cache:
+
+```python
+messages = [
+    {"role": "user", "content": "..."},
+    {"role": "assistant", "content": "..."},
+    {
+        "role": "system",
+        "content": [{"type": "output_config", "output_config": {"effort": "low"}}],
+    },
+    {"role": "user", "content": "Now give a quick summary."},
+]
+client.messages.create(
+    model="claude-fable-5-1",
+    max_tokens=2048,
+    messages=messages,
+    extra_headers={"anthropic-beta": "mid-conversation-output-config-2026-07-01"},
+)
+```
+
+## Turn-Scoped System Messages (Beta)
+
+Set `clear_at: "next_user_message"` on a mid-conversation system message to have it apply only to the current turn. The message stays in history at zero token cost and does not accumulate or invalidate the prompt cache:
+
+```python
+messages = [
+    {"role": "user", "content": "Write code for X."},
+    {"role": "assistant", "content": "..."},
+    {
+        "role": "system",
+        "content": "This turn: respond in Spanish only.",
+        "clear_at": "next_user_message",  # won't apply to next turn
+    },
+    {"role": "user", "content": "Explain it."},
+]
+client.messages.create(
+    model="claude-fable-5-1",
+    max_tokens=2048,
+    messages=messages,
+    extra_headers={"anthropic-beta": "mid-conversation-system-clear-at-2026-08-21"},
+)
+```
+
 ## Gotchas
 
 - `max_tokens` must exceed `budget_tokens` — the model needs room for the actual response
 - Thinking blocks are visible to users if you surface them; consider whether to display them
 - Thinking tokens are billed at the output token rate
 - Not available on Haiku models
+- On Fable 5.1/Mythos 5.1: thinking blocks from earlier turns must be from a compatible model or newer (see Thinking Block Binding section above)
+- On Fable 5.1/Mythos 5.1: `thinking: {type: "disabled"}` returns 400 — adaptive thinking is always on
 
 ## Related
 

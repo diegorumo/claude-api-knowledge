@@ -3,8 +3,8 @@
 Comprehensive reference documentation for developers building with the Claude API.
 
 **Last full crawl:** 2026-05-30  
-**Last incremental update:** 2026-08-31  
-**SDK versions:** Python v1.2.0, TypeScript v0.122.0  
+**Last incremental update:** 2026-09-07  
+**SDK versions:** Python v1.4.0, TypeScript v0.124.0  
 **Primary sources:** anthropic-sdk-python, anthropic-sdk-typescript, anthropic-cookbook
 
 > **Coverage note:** The Anthropic documentation site (docs.anthropic.com / platform.claude.com/docs)
@@ -29,14 +29,14 @@ Comprehensive reference documentation for developers building with the Claude AP
 
 | File | Description | Last Updated |
 |------|-------------|-------------|
-| [MODELS.md](./MODELS.md) | Current model IDs, capabilities, context windows, pricing notes | 2026-08-17 |
+| [MODELS.md](./MODELS.md) | Current model IDs, capabilities, context windows, pricing notes | 2026-09-07 |
 | [QUICK-REFERENCE.md](./QUICK-REFERENCE.md) | Common code patterns: auth, messages, streaming, tools, caching | 2026-07-27 |
 | [authentication.md](./authentication.md) | API keys (workspace/personal/service-account), HTTP headers, SDK setup, third-party platforms | 2026-08-31 |
 | [messages-api.md](./messages-api.md) | Messages endpoint: params, content blocks, response format | 2026-07-27 |
 | [streaming.md](./streaming.md) | SSE events, delta types, streaming SDK helpers | 2026-06-29 |
 | [rate-limits-errors.md](./rate-limits-errors.md) | Error codes, retry logic, rate limit headers | 2026-05-30 |
 | [token-counting.md](./token-counting.md) | Count tokens before sending, context window management | 2026-07-06 |
-| [sdks.md](./sdks.md) | Python and TypeScript SDK reference, async, pagination; Python v1.0.0 breaking changes; Organization API; Standard Schema support | 2026-08-31 |
+| [sdks.md](./sdks.md) | Python and TypeScript SDK reference, async, pagination; Python v1.0.0 breaking changes; Organization API; Standard Schema support | 2026-09-07 |
 
 ### Features
 
@@ -45,8 +45,8 @@ Comprehensive reference documentation for developers building with the Claude AP
 | [tool-use.md](./tool-use.md) | Function calling, agentic loop, tool choice, built-in tools, tool definition properties, mid-conversation tool changes | Stable | 2026-08-10 |
 | [skills-api.md](./skills-api.md) | Upload and manage reusable skill packages; BetaSkill renamed BetaContainerSkill in v1.2.0+ | **GA** | 2026-08-31 |
 | [programmatic-tool-calling.md](./programmatic-tool-calling.md) | Call tools from code execution sandbox, reduce round-trips and token usage | Stable | 2026-06-22 |
-| [prompt-caching.md](./prompt-caching.md) | cache_control, TTL, pricing, multi-turn caching | Stable | 2026-05-30 |
-| [extended-thinking.md](./extended-thinking.md) | Thinking blocks, budget_tokens, adaptive mode, `updates` display mode | Stable | 2026-08-31 |
+| [prompt-caching.md](./prompt-caching.md) | cache_control, TTL, pricing, multi-turn caching; Fable 5.1/Mythos 5.1 2.5% cache read pricing | Stable | 2026-09-07 |
+| [extended-thinking.md](./extended-thinking.md) | Thinking blocks, budget_tokens, adaptive mode, `updates` display mode, thinking block binding (Fable 5.1), per-message effort, turn-scoped system messages | Stable | 2026-09-07 |
 | [vision.md](./vision.md) | Image inputs: base64, URL, formats, limits | Stable | 2026-05-30 |
 | [pdf-support.md](./pdf-support.md) | PDF document inputs, Files API for PDFs | Stable | 2026-05-30 |
 | [batch-api.md](./batch-api.md) | Async batch processing, results retrieval | Stable | 2026-05-30 |
@@ -77,22 +77,23 @@ Comprehensive reference documentation for developers building with the Claude AP
 ## Current Model IDs (Quick Reference)
 
 ```
-# Current recommended models (as of Aug 2026):
-claude-fable-5               # Most capable; 1M ctx; $10/$50 MTok; always-on thinking
+# Current recommended models (as of Sep 2026):
+claude-fable-5-1             # Most capable; 1M ctx; $10/$50 MTok; always-on thinking; 2.5% cache reads
 claude-opus-5                # Advanced; 1M ctx; $5/$25 MTok; best for agentic coding
 claude-sonnet-5              # Best balance; 1M ctx; $2/$10 MTok (price locked Aug 10, 2026)
 claude-haiku-4-5-20251001    # Fastest; 200k ctx; $1/$5 MTok
 claude-haiku-4-5             # Alias for claude-haiku-4-5-20251001
 
 # Legacy / still available:
+claude-fable-5               # 1M ctx; $10/$50 MTok; predecessor to Fable 5.1
 claude-opus-4-8              # 1M ctx; $5/$25 MTok
 claude-opus-4-7              # 1M ctx; $5/$25 MTok
 claude-opus-4-6              # 1M ctx; $5/$25 MTok
 claude-sonnet-4-6            # 1M ctx; $3/$15 MTok
 
 # Invitation-only:
-# claude-mythos-5            → Project Glasswing only; same specs as Fable 5
-# claude-mythos-preview      → predecessor to claude-mythos-5
+# claude-mythos-5-1          → Project Glasswing only; same specs as Fable 5.1; 2.5% cache reads
+# claude-mythos-5            → Project Glasswing only; predecessor to Mythos 5.1
 
 # Retired (return errors):
 # claude-opus-4-1 / claude-opus-4-1-20250805 → retired Aug 5, 2026; migrate to claude-opus-5
@@ -129,3 +130,7 @@ content-type: application/json
 | MCP Tunnels | `anthropic-beta: mcp-tunnels-2026-06-22` |
 | Mid-Conversation Tool Changes | `anthropic-beta: mid-conversation-tool-changes-2026-07-01` |
 | Skills API (old format only) | `anthropic-beta: skills-2025-10-02` (GA — no header needed; header keeps backward compat) |
+| Thinking Block Binding Controls (Fable 5.1) | `anthropic-beta: thinking-binding-controls-2026-08-01` |
+| Per-Message Effort Changes | `anthropic-beta: mid-conversation-output-config-2026-07-01` |
+| Turn-Scoped System Messages | `anthropic-beta: mid-conversation-system-clear-at-2026-08-21` |
+| Thinking Display Updates | `anthropic-beta: thinking-display-updates-2026-08-18` |

@@ -1,6 +1,6 @@
 # SDKs (Python & TypeScript)
 
-> **Last updated:** 2026-08-31
+> **Last updated:** 2026-09-07
 
 ## Python SDK
 
@@ -327,6 +327,8 @@ const client = new Anthropic({
 
 | SDK | Version | Date | Changes |
 |-----|---------|------|---------|
+| Python | v1.4.0 | 2026-09-04 | Add Claude Tag category and user breakdowns to usage reports; add named types for organization compliance settings state; add workspace ID support on additional endpoints; fix error messaging when httpx object passed instead of httpx2; fix custom-code merge in messages resources; refresh platform model IDs in examples |
+| Python | v1.3.0 | 2026-09-01 | Beta user profiles: add `external_user_onboarded_at`, replace `relationship` with `access_type`; organization compliance settings updates; user-profile `order_by`, memory-store, and toolset schema enhancements; fix AWS `base_url` resolution under `skip_auth` and `with_options`; add results to GA raw/streaming response wrappers for batches; fix multipart filename derivation for file tuples |
 | Python | v1.2.0 | 2026-08-27 | `client.beta.files` and `client.beta.skills` now use GA shapes and no longer send `files-api-2025-04-14` / `skills-2025-10-02` beta headers. `client.beta.skills.delete()` now deletes all versions. Fix: sign raw bytes for Bedrock binary uploads; session event accumulator compatible with new event types; tools: read file sections exceeding size limits via `view_range`; preserve exact file bytes (no newline translation); webhook `unwrap()` now requires headers parameter. |
 | Python | v1.1.0 | 2026-08-26 | Add `"updates"` thinking display mode (beta); add missing `anthropic-beta` header values; Organization API endpoints (`client.beta.organization.*`); fix `SessionToolRunner` continues on `pause_turn` events; fix documentation link for long-requests error. |
 | Python | v1.0.0 | 2026-08-20 | **Breaking**: httpx→httpx2; Python 3.10+; remove Text Completions API, temperature/top_p/top_k on messages, client-side compaction_control; async .with_raw_response needs `await response.parse()`; AnthropicBedrock errors if no AWS region. Non-breaking: fix output_format warning; restore streaming event imports. See MIGRATION.md. |
@@ -357,6 +359,8 @@ const client = new Anthropic({
 | Python | v0.107.0 | 2026-06-06 | Managed Agents type updates |
 | Python | v0.106.0 | 2026-06-05 | Mark claude-opus-4-1 deprecated; Foundry client fixes |
 | Python | v0.105.0 | 2026-05-28 | Add claude-opus-4-8, mid-conversation system blocks, output_tokens_details |
+| TypeScript | v0.124.0 | 2026-09-04 | Add Claude Tag category and user breakdowns to usage reports; add named types for organization compliance settings state; add workspace ID support on additional endpoints; fix custom-code merge in messages resources; create agent-toolset files/directories as owner-only; documentation updates |
+| TypeScript | v0.123.0 | 2026-09-01 | Beta user profiles: add `external_user_onboarded_at`, replace `relationship` with `access_type`; organization compliance settings, user-profile `order_by`, memory-store and toolset schema updates; prevent credential file access in non-Node bundles; detail the beta files/skills GA-shape change |
 | TypeScript | v0.122.0 | 2026-08-27 | `client.beta.files` and `client.beta.skills` now use GA shapes and no longer send `files-api-2025-04-14` / `skills-2025-10-02` beta headers. `BetaSkill` (container Skill reference) renamed to `BetaContainerSkill`. Fix: error classification for cross-realm DOMException; SSE parse errors respect configured logger; event accumulator forward-compatible with new event types; file read `view_range` for large files; bare Blob filenames default correctly on skills endpoints; webhook `unwrap()` requires headers. TypeScript 5.0 documented as minimum. |
 | TypeScript | v0.121.0 | 2026-08-26 | Add `"updates"` thinking display mode (beta); Organization API endpoints (`client.beta.organization.*`); Standard Schema support for structured outputs and tools; `SessionToolRunner` continues on `pause_turn` events; remove NodeJS.ProcessEnv references from published types; adaptive thinking incorporated into examples. |
 | TypeScript | v0.120.0 | 2026-08-19 | Managed agents web search/fetch domain config; self-hosted sandbox memory support; single pnpm workspace lockfile |

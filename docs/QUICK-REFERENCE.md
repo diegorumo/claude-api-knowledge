@@ -1,6 +1,6 @@
 # Quick Reference
 
-> **Last updated:** 2026-07-27  
+> **Last updated:** 2026-09-07  
 > Common patterns for developers building with the Claude API.
 
 ## Authentication
@@ -47,20 +47,18 @@ console.log(response.content[0].text);
 
 | Model | ID | Use For |
 |-------|-----|--------|
-| Opus 5 | `claude-opus-5` | Newest Opus (July 2026) |
-| Fable 5 | `claude-fable-5` | New top-tier (June 2026) |
-| Mythos 5 | `claude-mythos-5` | New model family (June 2026) |
-| Opus 4.8 | `claude-opus-4-8` | Highest Opus 4 capability |
-| Opus 4.7 | `claude-opus-4-7` | High capability |
-| Opus 4.6 | `claude-opus-4-6` | Recommended Opus 4 |
-| Sonnet 5 | `claude-sonnet-5` | New Sonnet generation (June 2026) |
-| Sonnet 4.6 | `claude-sonnet-4-6` | Balanced (default choice) |
-| Haiku 4.5 | `claude-haiku-4-5-20251001` | Fastest / cheapest |
+| Fable 5.1 | `claude-fable-5-1` | Most capable (Sep 2026); 2.5% cache reads; `tool_choice any/tool` unsupported |
+| Opus 5 | `claude-opus-5` | Complex agentic coding; 1M ctx |
+| Sonnet 5 | `claude-sonnet-5` | Best speed/intelligence balance; $2/$10 MTok |
+| Haiku 4.5 | `claude-haiku-4-5-20251001` | Fastest / cheapest; 200k ctx |
+| Fable 5 | `claude-fable-5` | Legacy (still available) |
+| Opus 4.8 | `claude-opus-4-8` | Legacy Opus 4 |
+| Opus 4.6 | `claude-opus-4-6` | Legacy Opus 4 |
+| Sonnet 4.6 | `claude-sonnet-4-6` | Legacy Sonnet |
 
-> **Deprecated:** `claude-opus-4-1` — migrate to `claude-opus-4-6`.  
-> **New:** `claude-opus-5` added July 2026 — check Anthropic docs for full capability details.  
-> **New:** `claude-fable-5` and `claude-mythos-5` support server-side fallbacks on refusal.  
-> **New:** `claude-sonnet-5` added June 2026 — check Anthropic docs for full capability details.
+> **New (Sep 2026):** `claude-fable-5-1` — most capable model; always-on adaptive thinking; 2.5% cache reads; requires 30-day data retention; `tool_choice: any/tool` returns 400.  
+> **Invitation-only:** `claude-mythos-5-1` (Project Glasswing) — same specs as Fable 5.1.  
+> **Deprecated:** `claude-opus-4-1` — migrate to `claude-opus-4-6` or newer.
 
 ---
 

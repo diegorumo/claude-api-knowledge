@@ -1,5 +1,39 @@
 # Knowledge Base Changelog
 
+## 2026-09-07 — Incremental Update
+
+Sources: platform.claude.com/docs/en/release-notes/overview (Sep 1–4, 2026), platform.claude.com/docs/en/about-claude/models/overview, Python SDK CHANGELOG v1.3.0–v1.4.0 (2026-09-01–04), TypeScript SDK CHANGELOG v0.123.0–v0.124.0 (2026-09-01–04).
+
+### Changes
+
+- **Claude Fable 5.1 and Claude Mythos 5.1 launch (2026-09-01)** — New top-tier models replacing Fable 5 as the primary recommendation. Model IDs: `claude-fable-5-1` (GA) and `claude-mythos-5-1` (invitation-only, Project Glasswing). Specs: 1M context, 128k max output, $10/$50 MTok (same as Fable 5), always-on adaptive thinking, reliable knowledge cutoff Jun 2026. Available on Claude API, Amazon Bedrock, Google Cloud Vertex, Claude Platform on AWS, Microsoft Foundry. Retirement not before Sep 1, 2027. **Breaking constraints vs. earlier models:**
+  - `tool_choice: {type: "any"}` and `tool_choice: {type: "tool"}` not supported (return 400) — use structured outputs instead
+  - Thinking blocks replayed to an older model are silently dropped; for new accounts (Aug 31+) replaying thinking blocks after `system`/`tools`/earlier message changes returns 400
+  - Beta header `thinking-binding-controls-2026-08-01` reports dropped blocks and exposes `thinking.block_binding.prefix_mismatch_behavior` control
+  - Require 30-day data retention (not available under zero data retention without Anthropic authorization)
+  - Text output carries Anthropic's text watermark; media from code execution carries C2PA Content Credentials when retrieved via Files API
+- **Prompt cache read pricing for Fable 5.1 / Mythos 5.1** — Cache reads cost 2.5% of base input price ($0.25/MTok, vs. standard 10% on other models — 4× cheaper). Updated `prompt-caching.md`.
+- **Per-Message Effort Changes (Beta, 2026-09-01)** — On Fable 5.1, Mythos 5.1, and Opus 5: add a mid-conversation `role: "system"` message with `output_config.effort` to change effort mid-conversation without invalidating the prompt cache. Beta header: `mid-conversation-output-config-2026-07-01`. Updated `extended-thinking.md`.
+- **Turn-Scoped System Messages (Beta, 2026-09-01)** — Beta header `mid-conversation-system-clear-at-2026-08-21`: set `clear_at: "next_user_message"` on a mid-conversation system message; it applies to the current turn only, stays in history at zero token cost, and does not invalidate prompt cache or thinking blocks. Updated `extended-thinking.md`.
+- **Thinking Display Updates — new beta header (2026-09-01)** — New beta header `thinking-display-updates-2026-08-18` for the `display: "updates"` thinking mode (also available via the older method documented in the Aug 31 update). Returns empty `thinking` field (like `"omitted"`) plus short progress updates between tool calls as text. Max one `thinking` block before a tool call. Updated `README.md` beta headers table.
+- **`ant apply` CLI command (CLI v1.30.0, 2026-09-03)** — New `ant apply` command creates and updates agents, environments, skills, memory stores, and deployments from files in a repository. Define resources in files → run `ant apply` → approve the plan → commit the `claude-lock.json` lockfile; subsequent runs update the same resources rather than creating new ones. No SDK-level changes.
+- **Admin API documentation update (2026-09-01)** — Admin API, Claude Enterprise Analytics API, and Compliance API guides now require `anthropic-version` header on every request (aligns with rest of Claude API). No behavior change — the header was already accepted.
+- **Python v1.3.0 / TypeScript v0.123.0 (2026-09-01)** — Beta user profiles: add `external_user_onboarded_at` field, replace `relationship` with `access_type`; organization compliance settings updates; user-profile `order_by`, memory-store, and toolset schema enhancements; fix AWS `base_url` resolution under `skip_auth` and `with_options`; prevent credential file access in non-Node bundles (TypeScript). Updated `sdks.md`.
+- **Python v1.4.0 / TypeScript v0.124.0 (2026-09-04)** — Add Claude Tag category and user breakdowns to usage reports; add named types for organization compliance settings state; add workspace ID support on additional endpoints; fix error messaging when httpx object passed instead of httpx2 (Python); fix custom-code merge in messages resources; create agent-toolset files and directories as owner-only (TypeScript). Updated `sdks.md`.
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `MODELS.md` | Added `claude-fable-5-1` as new primary model; added Fable 5.1/Mythos 5.1 API restrictions section; added `claude-fable-5` to legacy table; updated capabilities table (added Fable 5.1 column, `tool_choice any/tool` row, content watermarking row); updated knowledge cutoffs; updated date |
+| `QUICK-REFERENCE.md` | Updated model IDs table to lead with `claude-fable-5-1`; updated notes; updated date |
+| `prompt-caching.md` | Added Fable 5.1/Mythos 5.1 cache read pricing note (2.5% = $0.25/MTok); updated date |
+| `extended-thinking.md` | Added "Thinking Block Binding" section; added "Per-Message Effort Changes" beta section; added "Turn-Scoped System Messages" beta section; added Fable 5.1 gotchas; updated date |
+| `sdks.md` | Added Python v1.3.0 and v1.4.0; added TypeScript v0.123.0 and v0.124.0 to version history table; updated date |
+| `README.md` | Updated last-incremental-update date (2026-09-07); updated SDK versions (Python v1.4.0, TypeScript v0.124.0); updated model quick reference; added new beta headers (thinking-binding-controls, mid-conversation-output-config, mid-conversation-system-clear-at, thinking-display-updates); updated file last-updated dates |
+
+---
+
 ## 2026-08-31 — Incremental Update
 
 Sources: platform.claude.com/docs/en/release-notes/overview (Aug 26–27, 2026), Python SDK CHANGELOG v1.1.0–v1.2.0 (2026-08-26–27), TypeScript SDK CHANGELOG v0.121.0–v0.122.0 (2026-08-26–27).

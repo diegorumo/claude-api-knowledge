@@ -1,13 +1,15 @@
 # Prompt Caching
 
-> **Last updated:** 2026-05-30  
+> **Last updated:** 2026-09-07  
 > **Source:** Anthropic cookbook — demonstrated 3.3x speedup on 187K-token document
 
 ## Overview
 
 Prompt caching stores processed prompt prefixes so subsequent requests reuse them instead of re-processing. Benefits:
 - **Latency:** 2–3x faster (cache hits skip tokenization/KV computation)
-- **Cost:** Reads cost ~10% of base input price; only 125% for cache writes
+- **Cost:** Reads cost ~10% of base input price on most models; only 125% for cache writes
+
+> **Fable 5.1 / Mythos 5.1 cache pricing:** Cache reads on `claude-fable-5-1` and `claude-mythos-5-1` cost only **2.5% of base input price** ($0.25/MTok vs. $10/MTok full price). This is 4× cheaper than the standard 10% rate on other models.
 
 ## How It Works
 

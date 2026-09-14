@@ -1,6 +1,6 @@
 # SDKs (Python & TypeScript)
 
-> **Last updated:** 2026-09-07
+> **Last updated:** 2026-09-14
 
 ## Python SDK
 
@@ -323,10 +323,47 @@ const client = new Anthropic({
 
 **Server-side fallbacks** (claude-fable-5, claude-mythos-5): Anthropic's infrastructure automatically switches models when content policy triggers — no client code required. Set `fallback` param if/when the API exposes it.
 
+## Python v1.5.0+ Convenience Additions (Sep 2026)
+
+### `Message.to_param()` / `BetaMessage.to_param()`
+
+Convert a response message directly back to a messages-API parameter, useful for multi-turn conversation loops:
+
+```python
+response = client.messages.create(
+    model="claude-opus-5",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "Hello!"}],
+)
+
+# Continue conversation using the response directly
+followup = client.messages.create(
+    model="claude-opus-5",
+    max_tokens=1024,
+    messages=[
+        {"role": "user", "content": "Hello!"},
+        response.to_param(),  # converts Message → MessageParam
+        {"role": "user", "content": "Tell me more."},
+    ],
+)
+```
+
+### Tools Accepted Directly in `messages.create` (v1.5.0+)
+
+The `tools` parameter on `messages.create`, `parse`, `stream`, and `count_tokens` now accepts `BetaTool` / pydantic-style tool objects directly in addition to raw dicts.
+
+### New Error Classes (v1.5.0+)
+
+| Class | When raised |
+|-------|-------------|
+| `CredentialsError` | Credential file is missing, malformed, or has wrong permissions |
+| `IdentityTokenFileError` | Identity token file is unavailable or cannot be read |
+
 ## SDK Version History
 
 | SDK | Version | Date | Changes |
 |-----|---------|------|---------|
+| Python | v1.5.0 | 2026-09-10 | `auto` permission policy for Managed Agents (agent and MCP toolsets); `content_too_large` error code for `web_fetch`; public GitHub repo mounting without `authorization_token` in sessions; `user-profiles-2026-09-04` beta value + `external_user_details`; `Message.to_param()` and `BetaMessage.to_param()` convenience methods; tools accepted directly in `messages.create`, `parse`, `stream`, and `count_tokens`; new `CredentialsError` and `IdentityTokenFileError` error classes; fix `extra_body` not merged before client hooks; fix partial tool input JSON in streaming; `parsed_output` excluded from text blocks in type definitions |
 | Python | v1.4.0 | 2026-09-04 | Add Claude Tag category and user breakdowns to usage reports; add named types for organization compliance settings state; add workspace ID support on additional endpoints; fix error messaging when httpx object passed instead of httpx2; fix custom-code merge in messages resources; refresh platform model IDs in examples |
 | Python | v1.3.0 | 2026-09-01 | Beta user profiles: add `external_user_onboarded_at`, replace `relationship` with `access_type`; organization compliance settings updates; user-profile `order_by`, memory-store, and toolset schema enhancements; fix AWS `base_url` resolution under `skip_auth` and `with_options`; add results to GA raw/streaming response wrappers for batches; fix multipart filename derivation for file tuples |
 | Python | v1.2.0 | 2026-08-27 | `client.beta.files` and `client.beta.skills` now use GA shapes and no longer send `files-api-2025-04-14` / `skills-2025-10-02` beta headers. `client.beta.skills.delete()` now deletes all versions. Fix: sign raw bytes for Bedrock binary uploads; session event accumulator compatible with new event types; tools: read file sections exceeding size limits via `view_range`; preserve exact file bytes (no newline translation); webhook `unwrap()` now requires headers parameter. |
@@ -359,6 +396,7 @@ const client = new Anthropic({
 | Python | v0.107.0 | 2026-06-06 | Managed Agents type updates |
 | Python | v0.106.0 | 2026-06-05 | Mark claude-opus-4-1 deprecated; Foundry client fixes |
 | Python | v0.105.0 | 2026-05-28 | Add claude-opus-4-8, mid-conversation system blocks, output_tokens_details |
+| TypeScript | v0.125.0 | 2026-09-10 | `auto` permission policy for Managed Agents (agent and MCP toolsets); `content_too_large` error code for `web_fetch`; public GitHub repo mounting without `authorization_token` in sessions; `user-profiles-2026-09-04` beta value + `external_user_details` |
 | TypeScript | v0.124.0 | 2026-09-04 | Add Claude Tag category and user breakdowns to usage reports; add named types for organization compliance settings state; add workspace ID support on additional endpoints; fix custom-code merge in messages resources; create agent-toolset files/directories as owner-only; documentation updates |
 | TypeScript | v0.123.0 | 2026-09-01 | Beta user profiles: add `external_user_onboarded_at`, replace `relationship` with `access_type`; organization compliance settings, user-profile `order_by`, memory-store and toolset schema updates; prevent credential file access in non-Node bundles; detail the beta files/skills GA-shape change |
 | TypeScript | v0.122.0 | 2026-08-27 | `client.beta.files` and `client.beta.skills` now use GA shapes and no longer send `files-api-2025-04-14` / `skills-2025-10-02` beta headers. `BetaSkill` (container Skill reference) renamed to `BetaContainerSkill`. Fix: error classification for cross-realm DOMException; SSE parse errors respect configured logger; event accumulator forward-compatible with new event types; file read `view_range` for large files; bare Blob filenames default correctly on skills endpoints; webhook `unwrap()` requires headers. TypeScript 5.0 documented as minimum. |

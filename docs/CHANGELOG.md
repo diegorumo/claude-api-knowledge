@@ -1,5 +1,36 @@
 # Knowledge Base Changelog
 
+## 2026-09-14 — Incremental Update
+
+Sources: platform.claude.com/docs/en/release-notes/overview (Sep 3–10, 2026), platform.claude.com/docs/en/managed-agents/permission-policies, platform.claude.com/docs/en/build-with-claude/structured-outputs, Python SDK CHANGELOG v1.5.0 (2026-09-10), TypeScript SDK CHANGELOG v0.125.0 (2026-09-10).
+
+### Changes
+
+- **`auto` permission policy for Managed Agents (Sep 10, 2026)** — New third permission policy type (`{"type": "auto"}`) for both `agent_toolset_20260401` and MCP toolsets. The server evaluates each tool call in context and either runs it (safe), denies it (high-risk, client cannot override), or pauses for confirmation (indeterminate). Set on `default_config.permission_policy` or per-tool `configs[n].permission_policy`. Requires Python v1.5.0+ / TypeScript v0.125.0+.
+- **`evaluation` object on tool events (Sep 10, 2026)** — `agent.tool_use` and `agent.mcp_tool_use` events now carry an `evaluation` field alongside `evaluated_permission`. Shows which policy ran and includes `reason_code` (`"high_risk"` or `"indeterminate"`) when outcome is `deny` or `ask` under `auto`.
+- **`ant beta:sessions connect` CLI command (Sep 10, 2026)** — Attach terminal to a running Managed Agents session to follow events live and approve/deny tool calls interactively. `--web` flag serves the Claude Console session viewer locally.
+- **Public GitHub repository mounting without authorization_token (Sep 10, 2026)** — Sessions can now mount public GitHub repos without an explicit `authorization_token` (previously required).
+- **`content_too_large` error for `web_fetch` tool (Sep 10, 2026)** — New error code returned when a fetched page exceeds the size limit. Managed Agents can cap content size proactively with `max_content_tokens`.
+- **`user-profiles-2026-09-04` beta header (Sep 10, 2026)** — New beta value enabling `external_user_details` field in user profile operations. Added to README beta headers table.
+- **`Message.to_param()` and `BetaMessage.to_param()` (Python v1.5.0, Sep 10)** — Convert a response message back to a `MessageParam` for multi-turn loops.
+- **Tools accepted directly in `messages.create`, `parse`, `stream`, `count_tokens` (Python v1.5.0)** — `BetaTool` / pydantic tool objects can now be passed directly in the `tools` list, not just raw dicts.
+- **`CredentialsError` and `IdentityTokenFileError` (Python v1.5.0)** — New error classes for credential file and identity token file issues.
+- **`ant apply` CLI command (Sep 3, 2026)** — Infrastructure-as-code for Claude resources. Create/update agents, environments, skills, memory stores, and deployments from repo YAML/Markdown files. Generates a plan and writes `claude-lock.json` lockfile.
+- **Per-message effort on Google Cloud (Sep 3, 2026)** — Per-message effort changes (beta `mid-conversation-output-config-2026-07-01`) now available on Google Cloud for Fable 5.1, Mythos 5.1, and Opus 5.
+- **New doc: `structured-outputs.md`** — Full reference for `output_config.format` (JSON schema outputs), Pydantic/Zod helpers, supported schema features, gotchas, and migration from beta.
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `structured-outputs.md` | **New file** — GA structured outputs (`output_config.format`) reference with code examples in Python, TypeScript, and cURL |
+| `managed-agents.md` | Expanded permission policy section with `auto` type, `evaluation` event object, `ant beta:sessions connect` CLI, and public GitHub repo mounting |
+| `sdks.md` | Added Python v1.5.0 / TypeScript v0.125.0 entries; added `Message.to_param()`, new error classes, tools-in-create convenience |
+| `web-search.md` | Added `content_too_large` error gotcha |
+| `README.md` | Added `structured-outputs.md` to index; updated SDK versions and last-updated dates; added `user-profiles-2026-09-04` beta header |
+
+---
+
 ## 2026-09-07 — Incremental Update
 
 Sources: platform.claude.com/docs/en/release-notes/overview (Sep 1–4, 2026), platform.claude.com/docs/en/about-claude/models/overview, Python SDK CHANGELOG v1.3.0–v1.4.0 (2026-09-01–04), TypeScript SDK CHANGELOG v0.123.0–v0.124.0 (2026-09-01–04).

@@ -1,8 +1,8 @@
 # Managed Agents (Beta)
 
-> **Last updated:** 2026-08-24  
+> **Last updated:** 2026-09-14  
 > **Status:** Beta — active development  
-> **SDK changelog:** v0.100.0+ (May 2026), v0.115.0 (June 2026), v0.116.0–v1.0.0 Python / v0.110.0–v0.120.0 TypeScript (July–Aug 2026)
+> **SDK changelog:** v0.100.0+ (May 2026), v0.115.0 (June 2026), v0.116.0–v1.0.0 Python / v0.110.0–v0.120.0 TypeScript (July–Aug 2026), v1.5.0 Python / v0.125.0 TypeScript (Sep 2026)
 
 ## Overview
 
@@ -599,9 +599,9 @@ for await (const event of threadStream) {
 - `BetaManagedAgentsSessionThreadCreatedEvent` — fired when a subagent spawns a new thread
 - `BetaManagedAgentsSessionThreadStatusRunningEvent` / `...IdleEvent` / `...TerminatedEvent` / `...RescheduledEvent`
 
-## Session Tool Call Permissions — `evaluated_permission` (TypeScript v0.111.0+)
+## Session Tool Call Permissions
 
-Session tool-use events (`agent.tool_use`, `agent.custom_tool_use`, `agent.mcp_tool_use`) now carry an **`evaluated_permission`** field that gates execution:
+Session tool-use events (`agent.tool_use`, `agent.custom_tool_use`, `agent.mcp_tool_use`) carry an **`evaluated_permission`** field that gates execution:
 
 | Value | Behavior |
 |-------|----------|
@@ -610,12 +610,88 @@ Session tool-use events (`agent.tool_use`, `agent.custom_tool_use`, `agent.mcp_t
 | `"deny"` | Tool is not executed; call still visible to consumers |
 | *(absent)* | Treated as `"allow"` (default) |
 
+### Permission Policy Types
+
+Set on `default_config.permission_policy` or per-tool `configs[n].permission_policy`:
+
+| Policy | Behavior |
+|--------|----------|
+| `{"type": "always_allow"}` | All calls run immediately (default for agent toolset) |
+| `{"type": "always_ask"}` | All calls pause for confirmation (default for MCP toolsets) |
+| `{"type": "auto"}` | Server evaluates each call: runs it, denies it, or pauses |
+
+### `auto` Permission Policy (Python v1.5.0+ / TypeScript v0.125.0+, Sep 2026)
+
+With `auto`, the server evaluates every call based on its inputs and session context, then:
+- **Runs it** — when safe (behaves like `always_allow`)
+- **Denies it** — when high-risk; agent gets an error tool result; client cannot override
+- **Pauses for approval** — when indeterminate (behaves like `always_ask`)
+
+```python
+agent = client.beta.agents.create(
+    name="Ops Agent",
+    model="claude-opus-5",
+    tools=[{
+        "type": "agent_toolset_20260401",
+        "default_config": {"permission_policy": {"type": "auto"}},
+        "configs": [
+            # Override bash specifically to always require confirmation
+            {"name": "bash", "permission_policy": {"type": "always_ask"}},
+        ],
+    }],
+)
+```
+
+```typescript
+const agent = await client.beta.agents.create({
+  name: "Ops Agent",
+  model: "claude-opus-5",
+  tools: [{
+    type: "agent_toolset_20260401",
+    default_config: { permission_policy: { type: "auto" } },
+    configs: [{ name: "bash", permission_policy: { type: "always_ask" } }],
+  }],
+});
+```
+
+> **Warning:** `auto` is not a human checkpoint. If the server determines a call is safe, it runs before anyone sees it. Use `always_ask` on any tool where a person must review every call.
+
+### `evaluation` Object on Tool Events (Sep 2026)
+
+Each `agent.tool_use` and `agent.mcp_tool_use` event now carries an `evaluation` object showing what policy ran and why:
+
+| `evaluation.type` | `evaluated_permission` | Meaning |
+|-------------------|------------------------|---------|
+| `"always_allow"` | `"allow"` | Policy is `always_allow`; call ran |
+| `"always_ask"` | `"ask"` | Policy is `always_ask`; paused for confirmation |
+| `"auto"` + `evaluated_permission.type: "allow"` | `"allow"` | Server determined call is safe |
+| `"auto"` + `evaluated_permission.type: "ask"`, `reason_code: "indeterminate"` | `"ask"` | Server undecided; paused |
+| `"auto"` + `evaluated_permission.type: "deny"`, `reason_code: "high_risk"` | `"deny"` | Server denied as high-risk |
+
+Example denied event under `auto`:
+```json
+{
+  "type": "agent.tool_use",
+  "name": "bash",
+  "input": {"command": "rm -rf /workspace/reports"},
+  "evaluated_permission": "deny",
+  "evaluation": {
+    "type": "auto",
+    "evaluated_permission": {
+      "type": "deny",
+      "reason_code": "high_risk"
+    }
+  }
+}
+```
+
+`evaluation` is absent when the agent names a disabled tool (server denies without policy evaluation) or for events recorded before Sep 2026. `agent.custom_tool_use` events carry neither field (custom tools are not governed by permission policies).
+
 **Tool confirmation flow:**
 ```typescript
 const stream = client.beta.sessions.events.stream(session.id);
 for await (const event of stream) {
   if (event.type === 'agent.tool_use' && event.evaluated_permission === 'ask') {
-    // Show user a confirmation prompt
     const approved = await promptUser(`Allow tool "${event.name}"?`);
     await client.beta.sessions.events.send(session.id, {
       event: {
@@ -635,6 +711,8 @@ for await (const event of stream) {
 - `deny_message` (optional) — context string, only valid when `result === 'deny'`
 - `session_thread_id` (optional) — routes to a subagent thread
 
+You cannot send `user.tool_confirmation` for a call the server denied under `auto` — those are final.
+
 **Fail-closed semantics:** An unrecognized `evaluated_permission` value is treated as `"ask"` (held). An unrecognized confirmation verdict is treated as `"deny"`.
 
 **SDK helper — `SessionToolRunner`:** The TypeScript SDK's `SessionToolRunner` helper (used internally by `client.beta.sessions.toolRunner(...)`) handles `evaluated_permission` automatically:
@@ -642,6 +720,32 @@ for await (const event of stream) {
 - `"ask"` calls are held in a queue until `user.tool_confirmation` arrives
 - `"deny"` calls are yielded with `{ confirmation: 'deny', posted: false }` but not executed
 - Idle bounding: the runner stops after `maxIdleMs` (default 60 s) of inactivity once the session reaches `stop_reason: { type: "end_turn" }`. The countdown is paused while any tool confirmation is outstanding.
+
+### Interactive Approval with `ant beta:sessions connect` (Sep 2026)
+
+Instead of building your own confirmation UI, attach your terminal directly to a running session:
+
+```bash
+ant beta:sessions connect --session-id $SESSION_ID
+```
+
+This streams session events live and shows waiting tool calls so you can approve or deny them interactively. The `--web` flag serves the Claude Console session viewer locally at `localhost:PORT`.
+
+### Public GitHub Repository Mounting (Python v1.5.0+ / TypeScript v0.125.0+)
+
+Sessions can now mount public GitHub repositories **without an `authorization_token`**. Previously, only private repos with explicit tokens were supported for mounting.
+
+```python
+session = client.beta.sessions.create(
+    agent_id=agent.id,
+    environment_id=environment.id,
+    resources=[{
+        "type": "github_repository",
+        "repository": "anthropics/anthropic-cookbook",
+        # No authorization_token needed for public repos
+    }],
+)
+```
 
 ## Session Budgets (Python v0.121.0+ / TypeScript v0.116.0+)
 
@@ -824,6 +928,7 @@ Memory store changes made inside the sandbox (writing files to `mount_path`) are
 - Python v0.123.0+ / TypeScript v0.118.0+: additions to files and memory stores; workspace ID helpers in response headers; bug fix: remove unsupported `mid_conv_system` content block; retry tool-result sends for at least lease TTL; run synchronous session tools in worker thread (Python)
 - Python v0.124.0+ / TypeScript v0.119.0+: Files API and Skills API are GA (no beta header); `computer_toolset_20260801` and `browser_toolset_20260801` added
 - Python v0.125.0+ / TypeScript v0.120.0+: web search/fetch domain config (`allowed_domains`, `blocked_domains`); self-hosted sandbox memory store support
+- Python v1.5.0+ / TypeScript v0.125.0+ (Sep 2026): `auto` permission policy for agent and MCP toolsets; `evaluation` object on `agent.tool_use` / `agent.mcp_tool_use` events; public GitHub repository mounting without `authorization_token`; `content_too_large` error code for `web_fetch`
 - `claude-opus-4-1` / `claude-opus-4-1-20250805` formally removed and retired (Aug 5, 2026) — migrate to claude-opus-5 or newer
 - Webhook handlers must be idempotent — events may be delivered more than once
 - Agent overrides are session-scoped only — they do not persist to the agent definition

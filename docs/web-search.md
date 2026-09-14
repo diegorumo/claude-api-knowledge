@@ -1,6 +1,6 @@
 # Web Search Tool
 
-> **Last updated:** 2026-07-06
+> **Last updated:** 2026-09-14
 
 ## Overview
 
@@ -123,6 +123,7 @@ You **do not** need to handle tool results for `web_search` — unlike custom to
 - Web search incurs additional cost per search request
 - Results quality depends on the search query Claude generates
 - Claude may search multiple times for complex questions
+- **`content_too_large` error** (Python v1.5.0+ / TypeScript v0.125.0+): `web_fetch` returns this error code when the fetched page content exceeds the allowed size limit. In Managed Agents, use `max_content_tokens` on the toolset config to cap fetched content size proactively.
 
 ## Related
 

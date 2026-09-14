@@ -3,8 +3,8 @@
 Comprehensive reference documentation for developers building with the Claude API.
 
 **Last full crawl:** 2026-05-30  
-**Last incremental update:** 2026-09-07  
-**SDK versions:** Python v1.4.0, TypeScript v0.124.0  
+**Last incremental update:** 2026-09-14  
+**SDK versions:** Python v1.5.0, TypeScript v0.125.0  
 **Primary sources:** anthropic-sdk-python, anthropic-sdk-typescript, anthropic-cookbook
 
 > **Coverage note:** The Anthropic documentation site (docs.anthropic.com / platform.claude.com/docs)
@@ -33,10 +33,11 @@ Comprehensive reference documentation for developers building with the Claude AP
 | [QUICK-REFERENCE.md](./QUICK-REFERENCE.md) | Common code patterns: auth, messages, streaming, tools, caching | 2026-07-27 |
 | [authentication.md](./authentication.md) | API keys (workspace/personal/service-account), HTTP headers, SDK setup, third-party platforms | 2026-08-31 |
 | [messages-api.md](./messages-api.md) | Messages endpoint: params, content blocks, response format | 2026-07-27 |
+| [structured-outputs.md](./structured-outputs.md) | JSON schema outputs (`output_config.format`), Pydantic/Zod helpers, strict tool use | 2026-09-14 |
 | [streaming.md](./streaming.md) | SSE events, delta types, streaming SDK helpers | 2026-06-29 |
 | [rate-limits-errors.md](./rate-limits-errors.md) | Error codes, retry logic, rate limit headers | 2026-05-30 |
 | [token-counting.md](./token-counting.md) | Count tokens before sending, context window management | 2026-07-06 |
-| [sdks.md](./sdks.md) | Python and TypeScript SDK reference, async, pagination; Python v1.0.0 breaking changes; Organization API; Standard Schema support | 2026-09-07 |
+| [sdks.md](./sdks.md) | Python and TypeScript SDK reference, async, pagination; Python v1.0.0 breaking changes; Organization API; Standard Schema support; v1.5.0 new helpers | 2026-09-14 |
 
 ### Features
 
@@ -50,12 +51,12 @@ Comprehensive reference documentation for developers building with the Claude AP
 | [vision.md](./vision.md) | Image inputs: base64, URL, formats, limits | Stable | 2026-05-30 |
 | [pdf-support.md](./pdf-support.md) | PDF document inputs, Files API for PDFs | Stable | 2026-05-30 |
 | [batch-api.md](./batch-api.md) | Async batch processing, results retrieval | Stable | 2026-05-30 |
-| [web-search.md](./web-search.md) | Built-in web search and web fetch tools, usage tracking | Stable | 2026-07-06 |
+| [web-search.md](./web-search.md) | Built-in web search and web fetch tools, usage tracking; `content_too_large` error | Stable | 2026-09-14 |
 | [files-api.md](./files-api.md) | File upload, reference by ID; file expiration, GA pagination; beta.files uses GA shapes in v1.2.0+ | **GA** | 2026-08-31 |
 | [citations.md](./citations.md) | Inline document citations | Beta | 2026-05-30 |
 | [mcp.md](./mcp.md) | Model Context Protocol server integration + MCP Tunnels API | Beta | 2026-08-03 |
 | [computer-use.md](./computer-use.md) | GUI automation (computer_toolset_20260801 GA); browser use toolset (browser_toolset_20260801 GA) | **GA** | 2026-08-24 |
-| [managed-agents.md](./managed-agents.md) | Persistent agents, sessions, threads, model effort, environments, budgets, advisor tool, inference geo pinning, web search domain config, sandbox memory | Beta | 2026-08-24 |
+| [managed-agents.md](./managed-agents.md) | Persistent agents, sessions, threads, model effort, environments, budgets, advisor tool, inference geo pinning, web search domain config, sandbox memory; `auto` permission policy; sessions connect CLI | Beta | 2026-09-14 |
 
 ### Guides
 
@@ -124,6 +125,7 @@ content-type: application/json
 | Files API (old format only) | `anthropic-beta: files-api-2025-04-14` (GA — no header needed; header keeps old response format) |
 | Thinking Token Count | `anthropic-beta: thinking-token-count-2025-05-07` |
 | User Profiles | `anthropic-beta: user-profiles-2026-03-24` |
+| User Profiles (extended — `external_user_details`) | `anthropic-beta: user-profiles-2026-09-04` |
 | Managed Agents | `anthropic-beta: managed-agents-2026-04-01` |
 | Server-Side Fallback | `anthropic-beta: server-side-fallback-2026-06-01` |
 | Memory Stores | `anthropic-beta: agent-memory-2026-07-22` |

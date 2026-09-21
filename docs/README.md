@@ -3,7 +3,7 @@
 Comprehensive reference documentation for developers building with the Claude API.
 
 **Last full crawl:** 2026-05-30  
-**Last incremental update:** 2026-09-14  
+**Last incremental update:** 2026-09-21  
 **SDK versions:** Python v1.5.0, TypeScript v0.125.0  
 **Primary sources:** anthropic-sdk-python, anthropic-sdk-typescript, anthropic-cookbook
 
@@ -57,6 +57,8 @@ Comprehensive reference documentation for developers building with the Claude AP
 | [mcp.md](./mcp.md) | Model Context Protocol server integration + MCP Tunnels API | Beta | 2026-08-03 |
 | [computer-use.md](./computer-use.md) | GUI automation (computer_toolset_20260801 GA); browser use toolset (browser_toolset_20260801 GA) | **GA** | 2026-08-24 |
 | [managed-agents.md](./managed-agents.md) | Persistent agents, sessions, threads, model effort, environments, budgets, advisor tool, inference geo pinning, web search domain config, sandbox memory; `auto` permission policy; sessions connect CLI | Beta | 2026-09-14 |
+| [compaction.md](./compaction.md) | Automatic and on-demand conversation compaction to extend context in long sessions; `compact-2026-01-12` / `compact-2026-09-04` | Beta | 2026-09-21 |
+| [compliance-api.md](./compliance-api.md) | Compliance API session transcripts (Cowork, Claude Code, Claude Science, Claude for Microsoft 365, Claude in Chrome); eDiscovery and DLP | Beta | 2026-09-21 |
 
 ### Guides
 
@@ -136,3 +138,5 @@ content-type: application/json
 | Per-Message Effort Changes | `anthropic-beta: mid-conversation-output-config-2026-07-01` |
 | Turn-Scoped System Messages | `anthropic-beta: mid-conversation-system-clear-at-2026-08-21` |
 | Thinking Display Updates | `anthropic-beta: thinking-display-updates-2026-08-18` |
+| Automatic Compaction | `anthropic-beta: compact-2026-01-12` |
+| On-Demand Compaction | `anthropic-beta: compact-2026-09-04` |

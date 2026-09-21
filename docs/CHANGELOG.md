@@ -1,5 +1,24 @@
 # Knowledge Base Changelog
 
+## 2026-09-21 — Incremental Update
+
+Sources: platform.claude.com/docs/en/release-notes/overview (Sep 14–18, 2026), platform.claude.com/docs/en/build-with-claude/compaction, platform.claude.com/docs/en/manage-claude/compliance-sessions.
+
+### Changes
+
+- **Compliance API — Claude in Chrome sessions (Sep 18, 2026, Beta)** — New `product_surface` value `claude_in_chrome` for local session transcripts in the Compliance API. Retrieve Chrome sessions via `GET /v1/compliance/local-sessions?product_surface=claude_in_chrome`. Uses the same Compliance Access Key and `read:compliance_user_data` scope — no new credentials or client update required. Available to Claude Enterprise organizations only. Local sessions endpoint still does not support `user_id` filtering.
+- **On-Demand Compaction — `compact-2026-09-04` beta (Sep 14, 2026)** — New `compact-2026-09-04` beta header enables requesting compaction on demand via `"compact": true` in the request body. The API runs the summary in the background and returns a signed `compaction` block to swap into messages on later requests. Recent turns can be preserved word-for-word; thinking blocks in preserved turns remain valid. Distinct from the earlier automatic compaction (`compact-2026-01-12`).
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `compaction.md` | **New file** — Complete reference for conversation compaction: automatic (`compact-2026-01-12`) and on-demand (`compact-2026-09-04`), parameters, `compaction` block format, streaming, billing, prompt cache integration, token counting, Fable 5.1 thinking block gotcha |
+| `compliance-api.md` | **New file** — Compliance API session transcripts reference: remote vs. local sessions, all `product_surface` values including `claude_in_chrome` (beta Sep 18), API endpoints, transcript structure, example Python client |
+| `README.md` | Added `compaction.md` and `compliance-api.md` to Features index; added `compact-2026-01-12` and `compact-2026-09-04` to beta headers table; updated last-incremental-update date to 2026-09-21 |
+
+---
+
 ## 2026-09-14 — Incremental Update
 
 Sources: platform.claude.com/docs/en/release-notes/overview (Sep 3–10, 2026), platform.claude.com/docs/en/managed-agents/permission-policies, platform.claude.com/docs/en/build-with-claude/structured-outputs, Python SDK CHANGELOG v1.5.0 (2026-09-10), TypeScript SDK CHANGELOG v0.125.0 (2026-09-10).

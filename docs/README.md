@@ -3,7 +3,7 @@
 Comprehensive reference documentation for developers building with the Claude API.
 
 **Last full crawl:** 2026-05-30  
-**Last incremental update:** 2026-09-21  
+**Last incremental update:** 2026-09-24  
 **SDK versions:** Python v1.5.0, TypeScript v0.125.0  
 **Primary sources:** anthropic-sdk-python, anthropic-sdk-typescript, anthropic-cookbook
 
@@ -29,7 +29,7 @@ Comprehensive reference documentation for developers building with the Claude AP
 
 | File | Description | Last Updated |
 |------|-------------|-------------|
-| [MODELS.md](./MODELS.md) | Current model IDs, capabilities, context windows, pricing notes | 2026-09-07 |
+| [MODELS.md](./MODELS.md) | Current model IDs, capabilities, context windows, pricing notes; Opus 5.5 | 2026-09-24 |
 | [QUICK-REFERENCE.md](./QUICK-REFERENCE.md) | Common code patterns: auth, messages, streaming, tools, caching | 2026-07-27 |
 | [authentication.md](./authentication.md) | API keys (workspace/personal/service-account), HTTP headers, SDK setup, third-party platforms | 2026-08-31 |
 | [messages-api.md](./messages-api.md) | Messages endpoint: params, content blocks, response format | 2026-07-27 |

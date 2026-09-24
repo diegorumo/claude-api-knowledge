@@ -6,7 +6,7 @@ A markdown reference for building with the Claude API, kept current by a weekly 
 
 ## How it stays up to date
 
-- A scheduled routine (`claude-api-docs-sync`) runs every Monday at 10:00 UTC.
+- A scheduled routine (`claude-api-docs-sync`) runs every Monday at 10:00 UTC, following [.claude/docs-sync-routine.md](./.claude/docs-sync-routine.md).
 - It reads the official [release notes](https://platform.claude.com/docs/en/release-notes/overview) and [models overview](https://platform.claude.com/docs/en/about-claude/models/overview), updates the affected files in `docs/`, and appends an entry to `docs/CHANGELOG.md`.
 - It opens a pull request instead of pushing to `main`, so each week's changes get a quick review before they land. PRs that include a new model, a price change, a deprecation or a breaking change are prefixed with `[IMPORTANT]`.
 

@@ -1,5 +1,27 @@
 # Knowledge Base Changelog
 
+## 2026-09-24 — Manual Update
+
+Sources: platform.claude.com/docs/en/release-notes/overview (Sep 22–24, 2026), platform.claude.com/docs/en/about-claude/models/overview.
+
+### Changes
+
+- **Claude Opus 5.5 launch (Sep 22, 2026)** — `claude-opus-5-5`, $4 / $20 per MTok (down from Opus 5's $5 / $25), 1M context, 128k max output, reliable knowledge cutoff Jun 2026. Now the models overview's recommended starting point for most workloads. Breaking changes vs. Opus 5: thinking can't be disabled, default effort `medium`, forced `tool_choice` returns 400, computer use requires `computer_toolset_20260801`. Opus 5 moves to legacy.
+- **Fast mode for Opus 5.5 (Sep 22, 2026)** — Research preview on the Claude API, $8 / $40 per MTok.
+- **Inline tools in mid-conversation system messages (Sep 22, 2026, beta)** — `inline-tools-2026-09-15` beta header allows `tool_addition` blocks inside mid-conversation system messages. *Not yet documented in `tool-use.md`; left for the next scheduled run.*
+- **Cache diagnostics out of beta (Sep 23, 2026)** — `cache-diagnosis-2026-04-07` header no longer required; include the `diagnostics` object to opt in. *Not yet reflected in `prompt-caching.md`; left for the next scheduled run.*
+- **Refusal billing expansion (Sep 24, 2026)** — Refusals before any output are now billed when `stop_details.category` is `bio`, `frontier_llm` or `reasoning_extraction`.
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `MODELS.md` | Added Opus 5.5 (current table, API changes section, capabilities column, knowledge cutoff, effort default); moved Opus 5 to legacy; corrected Bedrock ID format |
+| `README.md` | Updated MODELS.md date and last-incremental-update date |
+| `../README.md` | New top-level README explaining what the repo is and how it's kept up to date |
+
+---
+
 ## 2026-09-21 — Incremental Update
 
 Sources: platform.claude.com/docs/en/release-notes/overview (Sep 14–18, 2026), platform.claude.com/docs/en/build-with-claude/compaction, platform.claude.com/docs/en/manage-claude/compliance-sessions.

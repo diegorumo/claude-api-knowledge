@@ -3,7 +3,7 @@
 Comprehensive reference documentation for developers building with the Claude API.
 
 **Last full crawl:** 2026-05-30  
-**Last incremental update:** 2026-09-24  
+**Last incremental update:** 2026-09-28  
 **SDK versions:** Python v1.5.0, TypeScript v0.125.0  
 **Primary sources:** anthropic-sdk-python, anthropic-sdk-typescript, anthropic-cookbook
 
@@ -43,10 +43,10 @@ Comprehensive reference documentation for developers building with the Claude AP
 
 | File | Description | Status | Last Updated |
 |------|-------------|--------|-------------|
-| [tool-use.md](./tool-use.md) | Function calling, agentic loop, tool choice, built-in tools, tool definition properties, mid-conversation tool changes | Stable | 2026-08-10 |
+| [tool-use.md](./tool-use.md) | Function calling, agentic loop, tool choice, built-in tools, tool definition properties, mid-conversation tool changes, inline tool definitions in mid-conv system messages | Stable | 2026-09-28 |
 | [skills-api.md](./skills-api.md) | Upload and manage reusable skill packages; BetaSkill renamed BetaContainerSkill in v1.2.0+ | **GA** | 2026-08-31 |
 | [programmatic-tool-calling.md](./programmatic-tool-calling.md) | Call tools from code execution sandbox, reduce round-trips and token usage | Stable | 2026-06-22 |
-| [prompt-caching.md](./prompt-caching.md) | cache_control, TTL, pricing, multi-turn caching; Fable 5.1/Mythos 5.1 2.5% cache read pricing | Stable | 2026-09-07 |
+| [prompt-caching.md](./prompt-caching.md) | cache_control, TTL, pricing, multi-turn caching; Fable 5.1/Mythos 5.1 2.5% cache read pricing; cache diagnostics GA (Sep 23, 2026) | Stable | 2026-09-28 |
 | [extended-thinking.md](./extended-thinking.md) | Thinking blocks, budget_tokens, adaptive mode, `updates` display mode, thinking block binding (Fable 5.1), per-message effort, turn-scoped system messages | Stable | 2026-09-07 |
 | [vision.md](./vision.md) | Image inputs: base64, URL, formats, limits | Stable | 2026-05-30 |
 | [pdf-support.md](./pdf-support.md) | PDF document inputs, Files API for PDFs | Stable | 2026-05-30 |
@@ -58,7 +58,7 @@ Comprehensive reference documentation for developers building with the Claude AP
 | [computer-use.md](./computer-use.md) | GUI automation (computer_toolset_20260801 GA); browser use toolset (browser_toolset_20260801 GA) | **GA** | 2026-08-24 |
 | [managed-agents.md](./managed-agents.md) | Persistent agents, sessions, threads, model effort, environments, budgets, advisor tool, inference geo pinning, web search domain config, sandbox memory; `auto` permission policy; sessions connect CLI | Beta | 2026-09-14 |
 | [compaction.md](./compaction.md) | Automatic and on-demand conversation compaction to extend context in long sessions; `compact-2026-01-12` / `compact-2026-09-04` | Beta | 2026-09-21 |
-| [compliance-api.md](./compliance-api.md) | Compliance API session transcripts (Cowork, Claude Code, Claude Science, Claude for Microsoft 365, Claude in Chrome); eDiscovery and DLP | Beta | 2026-09-21 |
+| [compliance-api.md](./compliance-api.md) | Compliance API session transcripts (Cowork, Claude Code, Claude Science, Claude for Microsoft 365 — now stable, Claude in Chrome); Activity Feed privacy change | Stable/Beta | 2026-09-28 |
 
 ### Guides
 
@@ -140,3 +140,4 @@ content-type: application/json
 | Thinking Display Updates | `anthropic-beta: thinking-display-updates-2026-08-18` |
 | Automatic Compaction | `anthropic-beta: compact-2026-01-12` |
 | On-Demand Compaction | `anthropic-beta: compact-2026-09-04` |
+| Inline Tool Definitions in Mid-Conv System Messages | `anthropic-beta: inline-tools-2026-09-15` (also `mcp-client-2026-09-15` for MCP toolsets) |

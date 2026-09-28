@@ -1,6 +1,6 @@
 # Tool Use / Function Calling
 
-> **Last updated:** 2026-08-10
+> **Last updated:** 2026-09-28
 
 ## Overview
 
@@ -417,6 +417,49 @@ messages = [
 > **Note:** `tool_addition` and `tool_removal` blocks do NOT accept the composed `{server}_{name}` form the API assigns to MCP-resolved tools. Use `mcp_tool_reference` or `mcp_toolset_reference` for MCP tools. Both block types accept an optional `cache_control` field for cache breakpoints.
 
 The `tool_change` event is also emitted during streaming to reflect these dynamic changes.
+
+## Inline Tool Definitions in Mid-Conversation System Messages (Beta, Sep 22, 2026)
+
+**Beta header:** `anthropic-beta: inline-tools-2026-09-15`
+
+Allows full tool definitions inside mid-conversation `role: "system"` messages, not just references to already-declared tools. Use this when you need to add a tool, upgrade a tool's schema, or pin a server-managed tool version without editing the top-level `tools` array (and without invalidating the prompt cache).
+
+For MCP toolsets, also add `anthropic-beta: mcp-client-2026-09-15`. Responses include an `mcp_tool_listing` block pinning the server's fetched tool list.
+
+```python
+# Requires: anthropic-beta: inline-tools-2026-09-15
+messages = [
+    {"role": "user", "content": "Tell me about the company."},
+    {
+        "role": "system",          # mid-conversation system message
+        "content": [
+            {
+                "type": "tool_addition",
+                "tool": {
+                    "type": "tool_definition",   # full inline definition
+                    "definition": {
+                        "name": "lookup_company",
+                        "description": "Retrieve company details by ID.",
+                        "input_schema": {
+                            "type": "object",
+                            "properties": {"company_id": {"type": "string"}},
+                            "required": ["company_id"],
+                        },
+                    },
+                },
+            }
+        ],
+    },
+]
+```
+
+Key differences from the existing `tool_addition` pattern:
+- `"type": "tool_definition"` (not `"tool"`) — carries the full `definition` object
+- The tool does not need to be declared in the top-level `tools` array first
+- Can replace a tool schema (same name, new definition) or upgrade to a newer server-tool version
+- Works alongside `"type": "tool"` references for already-declared tools
+
+Available on Fable 5.1, Opus 5.5, Opus 5, and Sonnet 5 on the Claude API.
 
 ## Related
 

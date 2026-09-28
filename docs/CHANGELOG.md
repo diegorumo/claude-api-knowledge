@@ -1,5 +1,26 @@
 # Knowledge Base Changelog
 
+## 2026-09-28 — Incremental Update
+
+Sources: platform.claude.com/docs/en/release-notes/overview (Sep 22–24, 2026), platform.claude.com/docs/en/about-claude/models/overview.
+
+### Changes
+
+- **Cache Diagnostics out of beta (Sep 23, 2026)** — No longer requires `cache-diagnosis-2026-04-07` beta header. Include the `diagnostics` object on the Messages request to opt in. Response always includes a `diagnostics` field (`null` when not requested). Important: the API stores a fingerprint only when the request includes `diagnostics`; a request without it stores no fingerprint, so a later turn pointing `previous_message_id` at it reports `previous_message_not_found`. Include `diagnostics` on every turn you want to chain.
+- **Inline tool definitions in mid-conversation system messages (Sep 22, 2026, beta)** — Beta header `inline-tools-2026-09-15` enables `tool_addition` blocks with `type: "tool_definition"` inside mid-conversation `role: "system"` messages. Carries the full `definition` object for the tool, without pre-declaring it in the top-level `tools` array. Lets you add tools, upgrade schemas, or move to a newer server-tool version without touching `tools[]` (no cache invalidation). For MCP toolsets, also add `mcp-client-2026-09-15`; responses include an `mcp_tool_listing` block. Available on Fable 5.1, Opus 5.5, Opus 5, Sonnet 5.
+- **Compliance API: Microsoft 365 local sessions out of beta (Sep 24, 2026)** — Local sessions for Claude for Microsoft 365 apps (Excel, PowerPoint, Word, Outlook) move from beta to GA. Use `product_surface: "claude_for_microsoft_365"` or `"office_agents*"` on the `/v1/compliance/local-sessions` endpoint. No new credentials or client update required.
+- **Compliance API: Activity Feed privacy change (Sep 24, 2026)** — `filename` and `title` fields in Activity Feed events are now always empty or omitted. To resolve a resource name, look it up by ID via the Admin API.
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `tool-use.md` | Added "Inline Tool Definitions in Mid-Conversation System Messages" section (`inline-tools-2026-09-15`); updated date |
+| `prompt-caching.md` | Added "Cache Diagnostics" section (GA, Sep 23, 2026; fingerprint-storage gotcha); updated date |
+| `compliance-api.md` | Marked `claude_for_microsoft_365` / `office_agents*` as Stable; added "Activity Feed Privacy Change" and "Claude for Microsoft 365 Local Sessions" sections; updated date |
+| `README.md` | Updated last-incremental-update date (2026-09-28); updated file last-updated dates; added `inline-tools-2026-09-15` to beta headers table |
+
+---
 ## 2026-09-24 — Manual Update
 
 Sources: platform.claude.com/docs/en/release-notes/overview (Sep 22–24, 2026), platform.claude.com/docs/en/about-claude/models/overview.
@@ -8,8 +29,8 @@ Sources: platform.claude.com/docs/en/release-notes/overview (Sep 22–24, 2026),
 
 - **Claude Opus 5.5 launch (Sep 22, 2026)** — `claude-opus-5-5`, $4 / $20 per MTok (down from Opus 5's $5 / $25), 1M context, 128k max output, reliable knowledge cutoff Jun 2026. Now the models overview's recommended starting point for most workloads. Breaking changes vs. Opus 5: thinking can't be disabled, default effort `medium`, forced `tool_choice` returns 400, computer use requires `computer_toolset_20260801`. Opus 5 moves to legacy.
 - **Fast mode for Opus 5.5 (Sep 22, 2026)** — Research preview on the Claude API, $8 / $40 per MTok.
-- **Inline tools in mid-conversation system messages (Sep 22, 2026, beta)** — `inline-tools-2026-09-15` beta header allows `tool_addition` blocks inside mid-conversation system messages. *Not yet documented in `tool-use.md`; left for the next scheduled run.*
-- **Cache diagnostics out of beta (Sep 23, 2026)** — `cache-diagnosis-2026-04-07` header no longer required; include the `diagnostics` object to opt in. *Not yet reflected in `prompt-caching.md`; left for the next scheduled run.*
+- **Inline tools in mid-conversation system messages (Sep 22, 2026, beta)** — `inline-tools-2026-09-15` beta header allows `tool_addition` blocks inside mid-conversation system messages. *Fully documented in `tool-use.md` in the 2026-09-28 run.*
+- **Cache diagnostics out of beta (Sep 23, 2026)** — `cache-diagnosis-2026-04-07` header no longer required; include the `diagnostics` object to opt in. *Fully documented in `prompt-caching.md` in the 2026-09-28 run.*
 - **Refusal billing expansion (Sep 24, 2026)** — Refusals before any output are now billed when `stop_details.category` is `bio`, `frontier_llm` or `reasoning_extraction`.
 
 ### Files Modified

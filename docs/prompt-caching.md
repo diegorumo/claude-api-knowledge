@@ -1,6 +1,6 @@
 # Prompt Caching
 
-> **Last updated:** 2026-09-07  
+> **Last updated:** 2026-09-28  
 > **Source:** Anthropic cookbook — demonstrated 3.3x speedup on 187K-token document
 
 ## Overview
@@ -200,6 +200,30 @@ print(f"Output tokens: {usage.output_tokens}")
 - Changing **any** token before the cache_control marker invalidates the cache
 - `cache_creation_input_tokens` being 0 on a re-request means you got a cache hit
 - Tool definitions count toward minimum cacheable tokens
+
+## Cache Diagnostics (GA as of Sep 23, 2026)
+
+Cache diagnostics reports why a cache miss occurred, helping debug unexpected misses. As of Sep 23, 2026 this is out of beta — no `cache-diagnosis-2026-04-07` header needed.
+
+**Opt in:** Include a `diagnostics` object on the request. The response always includes a `diagnostics` field (null when not requested).
+
+```python
+response = client.messages.create(
+    model="claude-opus-5-5",
+    max_tokens=1024,
+    system=[{"type": "text", "text": large_context, "cache_control": {"type": "ephemeral"}}],
+    messages=[{"role": "user", "content": "Summarize."}],
+    diagnostics={"previous_message_id": None},   # None on first turn
+)
+
+# Subsequent turns pass the ID from the previous response:
+# diagnostics={"previous_message_id": response.id}
+print(response.diagnostics)  # {"cache_miss_reason": "..."}
+```
+
+`cache_miss_reason` values include `"system_prompt_changed"`, `"tools_changed"`, `"previous_message_not_found"`, and others that describe which prefix diverged.
+
+**Important (Sep 9, 2026):** The API only stores a fingerprint for future comparison when the request includes the `diagnostics` object. A request that omits `diagnostics` stores no fingerprint, so a later turn pointing `previous_message_id` at it returns `"previous_message_not_found"`. Include `diagnostics` (with `previous_message_id: null`) on every turn you want to chain, not just the ones that miss.
 
 ## Related
 

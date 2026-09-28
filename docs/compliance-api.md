@@ -3,7 +3,8 @@
 **Summary:** Retrieve transcripts of sessions users run in Claude apps (Cowork, Claude Code, Claude Science, Claude for Microsoft 365, Claude in Chrome) for eDiscovery and DLP enforcement.
 
 **Availability:** Claude Enterprise organizations only  
-**Auth:** Compliance Access Key with `read:compliance_user_data` scope
+**Auth:** Compliance Access Key with `read:compliance_user_data` scope  
+**Last updated:** 2026-09-28
 
 ---
 
@@ -18,7 +19,7 @@ The Compliance API session endpoints expose conversation transcripts from Claude
 | `claude_cowork` | Stable |
 | `claude_code` | Stable |
 | `claude_science` | Beta |
-| `claude_for_microsoft_365` | Beta |
+| `claude_for_microsoft_365` / `office_agents*` | **Stable** (out of beta Sep 24, 2026) |
 | `claude_in_chrome` | Beta (added Sep 18, 2026) |
 
 Remote sessions (Managed Agents / cloud) and local sessions (Claude Code, Claude in Chrome) use separate endpoints.
@@ -210,6 +211,25 @@ def get_session_transcript(session_id: str) -> dict:
 ```
 
 ---
+
+## Activity Feed Privacy Change (Sep 24, 2026)
+
+The Activity Feed no longer returns file names, project document names, or artifact titles in activity event objects:
+
+- `filename` — now empty or omitted on all activity events
+- `title` — now empty or omitted on all activity events
+
+To resolve a name, look up the resource by ID using the Admin API. This affects all surfaces and all activity event types. Existing events already stored are also affected (fields are empty/omitted when retrieved).
+
+## Claude for Microsoft 365 Local Sessions (out of beta Sep 24, 2026)
+
+Local sessions for Claude for Microsoft 365 apps (Excel, PowerPoint, Word, Outlook) are now GA. Use `product_surface` value `claude_for_microsoft_365` or the `office_agents*` pattern to filter sessions:
+
+```
+GET /v1/compliance/local-sessions?product_surface=claude_for_microsoft_365
+```
+
+Uses the existing Compliance Access Key with `read:compliance_user_data` scope — no new credentials or client updates required.
 
 ## Related
 

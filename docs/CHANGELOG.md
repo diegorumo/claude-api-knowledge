@@ -2,25 +2,92 @@
 
 ## 2026-09-28 — Incremental Update
 
-Sources: platform.claude.com/docs/en/release-notes/overview (Sep 22–24, 2026), platform.claude.com/docs/en/about-claude/models/overview.
+Sources:
+
+- https://platform.claude.com/docs/en/release-notes/overview.md (Sep 22–28, 2026)
+- https://platform.claude.com/docs/en/about-claude/models/overview.md
+- https://platform.claude.com/docs/en/about-claude/model-deprecations.md
+- https://platform.claude.com/docs/en/about-claude/pricing.md
+- https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5.md
+- https://platform.claude.com/docs/en/build-with-claude/cache-diagnostics.md
+- https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages.md
+- https://platform.claude.com/docs/en/manage-claude/compliance-sessions.md
+- https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed.md
+- https://github.com/anthropics/anthropic-sdk-python/releases (v1.9.0)
+- https://github.com/anthropics/anthropic-sdk-typescript/releases (sdk-v0.129.0)
+
+This entry merges two runs: a scheduled run that pushed straight to `main` on Sep 28 (outdated routine prompt) and the rebase of the 2026-09-27 PR onto it.
 
 ### Changes
 
-- **Cache Diagnostics out of beta (Sep 23, 2026)** — No longer requires `cache-diagnosis-2026-04-07` beta header. Include the `diagnostics` object on the Messages request to opt in. Response always includes a `diagnostics` field (`null` when not requested). Important: the API stores a fingerprint only when the request includes `diagnostics`; a request without it stores no fingerprint, so a later turn pointing `previous_message_id` at it reports `previous_message_not_found`. Include `diagnostics` on every turn you want to chain.
-- **Inline tool definitions in mid-conversation system messages (Sep 22, 2026, beta)** — Beta header `inline-tools-2026-09-15` enables `tool_addition` blocks with `type: "tool_definition"` inside mid-conversation `role: "system"` messages. Carries the full `definition` object for the tool, without pre-declaring it in the top-level `tools` array. Lets you add tools, upgrade schemas, or move to a newer server-tool version without touching `tools[]` (no cache invalidation). For MCP toolsets, also add `mcp-client-2026-09-15`; responses include an `mcp_tool_listing` block. Available on Fable 5.1, Opus 5.5, Opus 5, Sonnet 5.
-- **Compliance API: Microsoft 365 local sessions out of beta (Sep 24, 2026)** — Local sessions for Claude for Microsoft 365 apps (Excel, PowerPoint, Word, Outlook) move from beta to GA. Use `product_surface: "claude_for_microsoft_365"` or `"office_agents*"` on the `/v1/compliance/local-sessions` endpoint. No new credentials or client update required.
-- **Compliance API: Activity Feed privacy change (Sep 24, 2026)** — `filename` and `title` fields in Activity Feed events are now always empty or omitted. To resolve a resource name, look it up by ID via the Admin API.
+- **Sep 22–24 items re-documented by the `main` run** — Cache diagnostics GA (Sep 23), inline tool definitions (Sep 22, beta), Claude for Microsoft 365 local sessions GA (Sep 24) and the Activity Feed name/title removal (Sep 24). Same items as the 2026-09-27 entry below; its versions were kept and the `main` versions were corrected as follows.
+- **Correction: inline tool models** — The `main` run said inline tool definitions work on Sonnet 5. The mid-conversation system messages page says the feature is not available on Sonnet 5. Supported: Fable 5.1, Mythos 5.1, Fable 5, Mythos 5, Opus 5.5, Opus 5, Opus 4.8, Sonnet 5.5.
+- **Correction: Microsoft 365 `product_surface`** — The `main` run used `claude_for_microsoft_365` and `GET /v1/compliance/local-sessions?product_surface=...`. Official values are `office_agents/excel`, `office_agents/powerpoint`, `office_agents/word`, `office_agents/outlook` (or `office_agents`), listed via `GET /v1/compliance/apps/sessions/local`, which has no `product_surface` filter.
+- **Correction: Activity Feed name lookups** — The `main` run said to resolve names through the Admin API and that the change hit all activity types. Officially it covers file, project document and artifact activities, and names are looked up by ID with a Compliance Access Key carrying `read:compliance_user_data`.
+- **Correction: cache diagnostics section** — The `main` run's section listed a `system_prompt_changed` reason (official: `system_changed`), showed `cache_miss_reason` as a string (it's an object with `type`), and said to send `previous_message_id: null` on every turn (only on the first). Replaced with the 2026-09-27 section; kept its "include `diagnostics` on every turn you want to chain" advice (Sep 9 release note).
+- **Claude Sonnet 5.5 launch (Sep 28, 2026)** — `claude-sonnet-5-5`, $2 / $10 per MTok, 1M context, 128k max output, adaptive thinking, default effort `high`, reliable knowledge cutoff Jun 2026, retirement not sooner than Sep 28, 2027. Replaces Sonnet 5 in the models overview; Sonnet 5 moves to legacy. Five breaking changes vs. Sonnet 5: `thinking: {type: "between_tools"}` replaces `"disabled"` (at `high` effort or below), forced `tool_choice` returns 400, thinking blocks tied to model and conversation (and to the producing account), `computer_20251124` rejected on the Claude API and Google Cloud, advisor tool rejects Opus 4.8 / Opus 4.7 / Sonnet 5 as advisors. Added during the rebase.
+- **SDKs (Sep 28, 2026)** — Python v1.9.0 / TypeScript v0.129.0: `claude-sonnet-5-5`, `between_tools` thinking type, `diagnostics` on the non-beta `Message` / `MessageCreateParams`. Added during the rebase.
+- **Verified: Opus 5.5 fast mode pricing** — $8 / $40 per MTok matches the pricing page (the 2026-09-27 entry couldn't check it).
+
+Not covered: the Sonnet 5.5 capabilities-table column and the what's-new / migration pages beyond the release note; left for the next scheduled run.
 
 ### Files Modified
 
-| File | Change |
-|------|--------|
-| `tool-use.md` | Added "Inline Tool Definitions in Mid-Conversation System Messages" section (`inline-tools-2026-09-15`); updated date |
-| `prompt-caching.md` | Added "Cache Diagnostics" section (GA, Sep 23, 2026; fingerprint-storage gotcha); updated date |
-| `compliance-api.md` | Marked `claude_for_microsoft_365` / `office_agents*` as Stable; added "Activity Feed Privacy Change" and "Claude for Microsoft 365 Local Sessions" sections; updated date |
-| `README.md` | Updated last-incremental-update date (2026-09-28); updated file last-updated dates; added `inline-tools-2026-09-15` to beta headers table |
+| File                | Change                                                                                                            |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `MODELS.md`         | Sonnet 5.5 added (current table, API changes section, retirement); Sonnet 5 moved to legacy                       |
+| `prompt-caching.md` | Kept the 2026-09-27 Cache Diagnostics section; added "include `diagnostics` on every turn" and SDK GA-type notes  |
+| `tool-use.md`       | Kept the 2026-09-27 inline tools section; added supported models (not Sonnet 5) and Sonnet 5.5 thinking-block rule |
+| `compliance-api.md` | Kept the 2026-09-27 rewrite; dropped the `main` run's wrong Microsoft 365 and Activity Feed sections               |
+| `sdks.md`           | Python v1.9.0, TypeScript v0.129.0                                                                                |
+| `README.md`         | Dates, SDK versions, quick-reference model list (Sonnet 5.5)                                                      |
 
 ---
+
+## 2026-09-27 — Incremental Update
+
+Sources:
+
+- https://platform.claude.com/docs/en/release-notes/overview.md (no entries after Sep 24, 2026; Sep 22–24 items not covered by the previous run were picked up)
+- https://platform.claude.com/docs/en/about-claude/models/overview.md
+- https://platform.claude.com/docs/en/about-claude/model-deprecations.md
+- https://platform.claude.com/docs/en/build-with-claude/cache-diagnostics.md
+- https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages.md
+- https://platform.claude.com/docs/en/manage-claude/compliance-sessions.md
+- https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed.md
+- https://github.com/anthropics/anthropic-sdk-python/releases (v1.6.0, v1.7.0, v1.8.0)
+- https://github.com/anthropics/anthropic-sdk-typescript/releases (sdk-v0.126.0, sdk-v0.127.0, sdk-v0.128.0)
+
+### Changes
+
+- **Cache diagnostics GA (Sep 23, 2026)** — Carried over from the previous run. `cache-diagnosis-2026-04-07` header no longer required; opt in with the `diagnostics` object. `POST /v1/messages` responses now always include `diagnostics` (`null` if not requested). Documented request/response shapes, `cache_miss_reason` types, limitations. Claude API only.
+- **Inline tool definitions (Sep 22, 2026, beta)** — Carried over from the previous run. `inline-tools-2026-09-15` lets a `tool_addition` block in a mid-conversation system message carry a full `tool_definition`. With `mcp-client-2026-09-15`, the definition can be an `mcp_toolset`, and responses start with `mcp_tool_listing` blocks. Documented rules, `tool_name_conflict` and `available_tools_limit_exceeded` errors, and limits.
+- **Compliance API: Claude for Microsoft 365 local sessions out of beta (Sep 24, 2026)** — `office_agents/*` product surfaces are now stable. Missed by the previous run.
+- **Compliance API Activity Feed drops file names and titles (Sep 24, 2026)** — `filename` / `title` on file, project document and artifact activities are now always empty or omitted, including on older activities. Look names up by ID with `read:compliance_user_data`. Missed by the previous run.
+- **Refusal billing (Sep 24, 2026)** — Added to `messages-api.md` (previous run logged it but didn't document it in a reference file).
+- **Correction: `compliance-api.md` was largely wrong** — Endpoint paths, `product_surface` values, auth header, pagination and response shapes didn't match the official docs. Rewrote the file from compliance-sessions and compliance-activity-feed.
+- **Correction: models (no release note)** — Diffed against the models overview and deprecations page. `claude-3-haiku-20240307` was listed as "still works" but retired Apr 20, 2026. Removed the "Previous / Also Supported" table that listed retired Opus 4 / Sonnet 4 / Opus 4.1 as working. Added deprecation dates and official replacements for retired models (Opus 4.1 → `claude-opus-4-8`, not `claude-opus-5-5` as the file said). Added retirement dates for current and legacy models, including **Sonnet 4.5 (not sooner than Sep 29, 2026)**, **Haiku 4.5 (not sooner than Oct 15, 2026)** and Opus 4.5 (not sooner than Nov 24, 2026). Noted Claude Mythos Preview's deprecation.
+- **Correction: README quick reference** — Still listed Opus 5 as current and didn't mention Opus 5.5. Fixed.
+- **SDKs** — Python v1.6.0–v1.8.0 and TypeScript v0.126.0–v0.128.0 added to version history (Opus 5.5, inline tools, MCP tool-list pinning, compaction params, `url_sources` on web fetch, rate-limit `group`, retry fixes).
+
+Not verified this run: fast mode pricing for Opus 5.5 ($8 / $40 in `MODELS.md`, from the previous run) wasn't re-checked because the pricing page wasn't fetched.
+
+### Files Modified
+
+| File                | Change                                                                                                                        |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `MODELS.md`         | Retirement dates, corrected retired-models table, removed stale "Previous / Also Supported" table, Mythos Preview deprecation |
+| `prompt-caching.md` | New Cache Diagnostics section (GA) with Python/TypeScript examples                                                            |
+| `tool-use.md`       | New "Define Tools Inside a Message" section (`inline-tools-2026-09-15`, `mcp-client-2026-09-15`)                              |
+| `compliance-api.md` | Rewritten from official docs; Microsoft 365 GA; Activity Feed filename/title change                                           |
+| `messages-api.md`   | Refusal billing section                                                                                                       |
+| `sdks.md`           | Version history for Python v1.6.0–v1.8.0, TypeScript v0.126.0–v0.128.0                                                        |
+| `README.md`         | SDK versions, index dates, quick-reference model list, beta headers table                                                     |
+
+Note: a local markdown formatter re-padded table columns in the touched files, so diffs include whitespace-only table changes.
+
+---
+
 ## 2026-09-24 — Manual Update
 
 Sources: platform.claude.com/docs/en/release-notes/overview (Sep 22–24, 2026), platform.claude.com/docs/en/about-claude/models/overview.
@@ -29,17 +96,17 @@ Sources: platform.claude.com/docs/en/release-notes/overview (Sep 22–24, 2026),
 
 - **Claude Opus 5.5 launch (Sep 22, 2026)** — `claude-opus-5-5`, $4 / $20 per MTok (down from Opus 5's $5 / $25), 1M context, 128k max output, reliable knowledge cutoff Jun 2026. Now the models overview's recommended starting point for most workloads. Breaking changes vs. Opus 5: thinking can't be disabled, default effort `medium`, forced `tool_choice` returns 400, computer use requires `computer_toolset_20260801`. Opus 5 moves to legacy.
 - **Fast mode for Opus 5.5 (Sep 22, 2026)** — Research preview on the Claude API, $8 / $40 per MTok.
-- **Inline tools in mid-conversation system messages (Sep 22, 2026, beta)** — `inline-tools-2026-09-15` beta header allows `tool_addition` blocks inside mid-conversation system messages. *Fully documented in `tool-use.md` in the 2026-09-28 run.*
-- **Cache diagnostics out of beta (Sep 23, 2026)** — `cache-diagnosis-2026-04-07` header no longer required; include the `diagnostics` object to opt in. *Fully documented in `prompt-caching.md` in the 2026-09-28 run.*
+- **Inline tools in mid-conversation system messages (Sep 22, 2026, beta)** — `inline-tools-2026-09-15` beta header allows `tool_addition` blocks inside mid-conversation system messages. _Left for the next run at the time; now documented in `tool-use.md` (see the 2026-09-27 entry)._
+- **Cache diagnostics out of beta (Sep 23, 2026)** — `cache-diagnosis-2026-04-07` header no longer required; include the `diagnostics` object to opt in. _Left for the next run at the time; now documented in `prompt-caching.md` (see the 2026-09-27 entry)._
 - **Refusal billing expansion (Sep 24, 2026)** — Refusals before any output are now billed when `stop_details.category` is `bio`, `frontier_llm` or `reasoning_extraction`.
 
 ### Files Modified
 
-| File | Change |
-|------|--------|
-| `MODELS.md` | Added Opus 5.5 (current table, API changes section, capabilities column, knowledge cutoff, effort default); moved Opus 5 to legacy; corrected Bedrock ID format |
-| `README.md` | Updated MODELS.md date and last-incremental-update date |
-| `../README.md` | New top-level README explaining what the repo is and how it's kept up to date |
+| File           | Change                                                                                                                                                          |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MODELS.md`    | Added Opus 5.5 (current table, API changes section, capabilities column, knowledge cutoff, effort default); moved Opus 5 to legacy; corrected Bedrock ID format |
+| `README.md`    | Updated MODELS.md date and last-incremental-update date                                                                                                         |
+| `../README.md` | New top-level README explaining what the repo is and how it's kept up to date                                                                                   |
 
 ---
 
@@ -54,11 +121,11 @@ Sources: platform.claude.com/docs/en/release-notes/overview (Sep 14–18, 2026),
 
 ### Files Modified
 
-| File | Change |
-|------|--------|
-| `compaction.md` | **New file** — Complete reference for conversation compaction: automatic (`compact-2026-01-12`) and on-demand (`compact-2026-09-04`), parameters, `compaction` block format, streaming, billing, prompt cache integration, token counting, Fable 5.1 thinking block gotcha |
-| `compliance-api.md` | **New file** — Compliance API session transcripts reference: remote vs. local sessions, all `product_surface` values including `claude_in_chrome` (beta Sep 18), API endpoints, transcript structure, example Python client |
-| `README.md` | Added `compaction.md` and `compliance-api.md` to Features index; added `compact-2026-01-12` and `compact-2026-09-04` to beta headers table; updated last-incremental-update date to 2026-09-21 |
+| File                | Change                                                                                                                                                                                                                                                                     |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `compaction.md`     | **New file** — Complete reference for conversation compaction: automatic (`compact-2026-01-12`) and on-demand (`compact-2026-09-04`), parameters, `compaction` block format, streaming, billing, prompt cache integration, token counting, Fable 5.1 thinking block gotcha |
+| `compliance-api.md` | **New file** — Compliance API session transcripts reference: remote vs. local sessions, all `product_surface` values including `claude_in_chrome` (beta Sep 18), API endpoints, transcript structure, example Python client                                                |
+| `README.md`         | Added `compaction.md` and `compliance-api.md` to Features index; added `compact-2026-01-12` and `compact-2026-09-04` to beta headers table; updated last-incremental-update date to 2026-09-21                                                                             |
 
 ---
 
@@ -83,13 +150,13 @@ Sources: platform.claude.com/docs/en/release-notes/overview (Sep 3–10, 2026), 
 
 ### Files Modified
 
-| File | Change |
-|------|--------|
-| `structured-outputs.md` | **New file** — GA structured outputs (`output_config.format`) reference with code examples in Python, TypeScript, and cURL |
-| `managed-agents.md` | Expanded permission policy section with `auto` type, `evaluation` event object, `ant beta:sessions connect` CLI, and public GitHub repo mounting |
-| `sdks.md` | Added Python v1.5.0 / TypeScript v0.125.0 entries; added `Message.to_param()`, new error classes, tools-in-create convenience |
-| `web-search.md` | Added `content_too_large` error gotcha |
-| `README.md` | Added `structured-outputs.md` to index; updated SDK versions and last-updated dates; added `user-profiles-2026-09-04` beta header |
+| File                    | Change                                                                                                                                           |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `structured-outputs.md` | **New file** — GA structured outputs (`output_config.format`) reference with code examples in Python, TypeScript, and cURL                       |
+| `managed-agents.md`     | Expanded permission policy section with `auto` type, `evaluation` event object, `ant beta:sessions connect` CLI, and public GitHub repo mounting |
+| `sdks.md`               | Added Python v1.5.0 / TypeScript v0.125.0 entries; added `Message.to_param()`, new error classes, tools-in-create convenience                    |
+| `web-search.md`         | Added `content_too_large` error gotcha                                                                                                           |
+| `README.md`             | Added `structured-outputs.md` to index; updated SDK versions and last-updated dates; added `user-profiles-2026-09-04` beta header                |
 
 ---
 
@@ -116,14 +183,14 @@ Sources: platform.claude.com/docs/en/release-notes/overview (Sep 1–4, 2026), p
 
 ### Files Modified
 
-| File | Change |
-|------|--------|
-| `MODELS.md` | Added `claude-fable-5-1` as new primary model; added Fable 5.1/Mythos 5.1 API restrictions section; added `claude-fable-5` to legacy table; updated capabilities table (added Fable 5.1 column, `tool_choice any/tool` row, content watermarking row); updated knowledge cutoffs; updated date |
-| `QUICK-REFERENCE.md` | Updated model IDs table to lead with `claude-fable-5-1`; updated notes; updated date |
-| `prompt-caching.md` | Added Fable 5.1/Mythos 5.1 cache read pricing note (2.5% = $0.25/MTok); updated date |
-| `extended-thinking.md` | Added "Thinking Block Binding" section; added "Per-Message Effort Changes" beta section; added "Turn-Scoped System Messages" beta section; added Fable 5.1 gotchas; updated date |
-| `sdks.md` | Added Python v1.3.0 and v1.4.0; added TypeScript v0.123.0 and v0.124.0 to version history table; updated date |
-| `README.md` | Updated last-incremental-update date (2026-09-07); updated SDK versions (Python v1.4.0, TypeScript v0.124.0); updated model quick reference; added new beta headers (thinking-binding-controls, mid-conversation-output-config, mid-conversation-system-clear-at, thinking-display-updates); updated file last-updated dates |
+| File                   | Change                                                                                                                                                                                                                                                                                                                       |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MODELS.md`            | Added `claude-fable-5-1` as new primary model; added Fable 5.1/Mythos 5.1 API restrictions section; added `claude-fable-5` to legacy table; updated capabilities table (added Fable 5.1 column, `tool_choice any/tool` row, content watermarking row); updated knowledge cutoffs; updated date                               |
+| `QUICK-REFERENCE.md`   | Updated model IDs table to lead with `claude-fable-5-1`; updated notes; updated date                                                                                                                                                                                                                                         |
+| `prompt-caching.md`    | Added Fable 5.1/Mythos 5.1 cache read pricing note (2.5% = $0.25/MTok); updated date                                                                                                                                                                                                                                         |
+| `extended-thinking.md` | Added "Thinking Block Binding" section; added "Per-Message Effort Changes" beta section; added "Turn-Scoped System Messages" beta section; added Fable 5.1 gotchas; updated date                                                                                                                                             |
+| `sdks.md`              | Added Python v1.3.0 and v1.4.0; added TypeScript v0.123.0 and v0.124.0 to version history table; updated date                                                                                                                                                                                                                |
+| `README.md`            | Updated last-incremental-update date (2026-09-07); updated SDK versions (Python v1.4.0, TypeScript v0.124.0); updated model quick reference; added new beta headers (thinking-binding-controls, mid-conversation-output-config, mid-conversation-system-clear-at, thinking-display-updates); updated file last-updated dates |
 
 ---
 
@@ -145,14 +212,14 @@ Sources: platform.claude.com/docs/en/release-notes/overview (Aug 26–27, 2026),
 
 ### Files Modified
 
-| File | Change |
-|------|--------|
-| `authentication.md` | Added "API Key Types" section (personal keys, service account keys, table); updated key-creation steps to mention key type and expiration; updated date |
-| `extended-thinking.md` | Added `"updates"` display mode row to Thinking Modes table; updated date |
-| `files-api.md` | Added note that `client.beta.files.*` now uses GA shapes in v1.2.0+; updated gotchas; updated date |
-| `skills-api.md` | Added note about `BetaSkill` → `BetaContainerSkill` rename and `client.beta.skills.delete()` all-versions behavior in v1.2.0+; updated gotchas; updated date |
-| `sdks.md` | Added Python v1.1.0 and v1.2.0; added TypeScript v0.121.0 and v0.122.0 to version history table; updated date |
-| `README.md` | Updated last-incremental-update date (2026-08-31); updated SDK versions (Python v1.2.0, TypeScript v0.122.0); updated file last-updated dates |
+| File                   | Change                                                                                                                                                       |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `authentication.md`    | Added "API Key Types" section (personal keys, service account keys, table); updated key-creation steps to mention key type and expiration; updated date      |
+| `extended-thinking.md` | Added `"updates"` display mode row to Thinking Modes table; updated date                                                                                     |
+| `files-api.md`         | Added note that `client.beta.files.*` now uses GA shapes in v1.2.0+; updated gotchas; updated date                                                           |
+| `skills-api.md`        | Added note about `BetaSkill` → `BetaContainerSkill` rename and `client.beta.skills.delete()` all-versions behavior in v1.2.0+; updated gotchas; updated date |
+| `sdks.md`              | Added Python v1.1.0 and v1.2.0; added TypeScript v0.121.0 and v0.122.0 to version history table; updated date                                                |
+| `README.md`            | Updated last-incremental-update date (2026-08-31); updated SDK versions (Python v1.2.0, TypeScript v0.122.0); updated file last-updated dates                |
 
 ---
 
@@ -176,14 +243,14 @@ Sources: platform.claude.com/docs/en/release-notes/overview (Aug 18–20, 2026),
 
 ### Files Modified
 
-| File | Change |
-|------|--------|
-| `computer-use.md` | **Major rewrite**: added Computer Use Toolset (GA) section for `computer_toolset_20260801`; added Browser Use Toolset (GA) section for `browser_toolset_20260801`; added comparison table; updated status and models; updated date |
-| `files-api.md` | Updated status to GA; added GA migration note (expiration, new pagination); updated code examples to use `client.files.*`; added file expiration section; updated gotchas; updated date |
-| `skills-api.md` | Updated status to GA; updated code examples to use `client.skills.*`; updated gotchas; updated date |
-| `managed-agents.md` | Added "Web Search / Web Fetch Domain Restrictions" section; added "Self-Hosted Sandbox Memory Stores" section; updated gotchas with v0.123.0–v0.125.0 notes; updated SDK changelog version range; updated date |
-| `sdks.md` | Added Python v1.0.0 breaking changes table; added Python v0.123.0–v1.0.0 to version history; added TypeScript v0.118.0–v0.120.0 to version history; updated Python requires to 3.10+; updated date |
-| `README.md` | Updated last-incremental-update date (2026-08-24); updated SDK versions (Python v1.0.0, TypeScript v0.120.0); updated file status and last-updated dates; updated beta headers table to reflect Files API and Skills API GA; added computer_toolset_20260801/browser_toolset_20260801 note |
+| File                | Change                                                                                                                                                                                                                                                                                     |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `computer-use.md`   | **Major rewrite**: added Computer Use Toolset (GA) section for `computer_toolset_20260801`; added Browser Use Toolset (GA) section for `browser_toolset_20260801`; added comparison table; updated status and models; updated date                                                         |
+| `files-api.md`      | Updated status to GA; added GA migration note (expiration, new pagination); updated code examples to use `client.files.*`; added file expiration section; updated gotchas; updated date                                                                                                    |
+| `skills-api.md`     | Updated status to GA; updated code examples to use `client.skills.*`; updated gotchas; updated date                                                                                                                                                                                        |
+| `managed-agents.md` | Added "Web Search / Web Fetch Domain Restrictions" section; added "Self-Hosted Sandbox Memory Stores" section; updated gotchas with v0.123.0–v0.125.0 notes; updated SDK changelog version range; updated date                                                                             |
+| `sdks.md`           | Added Python v1.0.0 breaking changes table; added Python v0.123.0–v1.0.0 to version history; added TypeScript v0.118.0–v0.120.0 to version history; updated Python requires to 3.10+; updated date                                                                                         |
+| `README.md`         | Updated last-incremental-update date (2026-08-24); updated SDK versions (Python v1.0.0, TypeScript v0.120.0); updated file status and last-updated dates; updated beta headers table to reflect Files API and Skills API GA; added computer_toolset_20260801/browser_toolset_20260801 note |
 
 ---
 
@@ -230,12 +297,12 @@ Sources: Python SDK v0.122.0 changelog (2026-08-13), TypeScript SDK v0.117.0/v0.
 
 ### Files Modified
 
-| File | Change |
-|------|--------|
-| `MODELS.md` | Major update: filled in all TBD fields with confirmed specs; added official pricing; capability table rewritten with correct thinking/effort info; added platform availability table; updated date and source versions |
-| `managed-agents.md` | Added "Pinned Inference Geo" section; added Dreams `output_behavior` subsection; updated gotchas; updated date and SDK changelog line |
-| `sdks.md` | Added Python v0.122.0 and TypeScript v0.117.0/v0.117.1 to version history table; updated date |
-| `README.md` | Updated last-incremental-update date (2026-08-17); updated SDK versions (Python v0.122.0, TypeScript v0.117.1); updated file last-updated dates; added `anthropic-workspace-id` to response headers section |
+| File                | Change                                                                                                                                                                                                                 |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MODELS.md`         | Major update: filled in all TBD fields with confirmed specs; added official pricing; capability table rewritten with correct thinking/effort info; added platform availability table; updated date and source versions |
+| `managed-agents.md` | Added "Pinned Inference Geo" section; added Dreams `output_behavior` subsection; updated gotchas; updated date and SDK changelog line                                                                                  |
+| `sdks.md`           | Added Python v0.122.0 and TypeScript v0.117.0/v0.117.1 to version history table; updated date                                                                                                                          |
+| `README.md`         | Updated last-incremental-update date (2026-08-17); updated SDK versions (Python v0.122.0, TypeScript v0.117.1); updated file last-updated dates; added `anthropic-workspace-id` to response headers section            |
 
 ---
 
@@ -256,13 +323,13 @@ Sources: Python SDK v0.121.0 changelog (2026-08-07), TypeScript SDK v0.116.0 cha
 
 ### Files Modified
 
-| File | Change |
-|------|--------|
-| `skills-api.md` | **New file** — full reference for Skills API (create, retrieve, list, delete; skill object; session integration; GitHub auto-loading) |
-| `managed-agents.md` | Added "Session Budgets" section; added "Advisor Tool" section; added "Skills in Sessions" section; added "GitHub Repository Resource" section; updated gotchas; updated date and SDK changelog line |
-| `tool-use.md` | Added official `mid-conversation-tool-changes-2026-07-01` beta header note to Mid-Conversation Tool Changes section; updated date |
-| `sdks.md` | Added Python v0.121.0 and TypeScript v0.116.0 to version history table |
-| `README.md` | Updated last-incremental-update date (2026-08-10); updated SDK versions (Python v0.121.0, TypeScript v0.116.0); added `skills-api.md` to Features index; updated `managed-agents.md`, `tool-use.md`, `sdks.md` last-updated dates; added `mid-conversation-tool-changes-2026-07-01` to beta headers table |
+| File                | Change                                                                                                                                                                                                                                                                                                    |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `skills-api.md`     | **New file** — full reference for Skills API (create, retrieve, list, delete; skill object; session integration; GitHub auto-loading)                                                                                                                                                                     |
+| `managed-agents.md` | Added "Session Budgets" section; added "Advisor Tool" section; added "Skills in Sessions" section; added "GitHub Repository Resource" section; updated gotchas; updated date and SDK changelog line                                                                                                       |
+| `tool-use.md`       | Added official `mid-conversation-tool-changes-2026-07-01` beta header note to Mid-Conversation Tool Changes section; updated date                                                                                                                                                                         |
+| `sdks.md`           | Added Python v0.121.0 and TypeScript v0.116.0 to version history table                                                                                                                                                                                                                                    |
+| `README.md`         | Updated last-incremental-update date (2026-08-10); updated SDK versions (Python v0.121.0, TypeScript v0.116.0); added `skills-api.md` to Features index; updated `managed-agents.md`, `tool-use.md`, `sdks.md` last-updated dates; added `mid-conversation-tool-changes-2026-07-01` to beta headers table |
 
 ---
 
@@ -278,10 +345,10 @@ Sources: Python SDK v0.120.1–v0.120.2 changelog (2026-07-28), PyPI release his
 
 ### Files Modified
 
-| File | Change |
-|------|--------|
-| `sdks.md` | Added Python v0.120.1 and v0.120.2 to version history table; updated date |
-| `mcp.md` | Added MCP SDK v2 compatibility note to Gotchas section; updated date |
+| File        | Change                                                                                                                    |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `sdks.md`   | Added Python v0.120.1 and v0.120.2 to version history table; updated date                                                 |
+| `mcp.md`    | Added MCP SDK v2 compatibility note to Gotchas section; updated date                                                      |
 | `README.md` | Updated last-incremental-update date (2026-08-03); updated Python SDK version (v0.120.2); updated file last-updated dates |
 
 ---
@@ -305,15 +372,15 @@ Sources: Python SDK v0.118.0–v0.120.0 changelog (2026-07-22–24), TypeScript 
 
 ### Files Modified
 
-| File | Change |
-|------|--------|
-| `MODELS.md` | Added `claude-opus-5` to current models table and capabilities table; updated source version and date |
-| `QUICK-REFERENCE.md` | Added `claude-opus-5` to model IDs table; updated date |
-| `tool-use.md` | Added "Mid-Conversation Tool Changes" section (tool_addition/tool_removal blocks, tool_change events, reference type table); updated date |
-| `managed-agents.md` | Added "Model Effort" section; added "Initial Session Events" section; added "Threads Delta Streaming" section; updated gotchas; updated date and SDK changelog line |
-| `messages-api.md` | Added `pause_turn`, `refusal`, and `model_context_window_exceeded` to stop reasons table; updated date |
-| `sdks.md` | Added Python v0.118.0–v0.120.0 and TypeScript v0.112.4–v0.115.0 to version history table; updated date |
-| `README.md` | Updated last-incremental-update date (2026-07-27); updated SDK versions (Python v0.120.0, TypeScript v0.115.0); added `claude-opus-5` to model quick reference; updated file last-updated dates |
+| File                 | Change                                                                                                                                                                                          |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MODELS.md`          | Added `claude-opus-5` to current models table and capabilities table; updated source version and date                                                                                           |
+| `QUICK-REFERENCE.md` | Added `claude-opus-5` to model IDs table; updated date                                                                                                                                          |
+| `tool-use.md`        | Added "Mid-Conversation Tool Changes" section (tool_addition/tool_removal blocks, tool_change events, reference type table); updated date                                                       |
+| `managed-agents.md`  | Added "Model Effort" section; added "Initial Session Events" section; added "Threads Delta Streaming" section; updated gotchas; updated date and SDK changelog line                             |
+| `messages-api.md`    | Added `pause_turn`, `refusal`, and `model_context_window_exceeded` to stop reasons table; updated date                                                                                          |
+| `sdks.md`            | Added Python v0.118.0–v0.120.0 and TypeScript v0.112.4–v0.115.0 to version history table; updated date                                                                                          |
+| `README.md`          | Updated last-incremental-update date (2026-07-27); updated SDK versions (Python v0.120.0, TypeScript v0.115.0); added `claude-opus-5` to model quick reference; updated file last-updated dates |
 
 ---
 
@@ -330,12 +397,12 @@ Sources: Python SDK v0.117.0 changelog (2026-07-16), TypeScript SDK v0.112.0–v
 
 ### Files Modified
 
-| File | Change |
-|------|--------|
-| `mcp.md` | Added full MCP Tunnels section: concepts, tunnel endpoints, certificate endpoints, Python + TypeScript examples, type tables, gotchas; updated date and status line |
-| `managed-agents.md` | Updated Dreams section header to reflect Python parity (v0.117.0); added Python `list()` example with `created_at_gt` filter; updated gotchas; updated SDK changelog line; updated date |
-| `sdks.md` | Added Python v0.117.0 and TypeScript v0.112.0–v0.112.3 to version history table; updated date |
-| `README.md` | Updated last-incremental-update date (2026-07-20); updated SDK versions (Python v0.117.0, TypeScript v0.112.3); updated mcp.md and managed-agents.md and sdks.md last-updated dates; added `mcp-tunnels-2026-06-22` to beta headers table |
+| File                | Change                                                                                                                                                                                                                                    |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `mcp.md`            | Added full MCP Tunnels section: concepts, tunnel endpoints, certificate endpoints, Python + TypeScript examples, type tables, gotchas; updated date and status line                                                                       |
+| `managed-agents.md` | Updated Dreams section header to reflect Python parity (v0.117.0); added Python `list()` example with `created_at_gt` filter; updated gotchas; updated SDK changelog line; updated date                                                   |
+| `sdks.md`           | Added Python v0.117.0 and TypeScript v0.112.0–v0.112.3 to version history table; updated date                                                                                                                                             |
+| `README.md`         | Updated last-incremental-update date (2026-07-20); updated SDK versions (Python v0.117.0, TypeScript v0.112.3); updated mcp.md and managed-agents.md and sdks.md last-updated dates; added `mcp-tunnels-2026-06-22` to beta headers table |
 
 ---
 
@@ -351,11 +418,11 @@ Sources: TypeScript SDK v0.111.0 changelog (2026-07-10), GitHub code search on a
 
 ### Files Modified
 
-| File | Change |
-|------|--------|
+| File                | Change                                                                                                                                                                                                                                             |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `managed-agents.md` | Added "Dreams API" section (endpoints, types, code example, gotchas); added "Session Tool Call Permissions" section (`evaluated_permission` flow, `user.tool_confirmation`, `SessionToolRunner` idle bounding); updated gotchas list; updated date |
-| `sdks.md` | Added TypeScript v0.111.0 to version history table; updated date |
-| `README.md` | Updated last-incremental-update date (2026-07-13); updated TypeScript SDK version (v0.111.0); updated file last-updated dates for modified files |
+| `sdks.md`           | Added TypeScript v0.111.0 to version history table; updated date                                                                                                                                                                                   |
+| `README.md`         | Updated last-incremental-update date (2026-07-13); updated TypeScript SDK version (v0.111.0); updated file last-updated dates for modified files                                                                                                   |
 
 ---
 
@@ -381,15 +448,15 @@ Sources: Python SDK v0.113.0–v0.116.0 changelog, TypeScript SDK v0.107.0–v0.
 
 ### Files Modified
 
-| File | Change |
-|------|--------|
-| `MODELS.md` | Added `claude-sonnet-5` to current models table and capability table; updated date and source version |
-| `QUICK-REFERENCE.md` | Added `claude-sonnet-5` to model IDs table; updated date |
-| `managed-agents.md` | Added sections: Event Delta Streaming, Agent Overrides, Reverse Pagination, Vault Credential Injection Scoping, Agent and Deployment Webhook Events, Memory Stores beta header; updated gotchas; updated date |
-| `sdks.md` | Added Python v0.113.0–v0.116.0 and TypeScript v0.107.0–v0.110.0 to version history; updated date |
-| `token-counting.md` | Added `user_profile_id` in token counting section; added async bug fix note; updated date |
-| `web-search.md` | Updated tool type strings to `web_search_20260318` / `web_fetch_20260318`; updated date |
-| `README.md` | Updated last-incremental-update date; updated SDK versions; added `claude-sonnet-5` to model quick reference; expanded beta headers table; updated file last-updated dates |
+| File                 | Change                                                                                                                                                                                                        |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MODELS.md`          | Added `claude-sonnet-5` to current models table and capability table; updated date and source version                                                                                                         |
+| `QUICK-REFERENCE.md` | Added `claude-sonnet-5` to model IDs table; updated date                                                                                                                                                      |
+| `managed-agents.md`  | Added sections: Event Delta Streaming, Agent Overrides, Reverse Pagination, Vault Credential Injection Scoping, Agent and Deployment Webhook Events, Memory Stores beta header; updated gotchas; updated date |
+| `sdks.md`            | Added Python v0.113.0–v0.116.0 and TypeScript v0.107.0–v0.110.0 to version history; updated date                                                                                                              |
+| `token-counting.md`  | Added `user_profile_id` in token counting section; added async bug fix note; updated date                                                                                                                     |
+| `web-search.md`      | Updated tool type strings to `web_search_20260318` / `web_fetch_20260318`; updated date                                                                                                                       |
+| `README.md`          | Updated last-incremental-update date; updated SDK versions; added `claude-sonnet-5` to model quick reference; expanded beta headers table; updated file last-updated dates                                    |
 
 ---
 
@@ -409,13 +476,13 @@ Sources: Python SDK v0.112.0 changelog, TypeScript SDK v0.106.0 changelog. Docs 
 
 ### Files Modified
 
-| File | Change |
-|------|--------|
-| `streaming.md` | Added `system.message` event to SSE event types table; updated date |
-| `messages-api.md` | Added `user_profile_id` parameter to request params table; updated date |
-| `sdks.md` | Added Python v0.112.0 and TypeScript v0.106.0 to version history; updated date |
-| `managed-agents.md` | Added memory tool parent-dir fix to gotchas; updated date |
-| `README.md` | Updated last-incremental-update date; updated SDK versions; updated file last-updated dates |
+| File                | Change                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------- |
+| `streaming.md`      | Added `system.message` event to SSE event types table; updated date                         |
+| `messages-api.md`   | Added `user_profile_id` parameter to request params table; updated date                     |
+| `sdks.md`           | Added Python v0.112.0 and TypeScript v0.106.0 to version history; updated date              |
+| `managed-agents.md` | Added memory tool parent-dir fix to gotchas; updated date                                   |
+| `README.md`         | Updated last-incremental-update date; updated SDK versions; updated file last-updated dates |
 
 ---
 
@@ -437,13 +504,13 @@ Sources: Python SDK v0.110.0–v0.111.0 changelog, TypeScript SDK v0.105.0 chang
 
 ### Files Modified
 
-| File | Change |
-|------|--------|
-| `programmatic-tool-calling.md` | **New file** — full reference for programmatic tool calling |
-| `tool-use.md` | Updated built-in tool type strings; added Tool Definition Properties section |
-| `sdks.md` | Updated version history table (Python 0.111.0, TypeScript 0.105.0) |
-| `MODELS.md` | Added retired-models cleanup note; updated source date |
-| `README.md` | Added programmatic-tool-calling.md to index; updated SDK versions and last-updated dates |
+| File                           | Change                                                                                   |
+| ------------------------------ | ---------------------------------------------------------------------------------------- |
+| `programmatic-tool-calling.md` | **New file** — full reference for programmatic tool calling                              |
+| `tool-use.md`                  | Updated built-in tool type strings; added Tool Definition Properties section             |
+| `sdks.md`                      | Updated version history table (Python 0.111.0, TypeScript 0.105.0)                       |
+| `MODELS.md`                    | Added retired-models cleanup note; updated source date                                   |
+| `README.md`                    | Added programmatic-tool-calling.md to index; updated SDK versions and last-updated dates |
 
 ---
 
@@ -465,13 +532,13 @@ Sources: Python SDK v0.107.1→v0.109.1 changelog, TypeScript SDK v0.102.0→v0.
 
 ### Files Modified
 
-| File | Change |
-|------|--------|
-| `MODELS.md` | Added claude-fable-5, claude-mythos-5; updated capability table; updated source/date |
-| `QUICK-REFERENCE.md` | Added claude-fable-5, claude-mythos-5 to model IDs table |
-| `managed-agents.md` | Added Deployments section (v0.109.0+); updated gotchas |
-| `sdks.md` | Added fallbacks middleware section; updated version history table |
-| `README.md` | Updated last-updated dates; SDK versions; model ID quick reference |
+| File                 | Change                                                                               |
+| -------------------- | ------------------------------------------------------------------------------------ |
+| `MODELS.md`          | Added claude-fable-5, claude-mythos-5; updated capability table; updated source/date |
+| `QUICK-REFERENCE.md` | Added claude-fable-5, claude-mythos-5 to model IDs table                             |
+| `managed-agents.md`  | Added Deployments section (v0.109.0+); updated gotchas                               |
+| `sdks.md`            | Added fallbacks middleware section; updated version history table                    |
+| `README.md`          | Updated last-updated dates; SDK versions; model ID quick reference                   |
 
 ---
 
@@ -497,20 +564,21 @@ Sources: Python SDK v0.105.2→v0.107.1 changelog, TypeScript SDK v0.100.1→v0.
 
 ### Files Modified
 
-| File | Change |
-|------|--------|
-| `MODELS.md` | Added claude-opus-4-6/4-7, claude-mythos-preview; deprecated claude-opus-4-1; expanded history table |
-| `QUICK-REFERENCE.md` | Updated model IDs table |
-| `tool-use.md` | Updated built-in tools section with latest type versions |
-| `web-search.md` | Updated tool type strings; added web fetch tool section |
-| `sdks.md` | Added middleware example; updated version history table |
-| `README.md` | Updated last-updated dates; updated SDK versions |
+| File                 | Change                                                                                               |
+| -------------------- | ---------------------------------------------------------------------------------------------------- |
+| `MODELS.md`          | Added claude-opus-4-6/4-7, claude-mythos-preview; deprecated claude-opus-4-1; expanded history table |
+| `QUICK-REFERENCE.md` | Updated model IDs table                                                                              |
+| `tool-use.md`        | Updated built-in tools section with latest type versions                                             |
+| `web-search.md`      | Updated tool type strings; added web fetch tool section                                              |
+| `sdks.md`            | Added middleware example; updated version history table                                              |
+| `README.md`          | Updated last-updated dates; updated SDK versions                                                     |
 
 ---
 
 ## 2026-05-30 — Initial Full Crawl
 
 Initial comprehensive crawl of Claude API documentation from public sources:
+
 - GitHub: anthropics/anthropic-sdk-python (v0.105.2)
 - GitHub: anthropics/anthropic-sdk-typescript (aws-sdk v0.3.1)
 - GitHub: anthropics/anthropic-cookbook
@@ -518,6 +586,7 @@ Initial comprehensive crawl of Claude API documentation from public sources:
 
 > **Note:** Direct access to platform.claude.com/docs and docs.anthropic.com returned HTTP 403 from
 > the crawl environment. Documentation was compiled from:
+>
 > 1. Official SDK README files and API reference files (api.md, helpers.md)
 > 2. Official SDK example code
 > 3. Anthropic Cookbook notebooks
@@ -526,38 +595,39 @@ Initial comprehensive crawl of Claude API documentation from public sources:
 
 ### Files Created
 
-| File | Description |
-|------|-------------|
-| `README.md` | Index of all documentation files |
-| `MODELS.md` | Current model IDs, capabilities, context windows |
-| `QUICK-REFERENCE.md` | Common code patterns for quick lookup |
-| `CHANGELOG.md` | This file |
-| `authentication.md` | API keys, headers, third-party platform auth |
-| `messages-api.md` | Core Messages API reference |
-| `streaming.md` | SSE streaming, event types, delta types |
-| `tool-use.md` | Function calling, agentic loop, built-in tools |
-| `prompt-caching.md` | Cache control, TTL, pricing, best practices |
-| `extended-thinking.md` | Thinking blocks, budget tokens, streaming |
-| `vision.md` | Image inputs (base64, URL), supported formats |
-| `pdf-support.md` | PDF document inputs |
-| `batch-api.md` | Async batch processing |
-| `token-counting.md` | Count tokens before sending |
-| `rate-limits-errors.md` | HTTP errors, retry logic, limits |
-| `sdks.md` | Python and TypeScript SDK reference |
-| `agent-patterns.md` | Prompt chaining, parallelization, routing, etc. |
-| `files-api.md` | File upload/reference (beta) |
-| `web-search.md` | Built-in web search tool |
-| `mcp.md` | Model Context Protocol integration (beta) |
-| `managed-agents.md` | Persistent agents, sessions, environments (beta) |
-| `prompt-engineering.md` | Prompting techniques, JSON output, patterns |
-| `computer-use.md` | GUI automation (beta) |
-| `embeddings.md` | Voyage AI embeddings for RAG |
-| `citations.md` | Inline document citations (beta) |
-| `migrations.md` | Model and API migration guides |
+| File                    | Description                                      |
+| ----------------------- | ------------------------------------------------ |
+| `README.md`             | Index of all documentation files                 |
+| `MODELS.md`             | Current model IDs, capabilities, context windows |
+| `QUICK-REFERENCE.md`    | Common code patterns for quick lookup            |
+| `CHANGELOG.md`          | This file                                        |
+| `authentication.md`     | API keys, headers, third-party platform auth     |
+| `messages-api.md`       | Core Messages API reference                      |
+| `streaming.md`          | SSE streaming, event types, delta types          |
+| `tool-use.md`           | Function calling, agentic loop, built-in tools   |
+| `prompt-caching.md`     | Cache control, TTL, pricing, best practices      |
+| `extended-thinking.md`  | Thinking blocks, budget tokens, streaming        |
+| `vision.md`             | Image inputs (base64, URL), supported formats    |
+| `pdf-support.md`        | PDF document inputs                              |
+| `batch-api.md`          | Async batch processing                           |
+| `token-counting.md`     | Count tokens before sending                      |
+| `rate-limits-errors.md` | HTTP errors, retry logic, limits                 |
+| `sdks.md`               | Python and TypeScript SDK reference              |
+| `agent-patterns.md`     | Prompt chaining, parallelization, routing, etc.  |
+| `files-api.md`          | File upload/reference (beta)                     |
+| `web-search.md`         | Built-in web search tool                         |
+| `mcp.md`                | Model Context Protocol integration (beta)        |
+| `managed-agents.md`     | Persistent agents, sessions, environments (beta) |
+| `prompt-engineering.md` | Prompting techniques, JSON output, patterns      |
+| `computer-use.md`       | GUI automation (beta)                            |
+| `embeddings.md`         | Voyage AI embeddings for RAG                     |
+| `citations.md`          | Inline document citations (beta)                 |
+| `migrations.md`         | Model and API migration guides                   |
 
 ### SDK Features Confirmed (from CHANGELOG)
 
 Most recent SDK releases (Python v0.100.0 – v0.105.2, May 2026):
+
 - `claude-opus-4-8` model support (v0.105.0, 2026-05-28)
 - Mid-conversation system blocks (v0.105.0)
 - Usage token details (v0.105.0)

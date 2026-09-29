@@ -1,6 +1,7 @@
 # Tool Use / Function Calling
 
-> **Last updated:** 2026-09-28
+> **Last updated:** 2026-09-28  
+> **Source (inline tool definitions):** platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages#define-tools-in-a-message-beta
 
 ## Overview
 
@@ -108,53 +109,56 @@ print(final.content[0].text)
 ## Complete TypeScript Example
 
 ```typescript
-import Anthropic from '@anthropic-ai/sdk';
+import Anthropic from "@anthropic-ai/sdk";
 
 const client = new Anthropic();
 
 const tools = [
   {
-    name: 'get_weather',
-    description: 'Get the weather for a specific location',
+    name: "get_weather",
+    description: "Get the weather for a specific location",
     input_schema: {
-      type: 'object' as const,
-      properties: { location: { type: 'string' } },
-      required: ['location'],
+      type: "object" as const,
+      properties: { location: { type: "string" } },
+      required: ["location"],
     },
   },
 ];
 
-const userMessage = { role: 'user' as const, content: 'What is the weather in SF?' };
+const userMessage = {
+  role: "user" as const,
+  content: "What is the weather in SF?",
+};
 
 // Step 1: Initial request
 const response = await client.messages.create({
-  model: 'claude-sonnet-4-6',
+  model: "claude-sonnet-4-6",
   max_tokens: 1024,
   messages: [userMessage],
   tools,
 });
 
 // Step 2: Find tool use block
-const toolUse = response.content.find((b) => b.type === 'tool_use');
-if (!toolUse || toolUse.type !== 'tool_use') throw new Error('No tool use');
+const toolUse = response.content.find((b) => b.type === "tool_use");
+if (!toolUse || toolUse.type !== "tool_use") throw new Error("No tool use");
 
 // Step 3: Execute tool
 const toolResult = `72°F and sunny in ${(toolUse.input as any).location}`;
 
 // Step 4: Send result back
 const final = await client.messages.create({
-  model: 'claude-sonnet-4-6',
+  model: "claude-sonnet-4-6",
   max_tokens: 1024,
   messages: [
     userMessage,
     { role: response.role, content: response.content },
     {
-      role: 'user',
+      role: "user",
       content: [
         {
-          type: 'tool_result',
+          type: "tool_result",
           tool_use_id: toolUse.id,
-          content: [{ type: 'text', text: toolResult }],
+          content: [{ type: "text", text: toolResult }],
         },
       ],
     },
@@ -169,7 +173,7 @@ console.log(final.content[0].text);
 ```python
 def run_agent(client, tools, tool_functions, initial_message):
     messages = [{"role": "user", "content": initial_message}]
-    
+
     while True:
         response = client.messages.create(
             model="claude-sonnet-4-6",
@@ -177,13 +181,13 @@ def run_agent(client, tools, tool_functions, initial_message):
             tools=tools,
             messages=messages,
         )
-        
+
         if response.stop_reason == "end_turn":
             return response.content[0].text
-        
+
         if response.stop_reason == "tool_use":
             messages.append({"role": response.role, "content": response.content})
-            
+
             tool_results = []
             for block in response.content:
                 if block.type == "tool_use":
@@ -194,7 +198,7 @@ def run_agent(client, tools, tool_functions, initial_message):
                         "tool_use_id": block.id,
                         "content": str(result),
                     })
-            
+
             messages.append({"role": "user", "content": tool_results})
 ```
 
@@ -264,32 +268,32 @@ tools = [{"type": "bash_20250124", "name": "bash"}]
 
 **Version history for key tools:**
 
-| Tool | Versions (newest first) | Notes |
-|------|------------------------|-------|
-| Web Search | `web_search_20260318`, `web_search_20260209`, `web_search_20250305` | 20260209+ adds dynamic content filtering; 20260318 adds response-inclusion control |
-| Web Fetch | `web_fetch_20260318`, `web_fetch_20260309`, `web_fetch_20260209`, `web_fetch_20250910` | 20260309 adds cache-bypass; 20260318 adds response-inclusion control |
+| Tool           | Versions (newest first)                                                                                    | Notes                                                                                                                 |
+| -------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Web Search     | `web_search_20260318`, `web_search_20260209`, `web_search_20250305`                                        | 20260209+ adds dynamic content filtering; 20260318 adds response-inclusion control                                    |
+| Web Fetch      | `web_fetch_20260318`, `web_fetch_20260309`, `web_fetch_20260209`, `web_fetch_20250910`                     | 20260309 adds cache-bypass; 20260318 adds response-inclusion control                                                  |
 | Code Execution | `code_execution_20260521`, `code_execution_20260120`, `code_execution_20250825`, `code_execution_20250522` | 20260120+ enables [programmatic tool calling](./programmatic-tool-calling.md); 20260521 discloses per-cell time limit |
-| Text Editor | `text_editor_20250728` (Claude 4), `text_editor_20250124` (earlier models) | |
-| Tool Search | `tool_search_tool_bm25_20251119`, `tool_search_tool_regex_20251119` | Two search algorithms, not version-keyed |
+| Text Editor    | `text_editor_20250728` (Claude 4), `text_editor_20250124` (earlier models)                                 |                                                                                                                       |
+| Tool Search    | `tool_search_tool_bm25_20251119`, `tool_search_tool_regex_20251119`                                        | Two search algorithms, not version-keyed                                                                              |
 
 ## Tool Definition Properties
 
 Every tool (including user-defined tools) accepts optional properties that compose freely:
 
-| Property | Purpose | Applies To |
-|----------|---------|------------|
-| `cache_control` | Set a prompt-cache breakpoint at this tool definition | All tools |
-| `strict` | Guarantee schema validation on tool names and inputs | All tools except `mcp_toolset` |
-| `defer_loading` | Exclude tool from initial context; load on-demand via tool search | All tools |
-| `allowed_callers` | Restrict which callers can invoke the tool | All tools except `mcp_toolset` |
-| `input_examples` | Provide example inputs to help Claude call the tool correctly | User-defined and client tools only |
-| `eager_input_streaming` | Enable fine-grained incremental input streaming for this tool | User-defined tools only |
+| Property                | Purpose                                                           | Applies To                         |
+| ----------------------- | ----------------------------------------------------------------- | ---------------------------------- |
+| `cache_control`         | Set a prompt-cache breakpoint at this tool definition             | All tools                          |
+| `strict`                | Guarantee schema validation on tool names and inputs              | All tools except `mcp_toolset`     |
+| `defer_loading`         | Exclude tool from initial context; load on-demand via tool search | All tools                          |
+| `allowed_callers`       | Restrict which callers can invoke the tool                        | All tools except `mcp_toolset`     |
+| `input_examples`        | Provide example inputs to help Claude call the tool correctly     | User-defined and client tools only |
+| `eager_input_streaming` | Enable fine-grained incremental input streaming for this tool     | User-defined tools only            |
 
 ### `allowed_callers` values
 
-| Value | Meaning |
-|-------|---------|
-| `"direct"` | Claude invokes this tool in a standard `tool_use` block (default) |
+| Value                       | Meaning                                                                 |
+| --------------------------- | ----------------------------------------------------------------------- |
+| `"direct"`                  | Claude invokes this tool in a standard `tool_use` block (default)       |
 | `"code_execution_20260120"` | Code running in a `code_execution_20260120`+ sandbox can call this tool |
 
 Omitting `"direct"` guides Claude to only call the tool from code. See [Programmatic Tool Calling](./programmatic-tool-calling.md).
@@ -319,7 +323,7 @@ tools = [
   "type": "tool_use",
   "id": "toolu_01A09q90qw90lq917835lq9",
   "name": "get_weather",
-  "input": {"location": "San Francisco, CA"}
+  "input": { "location": "San Francisco, CA" }
 }
 ```
 
@@ -329,7 +333,7 @@ tools = [
 {
   "type": "tool_result",
   "tool_use_id": "toolu_01A09q90qw90lq917835lq9",
-  "content": [{"type": "text", "text": "72°F and sunny"}]
+  "content": [{ "type": "text", "text": "72°F and sunny" }]
 }
 ```
 
@@ -344,20 +348,20 @@ tools = [
 ## Zod Tool Helpers (TypeScript)
 
 ```typescript
-import { betaZodTool } from '@anthropic-ai/sdk/helpers/beta/zod';
-import { z } from 'zod';
+import { betaZodTool } from "@anthropic-ai/sdk/helpers/beta/zod";
+import { z } from "zod";
 
 const weatherTool = betaZodTool({
-  name: 'get_weather',
-  description: 'Get current weather',
+  name: "get_weather",
+  description: "Get current weather",
   inputSchema: z.object({ location: z.string() }),
   run: ({ location }) => `72°F and sunny in ${location}`,
 });
 
 const finalMessage = await client.beta.messages.toolRunner({
-  model: 'claude-sonnet-4-6',
+  model: "claude-sonnet-4-6",
   tools: [weatherTool],
-  messages: [{ role: 'user', content: 'What is the weather?' }],
+  messages: [{ role: "user", content: "What is the weather?" }],
   max_tokens: 1024,
 });
 ```
@@ -408,58 +412,114 @@ messages = [
 
 **Tool reference types** for `tool`/`mcp_tool`/`mcp_toolset`:
 
-| Reference Type | `type` field | Identifies |
-|----------------|--------------|------------|
-| `BetaToolChangeToolReferenceParam` | `"tool"` | A tool declared directly in `tools[]` |
-| `BetaToolChangeMCPToolReferenceParam` | `"mcp_tool"` | A single MCP-resolved tool |
-| `BetaToolChangeMCPToolsetReferenceParam` | `"mcp_toolset"` | An entire MCP toolset |
+| Reference Type                           | `type` field    | Identifies                            |
+| ---------------------------------------- | --------------- | ------------------------------------- |
+| `BetaToolChangeToolReferenceParam`       | `"tool"`        | A tool declared directly in `tools[]` |
+| `BetaToolChangeMCPToolReferenceParam`    | `"mcp_tool"`    | A single MCP-resolved tool            |
+| `BetaToolChangeMCPToolsetReferenceParam` | `"mcp_toolset"` | An entire MCP toolset                 |
 
 > **Note:** `tool_addition` and `tool_removal` blocks do NOT accept the composed `{server}_{name}` form the API assigns to MCP-resolved tools. Use `mcp_tool_reference` or `mcp_toolset_reference` for MCP tools. Both block types accept an optional `cache_control` field for cache breakpoints.
 
 The `tool_change` event is also emitted during streaming to reflect these dynamic changes.
 
-## Inline Tool Definitions in Mid-Conversation System Messages (Beta, Sep 22, 2026)
+### Define Tools Inside a Message (Beta, Sep 22, 2026)
 
-**Beta header:** `anthropic-beta: inline-tools-2026-09-15`
-
-Allows full tool definitions inside mid-conversation `role: "system"` messages, not just references to already-declared tools. Use this when you need to add a tool, upgrade a tool's schema, or pin a server-managed tool version without editing the top-level `tools` array (and without invalidating the prompt cache).
-
-For MCP toolsets, also add `anthropic-beta: mcp-client-2026-09-15`. Responses include an `mcp_tool_listing` block pinning the server's fetched tool list.
+With the `inline-tools-2026-09-15` beta header, a `tool_addition` block can carry a tool's **full definition** instead of a reference, inside a mid-conversation `role: "system"` message. Use it for tools unknown at the first request or whose schema changes later. `tools` and all earlier messages stay unchanged, so the prompt cache still hits. The same header also covers adding/removing tools by reference. Claude API only. SDK support: Python v1.8.0+ / TypeScript v0.128.0+. Models: Fable 5.1, Mythos 5.1, Fable 5, Mythos 5, Opus 5.5, Opus 5, Opus 4.8 and Sonnet 5.5. **Not Sonnet 5**, which doesn't support mid-conversation system messages at all.
 
 ```python
-# Requires: anthropic-beta: inline-tools-2026-09-15
-messages = [
-    {"role": "user", "content": "Tell me about the company."},
-    {
-        "role": "system",          # mid-conversation system message
-        "content": [
-            {
-                "type": "tool_addition",
-                "tool": {
-                    "type": "tool_definition",   # full inline definition
-                    "definition": {
-                        "name": "lookup_company",
-                        "description": "Retrieve company details by ID.",
-                        "input_schema": {
-                            "type": "object",
-                            "properties": {"company_id": {"type": "string"}},
-                            "required": ["company_id"],
+client = anthropic.Anthropic()
+
+response = client.beta.messages.create(
+    model="claude-opus-5-5",
+    max_tokens=1024,
+    betas=["inline-tools-2026-09-15"],
+    # Keep at least one non-deferred tool in `tools`, so a tool defined
+    # later doesn't change the start of the rendered prompt.
+    tools=[
+        {
+            "name": "get_weather",
+            "description": "Get the current weather for a location.",
+            "input_schema": {
+                "type": "object",
+                "properties": {"location": {"type": "string", "description": "City name"}},
+                "required": ["location"],
+            },
+        },
+    ],
+    messages=[
+        {"role": "user", "content": "How many orders shipped yesterday?"},
+        {
+            "role": "system",
+            "content": [
+                {
+                    "type": "tool_addition",
+                    "tool": {
+                        "type": "tool_definition",
+                        "definition": {
+                            "name": "db_query",
+                            "description": "Run a read-only SQL query against the analytics database.",
+                            "input_schema": {
+                                "type": "object",
+                                "properties": {"sql": {"type": "string"}},
+                                "required": ["sql"],
+                            },
                         },
                     },
                 },
-            }
-        ],
-    },
-]
+            ],
+        },
+    ],
+)
 ```
 
-Key differences from the existing `tool_addition` pattern:
-- `"type": "tool_definition"` (not `"tool"`) — carries the full `definition` object
-- The tool does not need to be declared in the top-level `tools` array first
-- Can replace a tool schema (same name, new definition) or upgrade to a newer server-tool version
-- Works alongside `"type": "tool"` references for already-declared tools
+```typescript
+const response = await client.beta.messages.create({
+  model: "claude-opus-5-5",
+  max_tokens: 1024,
+  betas: ["inline-tools-2026-09-15"],
+  tools: [getWeatherTool], // keep at least one non-deferred tool
+  messages: [
+    { role: "user", content: "How many orders shipped yesterday?" },
+    {
+      role: "system",
+      content: [
+        {
+          type: "tool_addition",
+          tool: {
+            type: "tool_definition",
+            definition: {
+              name: "db_query",
+              description:
+                "Run a read-only SQL query against the analytics database.",
+              input_schema: {
+                type: "object",
+                properties: { sql: { type: "string" } },
+                required: ["sql"],
+              },
+            },
+          },
+        },
+      ],
+    },
+  ],
+});
+```
 
-Available on Fable 5.1, Opus 5.5, Opus 5, and Sonnet 5 on the Claude API.
+**Rules:**
+
+- `definition` is any `tools` entry (custom, Anthropic client or server tool), including `cache_control` and `defer_loading`. Some tool types (computer use among them) can't be defined in a message during the beta and return 400; declare those in `tools` and add by reference.
+- Resending an identical definition is a no-op (safe on retries).
+- **Changing a schema / upgrading a server tool version:** send a different definition under the same name; it replaces the earlier one from that point on. Reusing a name for a _different type_ of tool returns 400 with `error.details.error_code: "tool_name_conflict"` (a newer version of the same tool is not a different type).
+- `tool_removal` still takes a reference. A removed tool can be defined or re-offered later.
+- Tools known at the first request belong in `tools` (with `defer_loading: true` plus a later reference `tool_addition` if the model shouldn't see them yet). Define by value only what's unknown up front or changes.
+- Keep at least one non-deferred tool in `tools`. Otherwise the first by-value definition changes the start of the rendered prompt and costs one full cache miss. A tool search tool counts as non-deferred.
+- Server tools that need their own beta header still need it on every later request.
+- `cache_control` goes on the block or in the definition, not both, and counts toward the breakpoint limit. A deferred definition can't carry `cache_control`.
+- Don't edit or remove a system message after sending it: that invalidates the cache from that point, and on Fable 5.1, Opus 5.5 and Sonnet 5.5 also invalidates thinking blocks in every later assistant turn. Append a new one instead.
+
+**Limits** (400 with `error.details.error_code: "available_tools_limit_exceeded"`): more than 10,000 deferred tools available after any message; more than 10,000 tools defined after the first user message available after any message; tool definitions sent after the first user message that remain available exceed 4 MB (4,194,304 bytes) in total; or rendered tool text exceeds 4 MB.
+
+**MCP servers mid-conversation:** add the `mcp-client-2026-09-15` header alongside `inline-tools-2026-09-15` and the `definition` can be an `mcp_toolset` (`{"type": "mcp_toolset", "mcp_server_name": "calendar"}`, same object as in `tools`, including `default_config` / `configs`). Connection details (URL, token) stay in `mcp_servers`; a `tool_addition` block never holds them. A response for which the API fetched a server's tool list **starts with an `mcp_tool_listing` block** per server, so don't read `content[0]` blindly. Send the assistant message back unchanged (block included) with `mcp-client-2026-09-15` and later requests reuse the recorded list instead of re-querying the server. `mcp-client-2026-09-15` includes everything in `mcp-client-2025-11-20`, so don't send both. See [MCP](./mcp.md).
 
 ## Related
 

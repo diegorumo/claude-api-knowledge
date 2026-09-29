@@ -1,6 +1,6 @@
 # Messages API
 
-> **Last updated:** 2026-07-27
+> **Last updated:** 2026-09-27
 
 ## Overview
 
@@ -10,22 +10,22 @@ The Messages API is the primary interface for interacting with Claude. It accept
 
 ## Request Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `model` | string | Yes | Model ID (e.g. `claude-sonnet-4-6`) |
-| `max_tokens` | integer | Yes | Maximum tokens in response (1–model max) |
-| `messages` | array | Yes | Conversation history (alternating user/assistant) |
-| `system` | string or array | No | System prompt |
-| `tools` | array | No | Tool definitions for function calling |
-| `tool_choice` | object | No | Control tool selection |
-| `thinking` | object | No | Enable extended thinking |
-| `stream` | boolean | No | Enable SSE streaming |
-| `temperature` | float | No | Randomness 0–1 (default 1) |
-| `top_p` | float | No | Nucleus sampling 0–1 |
-| `top_k` | integer | No | Top-k sampling |
-| `stop_sequences` | array | No | Custom stop strings |
-| `metadata` | object | No | User ID for abuse detection |
-| `user_profile_id` | string | No | Attribute request to a specific user profile; sent as `anthropic-user-profile-id` header. Requires `user-profiles` beta header. Added v0.112.0 / TypeScript v0.106.0. |
+| Parameter         | Type            | Required | Description                                                                                                                                                           |
+| ----------------- | --------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `model`           | string          | Yes      | Model ID (e.g. `claude-sonnet-4-6`)                                                                                                                                   |
+| `max_tokens`      | integer         | Yes      | Maximum tokens in response (1–model max)                                                                                                                              |
+| `messages`        | array           | Yes      | Conversation history (alternating user/assistant)                                                                                                                     |
+| `system`          | string or array | No       | System prompt                                                                                                                                                         |
+| `tools`           | array           | No       | Tool definitions for function calling                                                                                                                                 |
+| `tool_choice`     | object          | No       | Control tool selection                                                                                                                                                |
+| `thinking`        | object          | No       | Enable extended thinking                                                                                                                                              |
+| `stream`          | boolean         | No       | Enable SSE streaming                                                                                                                                                  |
+| `temperature`     | float           | No       | Randomness 0–1 (default 1)                                                                                                                                            |
+| `top_p`           | float           | No       | Nucleus sampling 0–1                                                                                                                                                  |
+| `top_k`           | integer         | No       | Top-k sampling                                                                                                                                                        |
+| `stop_sequences`  | array           | No       | Custom stop strings                                                                                                                                                   |
+| `metadata`        | object          | No       | User ID for abuse detection                                                                                                                                           |
+| `user_profile_id` | string          | No       | Attribute request to a specific user profile; sent as `anthropic-user-profile-id` header. Requires `user-profiles` beta header. Added v0.112.0 / TypeScript v0.106.0. |
 
 ## Message Format
 
@@ -100,14 +100,14 @@ print(message.content[0].text)
 ```
 
 ```typescript
-import Anthropic from '@anthropic-ai/sdk';
+import Anthropic from "@anthropic-ai/sdk";
 
 const client = new Anthropic();
 
 const message = await client.messages.create({
-  model: 'claude-sonnet-4-6',
+  model: "claude-sonnet-4-6",
   max_tokens: 1024,
-  messages: [{ role: 'user', content: 'Hello, Claude' }],
+  messages: [{ role: "user", content: "Hello, Claude" }],
 });
 console.log(message.content[0].text);
 ```
@@ -167,15 +167,22 @@ response2 = client.messages.create(model="claude-sonnet-4-6", max_tokens=1024, m
 
 ## Stop Reasons
 
-| Stop Reason | Meaning |
-|-------------|--------|
-| `end_turn` | Natural completion |
-| `max_tokens` | Hit `max_tokens` limit |
-| `tool_use` | Claude is requesting a tool call |
-| `stop_sequence` | Hit a custom stop sequence |
-| `pause_turn` | Long-running turn paused; resend conversation as-is to continue |
-| `refusal` | Streaming classifiers intervened for policy reasons; see `stop_details` |
+| Stop Reason                     | Meaning                                                                                        |
+| ------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `end_turn`                      | Natural completion                                                                             |
+| `max_tokens`                    | Hit `max_tokens` limit                                                                         |
+| `tool_use`                      | Claude is requesting a tool call                                                               |
+| `stop_sequence`                 | Hit a custom stop sequence                                                                     |
+| `pause_turn`                    | Long-running turn paused; resend conversation as-is to continue                                |
+| `refusal`                       | Streaming classifiers intervened for policy reasons; see `stop_details`                        |
 | `model_context_window_exceeded` | Conversation exceeded the model's context window (added Python v0.119.0 / TypeScript v0.114.0) |
+
+### Refusal billing (changed Sep 24, 2026)
+
+- **Mid-stream refusals** were already billed.
+- **Refusals before any output** are now billed when `stop_details.category` is `"bio"`, `"frontier_llm"` or `"reasoning_extraction"`, charged like any other request at the rates of the model that ran it.
+- Refusals before any output in **other categories** are still not billed. Fallback credit is unchanged.
+- Applies on all platforms. See [How refusals are billed](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback#how-refusals-are-billed).
 
 ## System Prompt as Array (with caching)
 

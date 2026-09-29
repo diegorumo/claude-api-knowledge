@@ -1,11 +1,12 @@
 # Prompt Caching
 
 > **Last updated:** 2026-09-28  
-> **Source:** Anthropic cookbook — demonstrated 3.3x speedup on 187K-token document
+> **Source:** Anthropic cookbook — demonstrated 3.3x speedup on 187K-token document; platform.claude.com/docs/en/build-with-claude/cache-diagnostics
 
 ## Overview
 
 Prompt caching stores processed prompt prefixes so subsequent requests reuse them instead of re-processing. Benefits:
+
 - **Latency:** 2–3x faster (cache hits skip tokenization/KV computation)
 - **Cost:** Reads cost ~10% of base input price on most models; only 125% for cache writes
 
@@ -19,10 +20,10 @@ Add `"cache_control": {"type": "ephemeral"}` to content blocks. The API caches e
 
 ## Minimum Token Requirements
 
-| Model Family | Minimum Cacheable Tokens |
-|-------------|---------------------------|
-| Sonnet models | 1,024 tokens |
-| Opus / Haiku models | 4,096 tokens |
+| Model Family        | Minimum Cacheable Tokens |
+| ------------------- | ------------------------ |
+| Sonnet models       | 1,024 tokens             |
+| Opus / Haiku models | 4,096 tokens             |
 
 Content below the minimum is never cached (no error — just no cache).
 
@@ -59,27 +60,27 @@ print(f"Cache read: {response.usage.cache_read_input_tokens}")
 ## TypeScript Example
 
 ```typescript
-import Anthropic from '@anthropic-ai/sdk';
+import Anthropic from "@anthropic-ai/sdk";
 
 const client = new Anthropic();
 
-const document = fs.readFileSync('large_document.txt', 'utf-8');
+const document = fs.readFileSync("large_document.txt", "utf-8");
 
 const response = await client.messages.create({
-  model: 'claude-sonnet-4-6',
+  model: "claude-sonnet-4-6",
   max_tokens: 1024,
   system: [
     {
-      type: 'text',
+      type: "text",
       text: `Analyze this document:\n\n${document}`,
-      cache_control: { type: 'ephemeral' },
+      cache_control: { type: "ephemeral" },
     },
   ],
-  messages: [{ role: 'user', content: 'What are the main themes?' }],
+  messages: [{ role: "user", content: "What are the main themes?" }],
 });
 
-console.log('Cache created:', response.usage.cache_creation_input_tokens);
-console.log('Cache read:', response.usage.cache_read_input_tokens);
+console.log("Cache created:", response.usage.cache_creation_input_tokens);
+console.log("Cache read:", response.usage.cache_read_input_tokens);
 ```
 
 ## Explicit Cache Breakpoints
@@ -128,14 +129,14 @@ system = [{"type": "text", "text": large_context, "cache_control": {"type": "eph
 while True:
     user_input = input("You: ")
     messages.append({"role": "user", "content": user_input})
-    
+
     response = client.messages.create(
         model="claude-sonnet-4-6",
         max_tokens=1024,
         system=system,
         messages=messages,
     )
-    
+
     assistant_msg = response.content[0].text
     messages.append({"role": "assistant", "content": assistant_msg})
     print(f"Claude: {assistant_msg}")
@@ -156,12 +157,12 @@ print(f"Output tokens: {usage.output_tokens}")
 
 ## Pricing Structure
 
-| Token Type | Cost |
-|-----------|------|
-| Cache write | 1.25× base input price |
-| Cache read | 0.10× base input price |
-| Regular input | 1.00× base input price |
-| Output | 1.00× base output price |
+| Token Type    | Cost                    |
+| ------------- | ----------------------- |
+| Cache write   | 1.25× base input price  |
+| Cache read    | 0.10× base input price  |
+| Regular input | 1.00× base input price  |
+| Output        | 1.00× base output price |
 
 **Break-even point:** A single cache hit covering the same token count as the write pays for the write cost (0.10 vs 1.25). After ~2 cache hits, you save money on every additional request.
 
@@ -175,7 +176,7 @@ print(f"Output tokens: {usage.output_tokens}")
 ## What Can Be Cached
 
 - System prompts ✅
-- Tool definitions ✅  
+- Tool definitions ✅
 - Long documents in user messages ✅
 - Conversation history ✅
 - Images (counted by token equivalent) ✅
@@ -186,12 +187,109 @@ print(f"Output tokens: {usage.output_tokens}")
 - Content below minimum token threshold
 - More than 4 breakpoints in a single request
 
+## Cache Diagnostics (GA Sep 23, 2026)
+
+Cache diagnostics tells you _why_ a cache missed by comparing a request against the previous one and reporting the first point of divergence (model, system prompt, tools or message history).
+
+- **Out of beta on the Claude API since Sep 23, 2026.** The `cache-diagnosis-2026-04-07` header is no longer required; requests that still send it work as before.
+- **Opt in per request** by including a `diagnostics` object. Turn 1: `{"previous_message_id": null}`. Later turns: `{"previous_message_id": "<id of previous response>"}`. The API stores a fingerprint (hashes and token-count estimates only, never raw prompt text) only for requests that include the object.
+- **Include `diagnostics` on every turn you want to chain** (since Sep 9, 2026). A request without it stores no fingerprint, so a later turn that points `previous_message_id` at it gets `previous_message_not_found`. Sending only the old beta header is accepted but stores nothing.
+- **Responses from `POST /v1/messages` always include `diagnostics`**, which is `null` when the request didn't include the object.
+- **Claude API only.** Not available on Claude Platform on AWS, Amazon Bedrock, Google Cloud or Microsoft Foundry. ZDR eligible (excluding covered models).
+
+```python
+client = anthropic.Anthropic()
+SYSTEM = "You are an AI assistant analyzing a large document. <document>...</document>"
+
+# Turn 1: opt in with previous_message_id=None
+r1 = client.beta.messages.create(
+    model="claude-opus-5-5",
+    max_tokens=1024,
+    cache_control={"type": "ephemeral"},
+    system=SYSTEM,
+    messages=[{"role": "user", "content": "Summarize section 1."}],
+    diagnostics={"previous_message_id": None},
+)
+
+# Turn 2: reference the previous response id
+r2 = client.beta.messages.create(
+    model="claude-opus-5-5",
+    max_tokens=1024,
+    cache_control={"type": "ephemeral"},
+    system=SYSTEM,
+    messages=[
+        {"role": "user", "content": "Summarize section 1."},
+        {"role": "assistant", "content": r1.content},
+        {"role": "user", "content": "Now summarize section 2."},
+    ],
+    diagnostics={"previous_message_id": r1.id},
+)
+
+d = r2.diagnostics
+if d is None:
+    print("No divergence detected.")
+elif d.cache_miss_reason is None:
+    print("Comparison still pending.")
+else:
+    print(f"cache_miss_reason: {d.cache_miss_reason.type}")
+```
+
+```typescript
+const r2 = await client.beta.messages.create({
+  model: "claude-opus-5-5",
+  max_tokens: 1024,
+  cache_control: { type: "ephemeral" },
+  system: SYSTEM,
+  messages: [
+    { role: "user", content: "Summarize section 1." },
+    { role: "assistant", content: r1.content },
+    { role: "user", content: "Now summarize section 2." },
+  ],
+  diagnostics: { previous_message_id: r1.id },
+});
+
+if (r2.diagnostics === null) {
+  console.log("No divergence detected.");
+} else if (r2.diagnostics.cache_miss_reason === null) {
+  console.log("Comparison still pending.");
+} else {
+  console.log(`cache_miss_reason: ${r2.diagnostics.cache_miss_reason.type}`);
+}
+```
+
+The official examples call `client.beta.messages`. The non-beta `Message` / `MessageCreateParams` types gained `diagnostics` in Python v1.9.0 and TypeScript v0.129.0 (Sep 28, 2026), so older SDKs need `client.beta.messages` for it. When streaming, `diagnostics` arrives on the `message_start` event.
+
+**Response values:**
+
+| `diagnostics`                  | Meaning                                                                                  |
+| ------------------------------ | ---------------------------------------------------------------------------------------- |
+| `null`                         | Request didn't opt in, `previous_message_id` was `null`, or no divergence found          |
+| `{"cache_miss_reason": null}`  | Comparison still running when the response was serialized; inconclusive, check next turn |
+| `{"cache_miss_reason": {...}}` | Divergence found (or no comparison possible, see types below)                            |
+
+**`cache_miss_reason.type` values** (earliest divergence only):
+
+| Type                         | Meaning / fix                                                                                                                                                                                                    |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `model_changed`              | Model differs from previous request. Hold the model constant within a cached conversation                                                                                                                        |
+| `system_changed`             | `system` differs (often an interpolated timestamp/ID). Make it byte-stable; move dynamic data into the first user message                                                                                        |
+| `tools_changed`              | Tools added, removed, reordered, or schemas serialized non-deterministically. Send a fixed, deterministically serialized list                                                                                    |
+| `messages_changed`           | An earlier message was edited, reordered or removed. Treat history as append-only; echo content back verbatim                                                                                                    |
+| `previous_message_not_found` | No fingerprint for that ID (previous request didn't opt in, different workspace, or too old). Not evidence of a change                                                                                           |
+| `unavailable`                | No diagnosis possible, e.g. `tool_choice`, `thinking`, `context_management`, `output_config`, `output_format` or the set of `anthropic-beta` headers changed, or the divergence is beyond the comparison horizon |
+
+The four `*_changed` types also carry `cache_missed_input_tokens`, a rough estimate (from byte lengths) of input tokens after the divergence point. Use it as a magnitude indicator, not a billing number.
+
+**Reading with usage:** `diagnostics: null` + high `cache_read_input_tokens` = working. `null` + low reads = requests matched but the cache entry expired (shorten gaps or use 1-hour TTL). A `*_changed` type + low reads = your request changed; fix it.
+
+**Limitations:** fingerprints expire after a short period; both requests must be in the same organization and workspace (compare the `anthropic-workspace-id` response header); best-effort, never blocks or fails the request.
+
 ## Best Practices
 
 1. **Start with automatic caching** — add one `cache_control` to your system prompt or document
 2. **Place breakpoints strategically** — cache the static parts (system, docs, tools); leave dynamic parts uncached
 3. **Order matters** — cache_control applies to everything up to that marker; put static content first
-4. **Measure cache performance** — monitor `cache_read_input_tokens` to verify hits
+4. **Measure cache performance** — monitor `cache_read_input_tokens` to verify hits; use [cache diagnostics](#cache-diagnostics-ga-sep-23-2026) to find the cause of misses
 5. **Warm the cache** — first call writes; subsequent calls within TTL read
 
 ## Gotchas
@@ -200,30 +298,6 @@ print(f"Output tokens: {usage.output_tokens}")
 - Changing **any** token before the cache_control marker invalidates the cache
 - `cache_creation_input_tokens` being 0 on a re-request means you got a cache hit
 - Tool definitions count toward minimum cacheable tokens
-
-## Cache Diagnostics (GA as of Sep 23, 2026)
-
-Cache diagnostics reports why a cache miss occurred, helping debug unexpected misses. As of Sep 23, 2026 this is out of beta — no `cache-diagnosis-2026-04-07` header needed.
-
-**Opt in:** Include a `diagnostics` object on the request. The response always includes a `diagnostics` field (null when not requested).
-
-```python
-response = client.messages.create(
-    model="claude-opus-5-5",
-    max_tokens=1024,
-    system=[{"type": "text", "text": large_context, "cache_control": {"type": "ephemeral"}}],
-    messages=[{"role": "user", "content": "Summarize."}],
-    diagnostics={"previous_message_id": None},   # None on first turn
-)
-
-# Subsequent turns pass the ID from the previous response:
-# diagnostics={"previous_message_id": response.id}
-print(response.diagnostics)  # {"cache_miss_reason": "..."}
-```
-
-`cache_miss_reason` values include `"system_prompt_changed"`, `"tools_changed"`, `"previous_message_not_found"`, and others that describe which prefix diverged.
-
-**Important (Sep 9, 2026):** The API only stores a fingerprint for future comparison when the request includes the `diagnostics` object. A request that omits `diagnostics` stores no fingerprint, so a later turn pointing `previous_message_id` at it returns `"previous_message_not_found"`. Include `diagnostics` (with `previous_message_id: null`) on every turn you want to chain, not just the ones that miss.
 
 ## Related
 

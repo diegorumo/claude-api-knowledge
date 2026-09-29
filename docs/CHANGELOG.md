@@ -1,5 +1,32 @@
 # Knowledge Base Changelog
 
+## 2026-09-29 (second run) — No changes detected
+
+Sources:
+
+- https://platform.claude.com/docs/en/release-notes/overview.md (latest entry still Sep 28, 2026)
+- https://platform.claude.com/docs/en/about-claude/models/overview.md (now redirects to https://platform.claude.com/docs/en/models/overview.md)
+- https://platform.claude.com/docs/en/about-claude/model-deprecations.md
+- https://platform.claude.com/docs/en/about-claude/pricing.md
+- https://platform.claude.com/docs/en/models/sonnet-5-5/overview.md
+- https://platform.claude.com/docs/en/models/opus-5-5/overview.md
+- https://github.com/anthropics/anthropic-sdk-python/releases and https://github.com/anthropics/anthropic-sdk-typescript/releases: **could not fetch** (HTTP 403 from this environment's network proxy). SDK versions not re-checked; left for the next scheduled run.
+
+### Changes
+
+- **No new release notes** since the Sep 28, 2026 entry.
+- **Models overview** — Diffed against `MODELS.md` (IDs, platform IDs, pricing, context, max output, default effort, knowledge cutoffs, retirement dates, legacy list). No mismatches.
+- **Deprecations** — Unchanged. Claude Sonnet 4.5 (`claude-sonnet-4-5-20250929`) is still Active with retirement "not sooner than September 29, 2026"; no deprecation notice yet.
+- **Still unconfirmed** — Content Watermarking and Server-Side Fallbacks for Opus 5.5 and Content Watermarking for Sonnet 5.5 are not mentioned on the Opus 5.5 / Sonnet 5.5 model pages; left as `?` in the capabilities table.
+
+### Files Modified
+
+| File           | Change     |
+| -------------- | ---------- |
+| `CHANGELOG.md` | This entry |
+
+---
+
 ## 2026-09-29 — Incremental Update
 
 Sources:

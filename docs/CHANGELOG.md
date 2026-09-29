@@ -1,5 +1,35 @@
 # Knowledge Base Changelog
 
+## 2026-09-29 — Incremental Update
+
+Sources:
+
+- https://platform.claude.com/docs/en/release-notes/overview.md (no entries after Sep 28, 2026)
+- https://platform.claude.com/docs/en/about-claude/models/overview.md
+- https://platform.claude.com/docs/en/about-claude/model-deprecations.md
+- https://platform.claude.com/docs/en/models/sonnet-5-5/overview.md
+- https://platform.claude.com/docs/en/models/sonnet-5-5/whats-new-sonnet-5-5.md
+- https://platform.claude.com/docs/en/models/sonnet-5-5/migration-guide.md
+- https://github.com/anthropics/anthropic-sdk-python/releases and https://github.com/anthropics/anthropic-sdk-typescript/releases: **could not fetch** (HTTP 403 from this environment's network proxy). SDK versions in `sdks.md` / `README.md` were not re-checked; left for the next scheduled run.
+
+### Changes
+
+- **No new release notes** since the Sep 28, 2026 entry (Sonnet 5.5 launch), which the previous run already covered.
+- **Sonnet 5.5 details (Sep 28, 2026, carried over from the previous run)** — Added a Sonnet 5.5 column to the capabilities table and documented the what's-new / migration details: `between_tools` limits (only `low`/`medium`/`high` effort, no other fields, no mid-conversation effort changes, falls back to Sonnet 5 as `disabled`), manual `budget_tokens` rejected, non-default `temperature` / `top_p` / `top_k` return 400, thinking-block reading rules, `computer_20251124` still accepted on Bedrock, accepted advisors, refusal categories and server-side fallback to Sonnet 5, 512-token minimum cacheable prompt, cache-write prices, same tokenizer as Sonnet 5. Added Python/TypeScript `between_tools` examples.
+- **Correction: models (no release note)** — Diffed `MODELS.md` against the models overview. The Bedrock row in "Platform Availability" still listed `anthropic.claude-sonnet-5`; now `anthropic.claude-sonnet-5-5`. Added Sonnet 5.5 to the knowledge cutoffs, effort defaults, prompt caching minimums, Batch API 300k-output list and tokenizer note. Everything else (IDs, prices, context, max output, default effort, retirement dates, legacy list) matched.
+- **Deprecations** — Page unchanged. Claude Sonnet 4.5 (`claude-sonnet-4-5-20250929`) is still listed as Active with retirement "not sooner than September 29, 2026" (today); no deprecation notice has been published for it yet.
+
+Not verified this run: Content Watermarking and Server-Side Fallbacks for Opus 5.5, and Content Watermarking for Sonnet 5.5 (still `?` in the capabilities table); SDK changelogs (fetch blocked).
+
+### Files Modified
+
+| File        | Change                                                                                                                      |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `MODELS.md` | Sonnet 5.5 capabilities column and migration details; Bedrock ID fix; cutoffs, effort defaults, caching minimums, batch list |
+| `README.md` | Dates; Sonnet 5.5 quick-reference line                                                                                      |
+
+---
+
 ## 2026-09-28 — Incremental Update
 
 Sources:

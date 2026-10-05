@@ -1,7 +1,7 @@
 # Claude Models Reference
 
-> **Last updated:** 2026-09-29  
-> **Source:** platform.claude.com/docs/en/about-claude/models/overview, platform.claude.com/docs/en/about-claude/model-deprecations, platform.claude.com/docs/en/about-claude/pricing, platform.claude.com/docs/en/release-notes/overview (Sep 22 and Sep 28, 2026), platform.claude.com/docs/en/models/sonnet-5-5/{overview,whats-new-sonnet-5-5,migration-guide}
+> **Last updated:** 2026-10-05  
+> **Source:** platform.claude.com/docs/en/about-claude/models/overview, platform.claude.com/docs/en/about-claude/model-deprecations, platform.claude.com/docs/en/about-claude/pricing, platform.claude.com/docs/en/release-notes/overview (Sep 22, Sep 28 and Sep 30, 2026), platform.claude.com/docs/en/models/sonnet-5-5/{overview,whats-new-sonnet-5-5,migration-guide}, platform.claude.com/docs/en/models/sonnet-4-5/overview
 
 ## Current Models (Recommended)
 
@@ -151,10 +151,12 @@ These models have specific constraints not present on earlier models:
 | Claude Opus 4.7   | `claude-opus-4-7`                                        | 1M tokens   | 128k tokens | $5 / $25                  | Apr 16, 2027                 |
 | Claude Opus 4.6   | `claude-opus-4-6`                                        | 1M tokens   | 128k tokens | $5 / $25                  | Feb 5, 2027                  |
 | Claude Sonnet 4.6 | `claude-sonnet-4-6`                                      | 1M tokens   | 128k tokens | $3 / $15                  | Feb 17, 2027                 |
-| Claude Sonnet 4.5 | `claude-sonnet-4-5-20250929` (alias `claude-sonnet-4-5`) | 200k tokens | 64k tokens  | $3 / $15                  | **Sep 29, 2026**             |
+| Claude Sonnet 4.5 | `claude-sonnet-4-5-20250929` (alias `claude-sonnet-4-5`) | 200k tokens | 64k tokens  | $3 / $15                  | **Deprecated; retires Nov 30, 2026** |
 | Claude Opus 4.5   | `claude-opus-4-5-20251101` (alias `claude-opus-4-5`)     | 200k tokens | 64k tokens  | $5 / $25                  | **Nov 24, 2026**             |
 
-> Retirement dates are from the model deprecations page and apply to Anthropic-operated platforms (Claude API, Claude Platform on AWS, Microsoft Foundry). All models above are listed there as "Active".
+> Retirement dates are from the model deprecations page and apply to Anthropic-operated platforms (Claude API, Claude Platform on AWS, Microsoft Foundry). All models above are listed there as "Active" except Claude Sonnet 4.5.
+>
+> **Claude Sonnet 4.5 deprecated (Sep 30, 2026):** `claude-sonnet-4-5-20250929` (alias `claude-sonnet-4-5`) still works but retires on the Claude API on **Nov 30, 2026** (a fixed date, not "not sooner than"). Recommended replacement: `claude-sonnet-5-5`. See the [Sonnet 5.5 migration guide, "Migrating from Claude Sonnet 4.5 or earlier"](https://platform.claude.com/docs/en/models/sonnet-5-5/migration-guide#migrating-from-sonnet-45): it is not a drop-in swap (prefill, `budget_tokens` thinking and non-default `temperature`/`top_p`/`top_k` return 400 on Sonnet 5.5; about 30% more tokens for the same text). It is no longer in the models overview's "Legacy models (still available)" list. Amazon Bedrock and Google Cloud set their own dates.
 >
 > **Claude Mythos Preview** (`claude-mythos-preview`, invitation-only) was deprecated Jun 9, 2026; retirement date to be announced.
 >

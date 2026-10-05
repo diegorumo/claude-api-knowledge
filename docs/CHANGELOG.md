@@ -1,5 +1,37 @@
 # Knowledge Base Changelog
 
+## 2026-10-05 — Incremental Update
+
+Sources:
+
+- https://platform.claude.com/docs/en/release-notes/overview.md (one new entry: Sep 30, 2026)
+- https://platform.claude.com/docs/en/about-claude/models/overview.md (redirects to https://platform.claude.com/docs/en/models/overview.md)
+- https://platform.claude.com/docs/en/about-claude/model-deprecations.md
+- https://platform.claude.com/docs/en/about-claude/pricing.md
+- https://platform.claude.com/docs/en/models/sonnet-4-5/overview.md
+- https://platform.claude.com/docs/en/models/opus-4-5/overview.md
+- https://platform.claude.com/docs/en/models/sonnet-5-5/migration-guide.md
+- https://github.com/anthropics/anthropic-sdk-python/releases and https://github.com/anthropics/anthropic-sdk-typescript/releases: **could not fetch** (HTTP 403 from this environment's network proxy, also via api.github.com). SDK versions not re-checked; left for the next scheduled run.
+
+### Changes
+
+- **Claude Sonnet 4.5 deprecated (Sep 30, 2026)** — `claude-sonnet-4-5-20250929` is now "Deprecated" on the deprecations page, retiring on the Claude API on **Nov 30, 2026**; recommended replacement `claude-sonnet-5-5`. Updated the legacy table and notes in `MODELS.md` (it previously showed "not sooner than Sep 29, 2026"), added a Sonnet 4.5 → Sonnet 5.5 section to `migrations.md` summarizing the official migration guide, and added a "Deprecated" group to the `README.md` quick reference. Sonnet 4.5 is no longer in the models overview's "Legacy models (still available)" list.
+- **Correction: README quick reference (no release note)** — Claude Opus 4.5 (`claude-opus-4-5-20251101`) is in the models overview's legacy list and Active on the deprecations page (retirement not sooner than Nov 24, 2026) but was missing from the quick-reference block; added. `MODELS.md` already listed it.
+- **Models overview** — Diffed the current-model table (IDs, aliases, platform IDs, pricing, context, max output, default effort, knowledge cutoffs, retirement dates) against `MODELS.md`. No other mismatches.
+
+Not verified this run: SDK changelogs (fetch blocked); Content Watermarking and Server-Side Fallbacks for Opus 5.5 and Content Watermarking for Sonnet 5.5 are still `?` in the capabilities table. Other files that list `claude-sonnet-4-5-20250929` as a supported model (`programmatic-tool-calling.md`, `structured-outputs.md`) were left as is, since the model still works until Nov 30, 2026.
+
+### Files Modified
+
+| File            | Change                                                                       |
+| --------------- | ---------------------------------------------------------------------------- |
+| `MODELS.md`     | Sonnet 4.5 deprecated, retires Nov 30, 2026; deprecation note; sources line   |
+| `migrations.md` | New Sonnet 4.5 → Sonnet 5.5 section; note on the Sonnet 4.5 → 4.6 section     |
+| `README.md`     | Dates; quick reference: Opus 4.5 added, Sonnet 4.5 under "Deprecated"         |
+| `CHANGELOG.md`  | This entry                                                                   |
+
+---
+
 ## 2026-09-29 (second run) — No changes detected
 
 Sources:

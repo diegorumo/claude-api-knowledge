@@ -3,7 +3,7 @@
 Comprehensive reference documentation for developers building with the Claude API.
 
 **Last full crawl:** 2026-05-30  
-**Last incremental update:** 2026-09-29  
+**Last incremental update:** 2026-10-05  
 **SDK versions:** Python v1.9.0, TypeScript v0.129.0  
 **Primary sources:** anthropic-sdk-python, anthropic-sdk-typescript, anthropic-cookbook
 
@@ -29,7 +29,7 @@ Comprehensive reference documentation for developers building with the Claude AP
 
 | File                                             | Description                                                                                                                                                                                                        | Last Updated |
 | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------ |
-| [MODELS.md](./MODELS.md)                         | Current model IDs, capabilities, context windows, pricing notes; Opus 5.5; Sonnet 5.5 (`between_tools`, capabilities column); retirement dates; retired models                                                  | 2026-09-29   |
+| [MODELS.md](./MODELS.md)                         | Current model IDs, capabilities, context windows, pricing notes; Opus 5.5; Sonnet 5.5 (`between_tools`, capabilities column); retirement dates; Sonnet 4.5 deprecation; retired models                                                  | 2026-10-05   |
 | [QUICK-REFERENCE.md](./QUICK-REFERENCE.md)       | Common code patterns: auth, messages, streaming, tools, caching                                                                                                                                                    | 2026-07-27   |
 | [authentication.md](./authentication.md)         | API keys (workspace/personal/service-account), HTTP headers, SDK setup, third-party platforms                                                                                                                      | 2026-08-31   |
 | [messages-api.md](./messages-api.md)             | Messages endpoint: params, content blocks, response format; refusal billing                                                                                                                                        | 2026-09-27   |
@@ -67,7 +67,7 @@ Comprehensive reference documentation for developers building with the Claude AP
 | [agent-patterns.md](./agent-patterns.md)         | Chaining, parallelization, routing, orchestration patterns | 2026-05-30   |
 | [prompt-engineering.md](./prompt-engineering.md) | Prompting techniques, JSON output, system prompts          | 2026-05-30   |
 | [embeddings.md](./embeddings.md)                 | Voyage AI embeddings, RAG pipeline                         | 2026-05-30   |
-| [migrations.md](./migrations.md)                 | Model migration, text completions → messages API           | 2026-05-30   |
+| [migrations.md](./migrations.md)                 | Model migration, text completions → messages API; Sonnet 4.5 → Sonnet 5.5 | 2026-10-05   |
 
 ### Meta
 
@@ -80,7 +80,7 @@ Comprehensive reference documentation for developers building with the Claude AP
 ## Current Model IDs (Quick Reference)
 
 ```
-# Current models (as of Sep 29, 2026):
+# Current models (as of Oct 5, 2026):
 claude-opus-5-5              # Recommended starting point; 1M ctx; $4/$20 MTok; always-on thinking; default effort medium; 5% cache reads
 claude-fable-5-1             # Most capable; 1M ctx; $10/$50 MTok; always-on thinking; 2.5% cache reads
 claude-sonnet-5-5            # Best balance; 1M ctx; $2/$10 MTok; default effort high; launched Sep 28, 2026
@@ -95,6 +95,10 @@ claude-opus-4-8              # 1M ctx; $5/$25 MTok
 claude-opus-4-7              # 1M ctx; $5/$25 MTok
 claude-opus-4-6              # 1M ctx; $5/$25 MTok
 claude-sonnet-4-6            # 1M ctx; $3/$15 MTok
+claude-opus-4-5-20251101     # 200k ctx; $5/$25 MTok; retirement not sooner than Nov 24, 2026
+
+# Deprecated (still works; retirement scheduled):
+claude-sonnet-4-5-20250929   # Deprecated Sep 30, 2026; retires Nov 30, 2026; replacement claude-sonnet-5-5
 
 # Invitation-only:
 # claude-mythos-5-1          → Project Glasswing only; same specs as Fable 5.1; 2.5% cache reads

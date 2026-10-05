@@ -1,8 +1,20 @@
 # Migration Guides
 
-> **Last updated:** 2026-05-30
+> **Last updated:** 2026-10-05
 
 ## Migrating to Claude 4.x Models
+
+### From claude-sonnet-4-5 → claude-sonnet-5-5 (Sonnet 4.5 deprecated)
+
+> **Deprecated Sep 30, 2026:** `claude-sonnet-4-5-20250929` retires on the Claude API on **Nov 30, 2026**. The official recommended replacement is `claude-sonnet-5-5` (source: platform.claude.com/docs/en/about-claude/model-deprecations). This is **not** a drop-in swap; follow the official [Sonnet 5.5 migration guide, "Migrating from Claude Sonnet 4.5 or earlier"](https://platform.claude.com/docs/en/models/sonnet-5-5/migration-guide#migrating-from-sonnet-45). Changes it lists include: prefill, `thinking: {"type": "enabled", "budget_tokens": N}` and non-default `temperature` / `top_p` / `top_k` return 400 errors; requests with no `thinking` field now run with adaptive thinking; Sonnet 4.5 has no effort parameter, so set one explicitly; the same text produces about 30% more tokens. See [MODELS.md](./MODELS.md) for Sonnet 5.5 details.
+
+```python
+# Before
+model="claude-sonnet-4-5-20250929"
+
+# After
+model="claude-sonnet-5-5"
+```
 
 ### From claude-sonnet-4-5 → claude-sonnet-4-6
 
@@ -14,7 +26,7 @@ model="claude-sonnet-4-5-20250929"
 model="claude-sonnet-4-6"
 ```
 
-No API changes required. Drop-in replacement with improved capabilities.
+No API changes required. Drop-in replacement with improved capabilities. (Sonnet 4.6 is still Active but is no longer the newest Sonnet; the deprecation notice names `claude-sonnet-5-5` as the replacement.)
 
 ### New in claude-opus-4-8 (v0.105.0, 2026-05-28)
 

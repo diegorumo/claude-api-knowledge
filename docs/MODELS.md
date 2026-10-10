@@ -1,7 +1,7 @@
 # Claude Models Reference
 
-> **Last updated:** 2026-10-05  
-> **Source:** platform.claude.com/docs/en/about-claude/models/overview, platform.claude.com/docs/en/about-claude/model-deprecations, platform.claude.com/docs/en/about-claude/pricing, platform.claude.com/docs/en/release-notes/overview (Sep 22, Sep 28 and Sep 30, 2026), platform.claude.com/docs/en/models/sonnet-5-5/{overview,whats-new-sonnet-5-5,migration-guide}, platform.claude.com/docs/en/models/sonnet-4-5/overview
+> **Last updated:** 2026-10-10  
+> **Source:** platform.claude.com/docs/en/about-claude/models/overview, platform.claude.com/docs/en/about-claude/model-deprecations, platform.claude.com/docs/en/about-claude/pricing, platform.claude.com/docs/en/build-with-claude/prompt-caching, platform.claude.com/docs/en/api/models/list, platform.claude.com/docs/en/release-notes/overview (Sep 22 – Oct 7, 2026), platform.claude.com/docs/en/models/haiku-5-5/{overview,whats-new-haiku-5-5,migration-guide}, platform.claude.com/docs/en/models/sonnet-5-5/{overview,whats-new-sonnet-5-5,migration-guide}, platform.claude.com/docs/en/models/sonnet-4-5/overview
 
 ## Current Models (Recommended)
 
@@ -10,23 +10,81 @@
 | Claude Fable 5.1 | `claude-fable-5-1`          | `claude-fable-5-1` | 1M tokens   | 128k tokens | $10 / $50                 | Most capable; demanding reasoning and long-horizon agentic work (always-on adaptive thinking)                                                            |
 | Claude Opus 5.5  | `claude-opus-5-5`           | `claude-opus-5-5`  | 1M tokens   | 128k tokens | $4 / $20                  | **Recommended starting point for most workloads**; long-running agentic coding and knowledge work (always-on adaptive thinking, default effort `medium`) |
 | Claude Sonnet 5.5 | `claude-sonnet-5-5`        | `claude-sonnet-5-5` | 1M tokens  | 128k tokens | $2 / $10                  | Best balance of speed and intelligence (adaptive thinking, default effort `high`); launched Sep 28, 2026                                                 |
-| Claude Haiku 4.5 | `claude-haiku-4-5-20251001` | `claude-haiku-4-5` | 200k tokens | 64k tokens  | $1 / $5                   | Fastest; high-volume, latency-sensitive apps                                                                                                             |
+| Claude Haiku 5.5 | `claude-haiku-5-5`          | `claude-haiku-5-5` | 1M tokens   | 128k tokens | From $0.10 / $0.50 (see note) | Fastest; high-volume, latency-sensitive work such as classification, extraction and routing (adaptive thinking, default effort `medium`); launched Oct 7, 2026 |
 
-> **Tokenizer note (Fable 5.1, Fable 5, Sonnet 5.5, Sonnet 5, Opus 4.7+):** These models use the tokenizer introduced with Claude Opus 4.7. Compared to models before Opus 4.7, the same text produces **roughly 30% more tokens**. Measure your prompts with the [token counting API](./token-counting.md) when migrating.
+> **Tokenizer note (Fable 5.1, Fable 5, Sonnet 5.5, Sonnet 5, Haiku 5.5, Opus 4.7+):** These models use the tokenizer introduced with Claude Opus 4.7. Compared to models before Opus 4.7, the same text produces **roughly 30% more tokens**. Measure your prompts with the [token counting API](./token-counting.md) when migrating.
+>
+> **Haiku 5.5 pricing (prompt-length tiers):** $0.10 input / $0.50 output per MTok for prompts up to 100,000 tokens; $0.50 / $2.50 for prompts over 100,000 tokens. A request's prompt length counts all input tokens, including cache reads and writes. Batch API: $0.05 / $0.25 and $0.25 / $1.25. Haiku 5.5 is the only current model that does not get the full 1M context at standard pricing.
 >
 > **Pricing note:** Sonnet 5 pricing is locked at $2/$10 per MTok (the scheduled Sept 1, 2026 increase to $3/$15 was cancelled on Aug 10, 2026).
 >
 > **Claude Mythos 5.1** (`claude-mythos-5-1`) shares Fable 5.1's specs and pricing but is invitation-only (Project Glasswing). Not generally available.
 >
-> **Claude Fable 5** (`claude-fable-5`), **Claude Opus 5** (`claude-opus-5`) and **Claude Sonnet 5** (`claude-sonnet-5`, since Sep 28, 2026) are now legacy (still available) — see Legacy table below.
+> **Claude Fable 5** (`claude-fable-5`), **Claude Opus 5** (`claude-opus-5`), **Claude Sonnet 5** (`claude-sonnet-5`, since Sep 28, 2026) and **Claude Haiku 4.5** (`claude-haiku-4-5-20251001`, since Oct 7, 2026) are now legacy (still available) — see Legacy table below.
 >
-> **Retirement commitments (Claude API, Claude Platform on AWS, Foundry):** Fable 5.1 not sooner than Sep 1, 2027; Opus 5.5 not sooner than Sep 22, 2027; Sonnet 5.5 not sooner than Sep 28, 2027; **Haiku 4.5 not sooner than Oct 15, 2026**. Bedrock and Google Cloud set their own dates.
+> **Retirement commitments (Claude API, Claude Platform on AWS, Foundry):** Fable 5.1 not sooner than Sep 1, 2027; Opus 5.5 not sooner than Sep 22, 2027; Sonnet 5.5 not sooner than Sep 28, 2027; Haiku 5.5 not sooner than Oct 7, 2027. Bedrock and Google Cloud set their own dates.
 >
 > **Choosing:** Anthropic's models overview recommends starting with Opus 5.5 for most workloads and moving to Fable 5.1 for demanding reasoning / long-horizon agentic work, or when Opus 5.5 at higher effort still falls short.
 
+## ⚠️ Haiku 5.5 API Changes (launched Oct 7, 2026)
+
+Claude Haiku 5.5 (`claude-haiku-5-5`) succeeds Haiku 4.5. 1M context (Haiku 4.5: 200k), 128k max output (Haiku 4.5: 64k), adaptive thinking with the effort parameter (default `medium`), reliable knowledge cutoff Jun 2026. Available on Claude API, Amazon Bedrock (`anthropic.claude-haiku-5-5`), Google Cloud, Microsoft Foundry and Claude Platform on AWS (all `claude-haiku-5-5`). `claude-haiku-5-5` is a fixed ID with no date suffix and no separate alias. Retirement not sooner than Oct 7, 2027.
+
+Code written for Haiku 4.5 can break (per the Oct 7 release note and the migration guide):
+
+- **Manual extended thinking rejected.** `thinking: {type: "enabled", budget_tokens: N}` returns 400. Use `{type: "adaptive"}` (or omit `thinking`) and set `output_config.effort`. `thinking: {type: "disabled"}` still works at `high` effort or below.
+- **Sampling parameters.** Omit `temperature`, `top_p` and `top_k`. A `temperature` other than `1`, a `top_p` other than `0.99` (including `1`), any `top_k`, or `temperature` and `top_p` together return 400.
+- **Assistant prefill rejected** (400), even with thinking off. End `messages` with a user turn.
+- **`computer_20250124` rejected** on every platform. Use `computer_toolset_20260801` on the Claude API and Google Cloud, or `computer_20251124` (beta `computer-use-2025-11-24`) on Amazon Bedrock.
+- **Thinking blocks are bound to the conversation.** Sending a thinking block back after a change to `system`, `tools` or earlier turns returns 400 (accounts created before Aug 31, 2026 only get the error when they set `thinking.block_binding.prefix_mismatch_behavior`). Keep conversations append-only. Blocks also only work in the account that produced them (or a linked account).
+- **Structured outputs are not available on Amazon Bedrock** for Haiku 5.5.
+
+Behavior changes:
+
+- Adaptive thinking is on by default, so a response can begin with `thinking` blocks. Select content blocks by `type`, not position. Thinking text is omitted by default; set `thinking.display: "summarized"` to get it.
+- Thinking tokens count toward `max_tokens`; a small limit can stop after a `thinking` block with no text.
+- Thinking blocks from all earlier assistant turns stay in context and count as input (Haiku 4.5 kept only the latest turn's).
+- Same text is about 30% more tokens (Opus 4.7+ tokenizer). Large images also cost more: high-resolution image tier (downscale above 2,576 px long edge or 4,784 visual tokens).
+- Forced `tool_choice` (`any` / named tool) is accepted, but the response starts with the tool call and has no `thinking` block.
+- Safety classifiers can decline a request (`stop_reason: "refusal"`); no server-side fallback.
+- Minimum cacheable prompt **512 tokens** (Haiku 4.5: 4,096). Context awareness tags aren't injected; use task budgets (beta) instead.
+- Supports the browser use tool (`browser_toolset_20260801`) on the Claude API and Google Cloud. Priority Tier is not supported.
+- Reads thinking blocks from Sonnet 5, Opus 4.8, Haiku 4.5 and earlier; not from Opus 5, Opus 5.5, Sonnet 5.5 or any Fable / Mythos model.
+
+```python
+# Before (Haiku 4.5)
+client.messages.create(
+    model="claude-haiku-4-5",
+    max_tokens=16000,
+    thinking={"type": "enabled", "budget_tokens": 8000},
+    messages=[{"role": "user", "content": "..."}],
+)
+
+# After (Haiku 5.5): adaptive thinking + effort
+client.messages.create(
+    model="claude-haiku-5-5",
+    max_tokens=16000,
+    thinking={"type": "adaptive"},
+    output_config={"effort": "medium"},
+    messages=[{"role": "user", "content": "..."}],
+)
+```
+
+```typescript
+await client.messages.create({
+  model: "claude-haiku-5-5",
+  max_tokens: 16000,
+  thinking: { type: "adaptive" },
+  output_config: { effort: "medium" },
+  messages: [{ role: "user", content: "..." }],
+});
+```
+
+Details: [What's new in Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/whats-new-haiku-5-5), [migration guide](https://platform.claude.com/docs/en/models/haiku-5-5/migration-guide). See also [migrations.md](./migrations.md).
+
 ## ⚠️ Sonnet 5.5 API Changes (launched Sep 28, 2026)
 
-Claude Sonnet 5.5 (`claude-sonnet-5-5`) succeeds Sonnet 5 at the same $2 / $10 per MTok (cache reads $0.20/MTok, 10% of base input). 1M context, 128k max output, reliable knowledge cutoff Jun 2026. Available on Claude API, Amazon Bedrock (`anthropic.claude-sonnet-5-5`), Google Cloud, Microsoft Foundry and Claude Platform on AWS (all `claude-sonnet-5-5`). Retirement not sooner than Sep 28, 2027.
+Claude Sonnet 5.5 (`claude-sonnet-5-5`) succeeds Sonnet 5 at the same $2 / $10 per MTok. Cache reads are **$0.10/MTok (5% of base input) since Oct 7, 2026** (were $0.20, 10%); cache writes unchanged. 1M context, 128k max output, reliable knowledge cutoff Jun 2026. Available on Claude API, Amazon Bedrock (`anthropic.claude-sonnet-5-5`), Google Cloud, Microsoft Foundry and Claude Platform on AWS (all `claude-sonnet-5-5`). Retirement not sooner than Sep 28, 2027.
 
 Code written for Sonnet 5 can break in five ways (per the Sep 28 release note):
 
@@ -151,6 +209,7 @@ These models have specific constraints not present on earlier models:
 | Claude Opus 4.7   | `claude-opus-4-7`                                        | 1M tokens   | 128k tokens | $5 / $25                  | Apr 16, 2027                 |
 | Claude Opus 4.6   | `claude-opus-4-6`                                        | 1M tokens   | 128k tokens | $5 / $25                  | Feb 5, 2027                  |
 | Claude Sonnet 4.6 | `claude-sonnet-4-6`                                      | 1M tokens   | 128k tokens | $3 / $15                  | Feb 17, 2027                 |
+| Claude Haiku 4.5  | `claude-haiku-4-5-20251001` (alias `claude-haiku-4-5`)   | 200k tokens | 64k tokens  | $1 / $5                   | **Oct 15, 2026**             |
 | Claude Sonnet 4.5 | `claude-sonnet-4-5-20250929` (alias `claude-sonnet-4-5`) | 200k tokens | 64k tokens  | $3 / $15                  | **Deprecated; retires Nov 30, 2026** |
 | Claude Opus 4.5   | `claude-opus-4-5-20251101` (alias `claude-opus-4-5`)     | 200k tokens | 64k tokens  | $5 / $25                  | **Nov 24, 2026**             |
 
@@ -179,21 +238,21 @@ These models have specific constraints not present on earlier models:
 
 ## Model Capabilities
 
-| Capability                    | Fable 5.1 / Mythos 5.1 | Opus 5.5                             | Sonnet 5.5                                                 | Fable 5 / Mythos 5 | Opus 5 | Sonnet 5 | Haiku 4.5 | Opus 4.8 | Opus 4.6–4.7   | Sonnet 4.6     |
-| ----------------------------- | ---------------------- | ------------------------------------ | ---------------------------------------------------------- | ------------------ | ------ | -------- | --------- | -------- | -------------- | -------------- |
-| Adaptive thinking (always-on) | ✅ (always on)          | ✅ (always on)                        | ✅ (default on; `between_tools` lowest)                     | ✅ (always on)      | ✅      | ✅        | ❌         | ✅        | ✅              | ✅              |
-| Extended thinking (explicit)  | ❌                      | ❌                                    | ❌                                                          | ❌                  | ❌      | ❌        | ✅         | ❌        | ✅ (deprecated) | ✅ (deprecated) |
-| Tool Use                      | ✅                      | ✅                                    | ✅                                                          | ✅                  | ✅      | ✅        | ✅         | ✅        | ✅              | ✅              |
-| `tool_choice: any/tool`       | ❌ (400 error)          | ❌ (400 error)                        | ❌ (400 error)                                              | ✅                  | ✅      | ✅        | ✅         | ✅        | ✅              | ✅              |
-| Vision (images)               | ✅                      | ✅                                    | ✅                                                          | ✅                  | ✅      | ✅        | ✅         | ✅        | ✅              | ✅              |
-| PDF Input                     | ✅                      | ✅                                    | ✅                                                          | ✅                  | ✅      | ✅        | ✅         | ✅        | ✅              | ✅              |
-| Prompt Caching                | ✅ (2.5% reads)         | ✅ (5% reads)                         | ✅ (10% reads, 512 min)                                     | ✅ (10% reads)      | ✅      | ✅        | ✅         | ✅        | ✅              | ✅              |
-| Streaming                     | ✅                      | ✅                                    | ✅                                                          | ✅                  | ✅      | ✅        | ✅         | ✅        | ✅              | ✅              |
-| Batch API                     | ✅                      | ✅                                    | ✅                                                          | ✅                  | ✅      | ✅        | ✅         | ✅        | ✅              | ✅              |
-| Server-Side Fallbacks         | ✅                      | ?                                    | ✅ (falls back to Sonnet 5)                                 | ✅                  | ❌      | ❌        | ❌         | ❌        | ❌              | ❌              |
-| Computer Use                  | ✅                      | ✅ (`computer_toolset_20260801` only) | ✅ (`computer_toolset_20260801` only on API / Google Cloud) | ✅                  | ✅      | ✅        | ✅         | ✅        | ✅              | ✅              |
-| Mid-conv tool changes         | ✅                      | ✅                                    | ✅                                                          | ✅                  | ✅      | ❌        | ❌         | ✅        | ❌              | ❌              |
-| Content Watermarking          | ✅                      | ?                                    | ?                                                          | ❌                  | ❌      | ❌        | ❌         | ❌        | ❌              | ❌              |
+| Capability                    | Fable 5.1 / Mythos 5.1 | Opus 5.5                             | Sonnet 5.5                                                 | Haiku 5.5 | Fable 5 / Mythos 5 | Opus 5 | Sonnet 5 | Haiku 4.5 | Opus 4.8 | Opus 4.6–4.7   | Sonnet 4.6     |
+| ----------------------------- | ---------------------- | ------------------------------------ | ---------------------------------------------------------- | ---------- | ------------------ | ------ | -------- | --------- | -------- | -------------- | -------------- |
+| Adaptive thinking (always-on) | ✅ (always on)          | ✅ (always on)                        | ✅ (default on; `between_tools` lowest)                     | ✅ (default on; `disabled` at `high` effort or below) | ✅ (always on)      | ✅      | ✅        | ❌         | ✅        | ✅              | ✅              |
+| Extended thinking (explicit)  | ❌                      | ❌                                    | ❌                                                          | ❌ | ❌                  | ❌      | ❌        | ✅         | ❌        | ✅ (deprecated) | ✅ (deprecated) |
+| Tool Use                      | ✅                      | ✅                                    | ✅                                                          | ✅ | ✅                  | ✅      | ✅        | ✅         | ✅        | ✅              | ✅              |
+| `tool_choice: any/tool`       | ❌ (400 error)          | ❌ (400 error)                        | ❌ (400 error)                                              | ✅ (no `thinking` block) | ✅                  | ✅      | ✅        | ✅         | ✅        | ✅              | ✅              |
+| Vision (images)               | ✅                      | ✅                                    | ✅                                                          | ✅ | ✅                  | ✅      | ✅        | ✅         | ✅        | ✅              | ✅              |
+| PDF Input                     | ✅                      | ✅                                    | ✅                                                          | ? | ✅                  | ✅      | ✅        | ✅         | ✅        | ✅              | ✅              |
+| Prompt Caching                | ✅ (2.5% reads)         | ✅ (5% reads)                         | ✅ (5% reads since Oct 7, 2026; 512 min)                    | ✅ (10% reads, 512 min) | ✅ (10% reads)      | ✅      | ✅        | ✅         | ✅        | ✅              | ✅              |
+| Streaming                     | ✅                      | ✅                                    | ✅                                                          | ✅ | ✅                  | ✅      | ✅        | ✅         | ✅        | ✅              | ✅              |
+| Batch API                     | ✅                      | ✅                                    | ✅                                                          | ✅ | ✅                  | ✅      | ✅        | ✅         | ✅        | ✅              | ✅              |
+| Server-Side Fallbacks         | ✅                      | ?                                    | ✅ (falls back to Sonnet 5)                                 | ❌ | ✅                  | ❌      | ❌        | ❌         | ❌        | ❌              | ❌              |
+| Computer Use                  | ✅                      | ✅ (`computer_toolset_20260801` only) | ✅ (`computer_toolset_20260801` only on API / Google Cloud) | ✅ (`computer_toolset_20260801` on API / Google Cloud; `computer_20251124` on Bedrock) | ✅                  | ✅      | ✅        | ✅         | ✅        | ✅              | ✅              |
+| Mid-conv tool changes         | ✅                      | ✅                                    | ✅                                                          | ? | ✅                  | ✅      | ❌        | ❌         | ✅        | ❌              | ❌              |
+| Content Watermarking          | ✅                      | ?                                    | ?                                                          | ? | ❌                  | ❌      | ❌        | ❌         | ❌        | ❌              | ❌              |
 
 `?` = not yet confirmed in the official docs for this model.
 
@@ -202,6 +261,7 @@ These models have specific constraints not present on earlier models:
 - Fable 5.1 / Mythos 5.1: reliable Jun 2026, training Jun 2026
 - Opus 5.5: reliable Jun 2026, training Jun 2026
 - Sonnet 5.5: reliable Jun 2026, training Jun 2026
+- Haiku 5.5: reliable Jun 2026, training Jun 2026
 - Fable 5 / Mythos 5: reliable Jan 2026, training Jan 2026
 - Opus 5: reliable May 2026, training May 2026
 - Sonnet 5: reliable Jan 2026, training Jan 2026
@@ -214,27 +274,31 @@ These models have specific constraints not present on earlier models:
 
 - Opus 5.5: defaults to `medium` on the Claude API; thinking is always on (`disabled` returns 400)
 - Sonnet 5.5: defaults to `high` on the Claude API; adaptive thinking on by default, lowest setting `between_tools` (`disabled` returns 400)
+- Haiku 5.5: defaults to `medium` on the Claude API; adaptive thinking on by default; `thinking: {type: "disabled"}` accepted at `high` effort or below
 - Opus 4.8: defaults to `high` on all surfaces
 - Opus 5 / Sonnet 5 / Fable 5.1: defaults to `high` on Claude API and Claude Code
 - Fable 5 / Fable 5.1: adaptive thinking is always on; `thinking: {type: "disabled"}` returns 400
 
 ## Prompt Caching Minimum Tokens
 
-| Model                                                             | Minimum Cacheable Tokens |
-| ----------------------------------------------------------------- | ------------------------ |
-| Claude Sonnet 5.5                                                 | 512 tokens               |
-| Claude Opus 4.8+ (including Fable 5, Opus 5, Sonnet 5, Haiku 4.5) | 1,024 tokens             |
-| Claude Opus 4.7 and earlier                                       | 4,096 tokens             |
+| Model                                                                                 | Minimum Cacheable Tokens |
+| ------------------------------------------------------------------------------------- | ------------------------ |
+| Fable 5.1, Mythos 5.1, Opus 5.5, Opus 5, Sonnet 5.5, Fable 5, Mythos 5, Haiku 5.5     | 512 tokens               |
+| Opus 4.8, Sonnet 5, Sonnet 4.6, Sonnet 4.5 (deprecated); retired Opus 4.1 / 4 / Sonnet 4 | 1,024 tokens          |
+| Mythos Preview, Opus 4.7                                                              | 2,048 tokens             |
+| Opus 4.6, Opus 4.5, Haiku 4.5                                                         | 4,096 tokens             |
 
-> **Batch API extended output:** Claude Opus 5.5, Opus 5, Sonnet 5.5, Sonnet 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6 support up to **300k output tokens** on the Batch API using the `output-300k-2026-03-24` beta header.
+> **Correction (2026-10-10):** This table previously put Haiku 4.5, Opus 5, Fable 5 and Opus 4.7 at 1,024 tokens and all of "Opus 4.7 and earlier" at 4,096. The values above are from the prompt caching page's "Cache limitations" section (Claude API, Claude Platform on AWS, Google Cloud, Microsoft Foundry).
+
+> **Batch API extended output:** Claude Opus 5.5, Opus 5, Sonnet 5.5, Sonnet 5, Haiku 5.5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6 support up to **300k output tokens** on the Batch API using the `output-300k-2026-03-24` beta header.
 
 ## Platform Availability
 
 | Platform               | Notes                                                                                                                                  |
 | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | Claude API             | All current models                                                                                                                     |
-| Amazon Bedrock         | Messages-API IDs: `anthropic.claude-fable-5-1`, `anthropic.claude-opus-5-5`, `anthropic.claude-sonnet-5-5`, `anthropic.claude-haiku-4-5` |
-| Google Cloud Vertex    | Use same model IDs; Haiku 4.5 uses `claude-haiku-4-5@20251001`                                                                         |
+| Amazon Bedrock         | Messages-API IDs: `anthropic.claude-fable-5-1`, `anthropic.claude-opus-5-5`, `anthropic.claude-sonnet-5-5`, `anthropic.claude-haiku-5-5` (legacy Haiku 4.5: `anthropic.claude-haiku-4-5`) |
+| Google Cloud Vertex    | Use same model IDs (`claude-haiku-5-5` for Haiku 5.5); legacy Haiku 4.5 uses `claude-haiku-4-5@20251001`                               |
 | Claude Platform on AWS | Same IDs as Claude API (not Bedrock-style); follows Anthropic deprecation schedule                                                     |
 | Microsoft Foundry      | Current models available                                                                                                               |
 
@@ -261,6 +325,32 @@ for (const model of models.data) {
 
 **API endpoint:** `GET /v1/models`  
 **Single model:** `GET /v1/models/{model_id}`
+
+Each model object includes `max_input_tokens`, `max_tokens`, `lifecycle`, and a `capabilities` object. Fields added this month:
+
+| Field                                       | Added        | Meaning                                                                                                                                                                                                                       |
+| ------------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `line`                                      | Oct 1, 2026  | Model line: `haiku`, `sonnet`, `opus` or `fable` (more may be added). Opus 4.5 and Opus 4.6 both report `opus`. `null` for a model in no line. Read it instead of parsing the `id`.                                               |
+| `capabilities.thinking.types.disabled`      | Oct 5, 2026  | Whether the model accepts `thinking: {type: "disabled"}`. `false` exactly when that returns 400; `true` on a model without thinking. A `true` model can still reject `disabled` for another reason, such as an effort level. |
+| `capabilities.server_tools`                 | Oct 6, 2026  | `web_search.supported` / `code_execution.supported`: the model accepts at least one version of that tool. `server_tools.supported` is `true` if either is. Doesn't cover other server tools such as web fetch.             |
+
+> The top-level `capabilities.code_execution` is a different check: whether code run in the code execution tool can call your request's other tools (programmatic tool calling). For Haiku 4.5, `server_tools.code_execution.supported` is `true` while `code_execution.supported` is `false`. Organization settings (for example, an admin disabling web search) can still make a supported tool fail.
+
+```python
+model = client.models.retrieve("claude-haiku-5-5")
+print(model.line)  # "haiku"
+print(model.capabilities.thinking.types.disabled.supported)
+print(model.capabilities.server_tools.web_search.supported)
+```
+
+```typescript
+const model = await client.models.retrieve("claude-haiku-5-5");
+console.log(model.line); // "haiku"
+console.log(model.capabilities.thinking.types.disabled.supported);
+console.log(model.capabilities.server_tools.web_search.supported);
+```
+
+> SDK attribute names above follow the API field names; the SDK changelogs could not be fetched this run, so check that your SDK version exposes them (fields arrived Oct 1–6, 2026).
 
 ## Related
 

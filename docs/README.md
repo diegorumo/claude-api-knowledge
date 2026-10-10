@@ -3,8 +3,8 @@
 Comprehensive reference documentation for developers building with the Claude API.
 
 **Last full crawl:** 2026-05-30  
-**Last incremental update:** 2026-10-05  
-**SDK versions:** Python v1.9.0, TypeScript v0.129.0  
+**Last incremental update:** 2026-10-10  
+**SDK versions:** Python v1.10.0, TypeScript v0.130.0 (per the Sep 30, 2026 release note; SDK changelogs not fetched)  
 **Primary sources:** anthropic-sdk-python, anthropic-sdk-typescript, anthropic-cookbook
 
 > **Coverage note:** The Anthropic documentation site (docs.anthropic.com / platform.claude.com/docs)
@@ -29,15 +29,15 @@ Comprehensive reference documentation for developers building with the Claude AP
 
 | File                                             | Description                                                                                                                                                                                                        | Last Updated |
 | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------ |
-| [MODELS.md](./MODELS.md)                         | Current model IDs, capabilities, context windows, pricing notes; Opus 5.5; Sonnet 5.5 (`between_tools`, capabilities column); retirement dates; Sonnet 4.5 deprecation; retired models                                                  | 2026-10-05   |
-| [QUICK-REFERENCE.md](./QUICK-REFERENCE.md)       | Common code patterns: auth, messages, streaming, tools, caching                                                                                                                                                    | 2026-07-27   |
-| [authentication.md](./authentication.md)         | API keys (workspace/personal/service-account), HTTP headers, SDK setup, third-party platforms                                                                                                                      | 2026-08-31   |
+| [MODELS.md](./MODELS.md)                         | Current model IDs, capabilities, context windows, pricing notes; Haiku 5.5 (Haiku 4.5 now legacy); Sonnet 5.5 cache-read price cut; Models API `line` / `thinking.types.disabled` / `server_tools`; Opus 5.5; Sonnet 5.5; retirement dates; Sonnet 4.5 deprecation; retired models | 2026-10-10   |
+| [QUICK-REFERENCE.md](./QUICK-REFERENCE.md)       | Common code patterns: auth, messages, streaming, tools, caching                                                                                                                                                    | 2026-10-10   |
+| [authentication.md](./authentication.md)         | API keys (workspace/personal/service-account), HTTP headers, SDK setup, third-party platforms; API credits for Max and Team plans | 2026-10-10   |
 | [messages-api.md](./messages-api.md)             | Messages endpoint: params, content blocks, response format; refusal billing                                                                                                                                        | 2026-09-27   |
-| [structured-outputs.md](./structured-outputs.md) | JSON schema outputs (`output_config.format`), Pydantic/Zod helpers, strict tool use                                                                                                                                | 2026-09-14   |
+| [structured-outputs.md](./structured-outputs.md) | JSON schema outputs (`output_config.format`), Pydantic/Zod helpers, strict tool use                                                                                                                                | 2026-10-10   |
 | [streaming.md](./streaming.md)                   | SSE events, delta types, streaming SDK helpers                                                                                                                                                                     | 2026-06-29   |
 | [rate-limits-errors.md](./rate-limits-errors.md) | Error codes, retry logic, rate limit headers                                                                                                                                                                       | 2026-05-30   |
 | [token-counting.md](./token-counting.md)         | Count tokens before sending, context window management                                                                                                                                                             | 2026-07-06   |
-| [sdks.md](./sdks.md)                             | Python and TypeScript SDK reference, async, pagination; Python v1.0.0 breaking changes; Organization API; Standard Schema support; v1.5.0 new helpers; version history through Python v1.9.0 / TypeScript v0.129.0 | 2026-09-28   |
+| [sdks.md](./sdks.md)                             | Python and TypeScript SDK reference, async, pagination; Python v1.0.0 breaking changes; Organization API (GA under `client.organization` in Python v1.10.0 / TypeScript v0.130.0); browser/computer toolset classes (beta); version history through Python v1.10.0 / TypeScript v0.130.0 | 2026-10-10   |
 
 ### Features
 
@@ -46,7 +46,7 @@ Comprehensive reference documentation for developers building with the Claude AP
 | [tool-use.md](./tool-use.md)                                   | Function calling, agentic loop, tool choice, built-in tools, tool definition properties, mid-conversation tool changes, inline tool definitions (beta)                                                   | Stable                           | 2026-09-28   |
 | [skills-api.md](./skills-api.md)                               | Upload and manage reusable skill packages; BetaSkill renamed BetaContainerSkill in v1.2.0+                                                                                                               | **GA**                           | 2026-08-31   |
 | [programmatic-tool-calling.md](./programmatic-tool-calling.md) | Call tools from code execution sandbox, reduce round-trips and token usage                                                                                                                               | Stable                           | 2026-06-22   |
-| [prompt-caching.md](./prompt-caching.md)                       | cache_control, TTL, pricing, multi-turn caching; Fable 5.1/Mythos 5.1 2.5% cache read pricing; cache diagnostics (GA)                                                                                    | Stable                           | 2026-09-28   |
+| [prompt-caching.md](./prompt-caching.md)                       | cache_control, TTL, pricing, multi-turn caching; per-model minimums; Opus 5.5 / Sonnet 5.5 5% and Fable 5.1/Mythos 5.1 2.5% cache read pricing; Haiku 5.5 tiers; cache diagnostics (GA) | Stable                           | 2026-10-10   |
 | [extended-thinking.md](./extended-thinking.md)                 | Thinking blocks, budget_tokens, adaptive mode, `updates` display mode, thinking block binding (Fable 5.1), per-message effort, turn-scoped system messages                                               | Stable                           | 2026-09-07   |
 | [vision.md](./vision.md)                                       | Image inputs: base64, URL, formats, limits                                                                                                                                                               | Stable                           | 2026-05-30   |
 | [pdf-support.md](./pdf-support.md)                             | PDF document inputs, Files API for PDFs                                                                                                                                                                  | Stable                           | 2026-05-30   |
@@ -55,10 +55,10 @@ Comprehensive reference documentation for developers building with the Claude AP
 | [files-api.md](./files-api.md)                                 | File upload, reference by ID; file expiration, GA pagination; beta.files uses GA shapes in v1.2.0+                                                                                                       | **GA**                           | 2026-08-31   |
 | [citations.md](./citations.md)                                 | Inline document citations                                                                                                                                                                                | Beta                             | 2026-05-30   |
 | [mcp.md](./mcp.md)                                             | Model Context Protocol server integration + MCP Tunnels API                                                                                                                                              | Beta                             | 2026-08-03   |
-| [computer-use.md](./computer-use.md)                           | GUI automation (computer_toolset_20260801 GA); browser use toolset (browser_toolset_20260801 GA)                                                                                                         | **GA**                           | 2026-08-24   |
-| [managed-agents.md](./managed-agents.md)                       | Persistent agents, sessions, threads, model effort, environments, budgets, advisor tool, inference geo pinning, web search domain config, sandbox memory; `auto` permission policy; sessions connect CLI | Beta                             | 2026-09-14   |
+| [computer-use.md](./computer-use.md)                           | GUI automation (computer_toolset_20260801 GA); browser use toolset (browser_toolset_20260801 GA); SDK toolset classes (beta) | **GA**                           | 2026-10-10   |
+| [managed-agents.md](./managed-agents.md)                       | Persistent agents, sessions, threads, model effort, environments, budgets, advisor tool, inference geo pinning, web search domain config, sandbox memory; `auto` permission policy; sessions connect CLI; dynamic workflows (workflow runs); `allowed_hosts` for web tools; `web_fetch` prior-context rule | Beta                             | 2026-10-10   |
 | [compaction.md](./compaction.md)                               | Automatic and on-demand conversation compaction to extend context in long sessions; `compact-2026-01-12` / `compact-2026-09-04`                                                                          | Beta                             | 2026-09-21   |
-| [compliance-api.md](./compliance-api.md)                       | Compliance API session transcripts (Cowork, Claude Code, Claude Science, Claude for Microsoft 365, Claude in Chrome) and Activity Feed; eDiscovery and DLP                                               | Stable (Science, Chrome in beta) | 2026-09-28   |
+| [compliance-api.md](./compliance-api.md)                       | Compliance API session transcripts (Cowork, Claude Code, Claude Science, Claude for Microsoft 365, Claude in Chrome), Activity Feed, unified-experience chats and Claude Docs downloads (beta); eDiscovery and DLP | Stable (Science, Chrome in beta) | 2026-10-10   |
 
 ### Guides
 
@@ -67,7 +67,7 @@ Comprehensive reference documentation for developers building with the Claude AP
 | [agent-patterns.md](./agent-patterns.md)         | Chaining, parallelization, routing, orchestration patterns | 2026-05-30   |
 | [prompt-engineering.md](./prompt-engineering.md) | Prompting techniques, JSON output, system prompts          | 2026-05-30   |
 | [embeddings.md](./embeddings.md)                 | Voyage AI embeddings, RAG pipeline                         | 2026-05-30   |
-| [migrations.md](./migrations.md)                 | Model migration, text completions → messages API; Sonnet 4.5 → Sonnet 5.5 | 2026-10-05   |
+| [migrations.md](./migrations.md)                 | Model migration, text completions → messages API; Haiku 4.5 → Haiku 5.5; Sonnet 4.5 → Sonnet 5.5 | 2026-10-10   |
 
 ### Meta
 
@@ -80,12 +80,11 @@ Comprehensive reference documentation for developers building with the Claude AP
 ## Current Model IDs (Quick Reference)
 
 ```
-# Current models (as of Oct 5, 2026):
+# Current models (as of Oct 10, 2026):
 claude-opus-5-5              # Recommended starting point; 1M ctx; $4/$20 MTok; always-on thinking; default effort medium; 5% cache reads
 claude-fable-5-1             # Most capable; 1M ctx; $10/$50 MTok; always-on thinking; 2.5% cache reads
-claude-sonnet-5-5            # Best balance; 1M ctx; $2/$10 MTok; default effort high; launched Sep 28, 2026
-claude-haiku-4-5-20251001    # Fastest; 200k ctx; $1/$5 MTok; retirement not sooner than Oct 15, 2026
-claude-haiku-4-5             # Alias for claude-haiku-4-5-20251001
+claude-sonnet-5-5            # Best balance; 1M ctx; $2/$10 MTok; default effort high; 5% cache reads ($0.10/MTok since Oct 7, 2026)
+claude-haiku-5-5             # Fastest; 1M ctx; 128k out; $0.10/$0.50 MTok (prompts <=100k tokens), $0.50/$2.50 above; default effort medium; launched Oct 7, 2026
 
 # Legacy / still available:
 claude-opus-5                # 1M ctx; $5/$25 MTok; predecessor to Opus 5.5
@@ -96,6 +95,8 @@ claude-opus-4-7              # 1M ctx; $5/$25 MTok
 claude-opus-4-6              # 1M ctx; $5/$25 MTok
 claude-sonnet-4-6            # 1M ctx; $3/$15 MTok
 claude-opus-4-5-20251101     # 200k ctx; $5/$25 MTok; retirement not sooner than Nov 24, 2026
+claude-haiku-4-5-20251001    # 200k ctx; $1/$5 MTok; predecessor to Haiku 5.5; retirement not sooner than Oct 15, 2026
+claude-haiku-4-5             # Alias for claude-haiku-4-5-20251001
 
 # Deprecated (still works; retirement scheduled):
 claude-sonnet-4-5-20250929   # Deprecated Sep 30, 2026; retires Nov 30, 2026; replacement claude-sonnet-5-5

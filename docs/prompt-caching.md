@@ -1,7 +1,7 @@
 # Prompt Caching
 
-> **Last updated:** 2026-09-28  
-> **Source:** Anthropic cookbook — demonstrated 3.3x speedup on 187K-token document; platform.claude.com/docs/en/build-with-claude/cache-diagnostics
+> **Last updated:** 2026-10-10  
+> **Source:** Anthropic cookbook — demonstrated 3.3x speedup on 187K-token document; platform.claude.com/docs/en/build-with-claude/cache-diagnostics; platform.claude.com/docs/en/build-with-claude/prompt-caching; platform.claude.com/docs/en/about-claude/pricing
 
 ## Overview
 
@@ -9,6 +9,10 @@ Prompt caching stores processed prompt prefixes so subsequent requests reuse the
 
 - **Latency:** 2–3x faster (cache hits skip tokenization/KV computation)
 - **Cost:** Reads cost ~10% of base input price on most models; only 125% for cache writes
+
+> **Opus 5.5 / Sonnet 5.5 cache pricing:** Cache reads (hits and refreshes) cost **5% of base input price**: $0.20/MTok on `claude-opus-5-5` and, since the **Oct 7, 2026** price cut, **$0.10/MTok** on `claude-sonnet-5-5` (was $0.20, 10%). Cache writes are unchanged. Source: platform.claude.com/docs/en/about-claude/pricing.
+>
+> **Haiku 5.5 cache pricing:** `claude-haiku-5-5` is priced by prompt length. Cache reads are $0.01/MTok for prompts up to 100,000 tokens and $0.05/MTok over 100,000 (10% of base input in both bands). Cache writes: $0.125 / $0.625 (5m) and $0.20 / $1 (1h) per MTok. A request's prompt length includes cache reads and writes.
 
 > **Fable 5.1 / Mythos 5.1 cache pricing:** Cache reads on `claude-fable-5-1` and `claude-mythos-5-1` cost only **2.5% of base input price** ($0.25/MTok vs. $10/MTok full price). This is 4× cheaper than the standard 10% rate on other models.
 
@@ -20,10 +24,16 @@ Add `"cache_control": {"type": "ephemeral"}` to content blocks. The API caches e
 
 ## Minimum Token Requirements
 
-| Model Family        | Minimum Cacheable Tokens |
-| ------------------- | ------------------------ |
-| Sonnet models       | 1,024 tokens             |
-| Opus / Haiku models | 4,096 tokens             |
+Minimums on the Claude API, Claude Platform on AWS, Google Cloud and Microsoft Foundry (source: platform.claude.com/docs/en/build-with-claude/prompt-caching#cache-limitations, checked 2026-10-10):
+
+| Model                                                                                                                  | Minimum Cacheable Tokens |
+| ---------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| Fable 5.1, Mythos 5.1, Opus 5.5, Opus 5, Sonnet 5.5, Fable 5, Mythos 5, Haiku 5.5                                       | 512 tokens               |
+| Opus 4.8, Sonnet 5, Sonnet 4.6, Sonnet 4.5 (deprecated); retired Opus 4.1 / Opus 4 / Sonnet 4                           | 1,024 tokens             |
+| Mythos Preview, Opus 4.7                                                                                               | 2,048 tokens             |
+| Opus 4.6, Opus 4.5                                                                                                     | 4,096 tokens             |
+| Haiku 4.5                                                                                                              | 4,096 tokens             |
+| Haiku 3.5 (retired, except on Google Cloud)                                                                            | 2,048 tokens             |
 
 Content below the minimum is never cached (no error — just no cache).
 
@@ -160,7 +170,7 @@ print(f"Output tokens: {usage.output_tokens}")
 | Token Type    | Cost                    |
 | ------------- | ----------------------- |
 | Cache write   | 1.25× base input price  |
-| Cache read    | 0.10× base input price  |
+| Cache read    | 0.10× base input price (0.05× on Opus 5.5 and Sonnet 5.5; 0.025× on Fable 5.1 / Mythos 5.1) |
 | Regular input | 1.00× base input price  |
 | Output        | 1.00× base output price |
 

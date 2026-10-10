@@ -1,5 +1,71 @@
 # Knowledge Base Changelog
 
+## 2026-10-10 — Incremental Update
+
+Sources:
+
+- https://platform.claude.com/docs/en/release-notes/overview.md (new entries: Oct 1, Oct 5, Oct 6, Oct 7, Oct 8, Oct 9, 2026; plus the SDK item in the Sep 30 entry)
+- https://platform.claude.com/docs/en/models/overview.md
+- https://platform.claude.com/docs/en/about-claude/model-deprecations.md
+- https://platform.claude.com/docs/en/about-claude/pricing.md
+- https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md
+- https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md
+- https://platform.claude.com/docs/en/api/models/list.md
+- https://platform.claude.com/docs/en/models/haiku-5-5/overview.md
+- https://platform.claude.com/docs/en/models/haiku-5-5/whats-new-haiku-5-5.md
+- https://platform.claude.com/docs/en/models/haiku-5-5/migration-guide.md
+- https://platform.claude.com/docs/en/models/sonnet-5-5/overview.md
+- https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-sdk.md
+- https://platform.claude.com/docs/en/about-claude/api-credits-for-subscribers.md
+- https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration.md
+- https://platform.claude.com/docs/en/managed-agents/workflow-runs.md
+- https://platform.claude.com/docs/en/managed-agents/environments.md
+- https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions.md
+- https://platform.claude.com/docs/en/managed-agents/tools.md
+- https://platform.claude.com/docs/en/managed-agents/dreams.md
+- https://platform.claude.com/docs/en/manage-claude/compliance-content-data.md
+- https://platform.claude.com/docs/en/manage-claude/compliance-api.md
+- https://github.com/anthropics/anthropic-sdk-python/releases and https://github.com/anthropics/anthropic-sdk-typescript/releases: **could not fetch** (HTTP 403 from this environment's network proxy). SDK versions were taken only from the Sep 30 release note (Python v1.10.0 / TypeScript v0.130.0). PyPI and npm list newer versions (`anthropic` 1.13.0, `@anthropic-ai/sdk` 0.133.0), but without the changelogs their contents are not documented; left for the next scheduled run.
+
+### Changes
+
+- **Claude Haiku 5.5 launched (Oct 7, 2026)** — `claude-haiku-5-5` (Bedrock `anthropic.claude-haiku-5-5`; same ID on Google Cloud, Foundry and Claude Platform on AWS). 1M context, 128k max output, adaptive thinking, default effort `medium`, knowledge cutoff Jun 2026, retirement not sooner than Oct 7, 2027. Prompt-length pricing: $0.10 / $0.50 per MTok up to 100,000 prompt tokens, $0.50 / $2.50 above (cache reads $0.01 / $0.05). Breaking for Haiku 4.5 code: `budget_tokens`, sampling parameters, prefill and `computer_20250124` return 400; thinking blocks bound to conversation and account; no structured outputs on Bedrock. Added to `MODELS.md` (current table, new section, capabilities column, cutoffs, effort, caching, Batch 300k, platform IDs), `migrations.md` (Haiku 4.5 → 5.5), README / QUICK-REFERENCE quick references, `computer-use.md`, `structured-outputs.md`.
+- **Claude Haiku 4.5 moved to legacy (Oct 7, 2026)** — No longer in the overview's current lineup; listed under "Legacy models (still available)". Still Active on the deprecations page, retirement not sooner than Oct 15, 2026; no deprecation notice. Moved to the legacy tables, not removed.
+- **Price cut: Sonnet 5.5 cache reads (Oct 7, 2026)** — $0.20 → $0.10 per MTok (0.05x base input). Other prices unchanged. Updated `MODELS.md`, `prompt-caching.md`, README.
+- **Models API fields (Oct 1, Oct 5, Oct 6, 2026)** — `line` (Oct 1), `capabilities.thinking.types.disabled` (Oct 5), `capabilities.server_tools` (Oct 6). Documented in `MODELS.md` → "Listing Available Models".
+- **Dreams supports Opus 5.5, Fable 5.1, Sonnet 5.5 (Oct 1, 2026)** — `managed-agents.md`.
+- **Admin API out of beta in the SDKs (Sep 30, 2026, missed by the previous run)** — Python 1.10.0 / TypeScript 0.130.0 (and C#, Go, Java, PHP, Ruby, `ant` CLI) expose it under `client.organization`; `client.beta.organization` kept. `sdks.md`, README SDK versions.
+- **SDK browser and computer toolset classes, beta (Oct 7, 2026)** — `BetaAbstractBrowserToolset20260801` / `BetaAbstractComputerToolset20260801`. New section with Python and TypeScript examples in `computer-use.md`; pointer in `sdks.md`.
+- **API credits for Max and Team plans (Oct 7, 2026)** — `authentication.md`.
+- **Managed Agents networking and `web_fetch` (Oct 7, 2026)** — `limited` networking's `allowed_hosts` now applies to `web_search` / `web_fetch` (`url_not_allowed`; 400 on session create/update when `allowed_domains` is outside `allowed_hosts`). `web_fetch` only fetches URLs already in the session (`url_not_in_prior_context`). `managed-agents.md`.
+- **Compliance API (Oct 8, 2026)** — chat endpoints return unified Claude experience chats (beta); Claude Docs downloadable as Word files (beta). `compliance-api.md`.
+- **Managed Agents dynamic workflows, beta (Oct 9, 2026)** — `multiagent_20261001` with `workflows: {type: "enabled"}`, `workflow_run.*` events, limits. New section with Python/TypeScript examples in `managed-agents.md`.
+- **Correction: prompt caching minimums (no release note)** — `MODELS.md` and `prompt-caching.md` had wrong minimum cacheable lengths (e.g. Haiku 4.5 listed as 1,024; Opus 4.7 as 4,096; a generic "Sonnet 1,024 / Opus-Haiku 4,096" table). Replaced with the per-model list from the prompt caching page.
+- **Correction: QUICK-REFERENCE model table (no release note)** — Was missing Opus 5.5 / Sonnet 5.5 and called the retired `claude-opus-4-1` "deprecated". Rewritten from the models overview.
+- **Correction: structured outputs model list (no release note)** — Added `claude-opus-5-5`, `claude-sonnet-5-5`, `claude-haiku-5-5` from the structured outputs page, plus its Bedrock note.
+- **Models overview diff** — Everything else (IDs, prices, context, max output, default effort, cutoffs, retirement dates, legacy list) matched `MODELS.md`.
+
+Not verified this run: SDK changelogs (fetch blocked), so the SDK versions that first shipped the toolset classes and the new Models API fields are unknown. Content Watermarking and Server-Side Fallbacks for Opus 5.5, Content Watermarking for Sonnet 5.5, and PDF input, mid-conversation tool changes and Content Watermarking for Haiku 5.5 remain `?` in the capabilities table.
+
+### Files Modified
+
+| File                    | Change                                                                                                  |
+| ----------------------- | ------------------------------------------------------------------------------------------------------- |
+| `MODELS.md`             | Haiku 5.5 added, Haiku 4.5 to legacy; Sonnet 5.5 cache-read price; caching minimums fixed; Models API fields |
+| `migrations.md`         | New Haiku 4.5 → Haiku 5.5 section                                                                       |
+| `prompt-caching.md`     | Per-model minimums; Opus 5.5 / Sonnet 5.5 / Haiku 5.5 cache pricing                                     |
+| `structured-outputs.md` | Supported model list and Bedrock note from the official page                                            |
+| `computer-use.md`       | SDK toolset classes (beta); Haiku 5.5 availability                                                      |
+| `sdks.md`               | Admin API out of beta (v1.10.0 / v0.130.0); toolset classes pointer; version history rows               |
+| `managed-agents.md`     | Dynamic workflows; `allowed_hosts` for web tools; `web_fetch` prior-context rule; Dreams models         |
+| `compliance-api.md`     | Unified-experience chats and Claude Docs downloads (beta)                                               |
+| `authentication.md`     | API credits for Max and Team plans                                                                      |
+| `QUICK-REFERENCE.md`    | Model table rewritten from the models overview                                                          |
+| `README.md`             | Dates, SDK versions, quick reference, index descriptions                                                |
+| `CHANGELOG.md`          | This entry                                                                                              |
+
+---
+
 ## 2026-10-05 — Incremental Update
 
 Sources:

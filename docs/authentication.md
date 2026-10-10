@@ -1,6 +1,6 @@
 # Authentication & API Keys
 
-> **Last updated:** 2026-08-31
+> **Last updated:** 2026-10-10
 
 ## Overview
 
@@ -144,6 +144,22 @@ client = anthropic.Anthropic(
 - Rotate keys if compromised — old key is immediately revoked
 - Use separate keys per environment (dev, staging, prod)
 - Keys are scoped to your Anthropic organization
+
+## API Credits for Max and Team Plans (Oct 7, 2026)
+
+Claude Max and Team plans include monthly Claude API credits. To claim them, link a Claude Console organization to the plan; credits then arrive in that organization each billing cycle (monthly for annual plans). No payment method is needed on Claude Platform. Source: [API credits for Max and Team plans](https://platform.claude.com/docs/en/about-claude/api-credits-for-subscribers).
+
+| Plan                                          | Monthly credit                                   |
+| --------------------------------------------- | ------------------------------------------------ |
+| Max 5x                                        | $100 USD                                         |
+| Max 20x                                       | $200 USD                                         |
+| Team, Standard seat                           | $20 USD per seat (pooled, capped at $500/month)  |
+| Team, Premium seat                            | $100 USD per seat (pooled, capped at $500/month) |
+| Discounted Team plans (Nonprofit, Scientists) | Same as Team                                     |
+
+- **Covers:** Claude API, Claude Managed Agents, the Claude Agent SDK and the playground. **Doesn't cover:** Claude Code, extra usage in the Claude apps.
+- Credits expire at the end of each billing cycle (no rollover) and apply only to the Claude API in the Claude Console, not Claude Platform on AWS, Bedrock, Google Cloud or Foundry.
+- Eligibility: active plan in good standing; new subscribers after 7 days. Free, Pro and Enterprise plans aren't eligible. Claiming needs the subscriber (Max) or a Primary Owner / Owner (Team) plus an Owner, Admin or Billing role in the Console organization.
 
 ## Related
 

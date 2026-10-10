@@ -1,7 +1,7 @@
 # Compliance API: Session Transcripts and Activity Feed
 
-> **Last updated:** 2026-09-28  
-> **Sources:** platform.claude.com/docs/en/manage-claude/compliance-sessions, platform.claude.com/docs/en/manage-claude/compliance-activity-feed, platform.claude.com/docs/en/release-notes/overview (Sep 18 and Sep 24, 2026)
+> **Last updated:** 2026-10-10  
+> **Sources:** platform.claude.com/docs/en/manage-claude/compliance-sessions, platform.claude.com/docs/en/manage-claude/compliance-activity-feed, platform.claude.com/docs/en/manage-claude/compliance-content-data, platform.claude.com/docs/en/release-notes/overview (Sep 18, Sep 24 and Oct 8, 2026)
 
 > **Correction (2026-09-27):** Earlier versions of this file listed wrong endpoint paths (`/v1/compliance/sessions`, `/v1/compliance/local-sessions`), wrong `product_surface` values (`claude_cowork`, `claude_for_microsoft_365`), a `Bearer` auth header, and cursor pagination for sessions. All of that has been replaced with what the official docs say. If you built against the old version of this page, re-check your integration. The 2026-09-28 revision on `main` repeated some of these errors (a `claude_for_microsoft_365` surface, a `?product_surface=` filter on a `/v1/compliance/local-sessions` path, and resolving Activity Feed names through the Admin API); those were dropped too.
 
@@ -165,6 +165,20 @@ _This example is written for this knowledge base from the documented endpoints a
 ### File names and titles removed (Sep 24, 2026)
 
 Activities about files, project documents and artifacts **no longer include names or titles**. The `filename` and `title` fields are always `null`, an empty string, or omitted, **including on activities recorded before Sep 24, 2026**. To get a name or title, pass the activity's `claude_file_*`, `claude_proj_doc_*` or `claude_artifact_version_*` ID to the matching metadata endpoint in [Retrieve files and artifacts](https://platform.claude.com/docs/en/manage-claude/compliance-content-data#retrieve-files-and-artifacts) using a Compliance Access Key with `read:compliance_user_data`. Lookups aren't possible after the item is deleted or when the activity has no such ID.
+
+## Chats and Claude Docs (Oct 8, 2026, beta)
+
+Two additions on the chat and file endpoints (source: [Retrieve and delete chats, files, and projects](https://platform.claude.com/docs/en/manage-claude/compliance-content-data)), both in beta and using your existing Compliance Access Key:
+
+- **Unified Claude experience chats** (Claude Enterprise): the chat endpoints ([List chats](https://platform.claude.com/docs/en/api/compliance/apps/chats/list), [Get chat messages](https://platform.claude.com/docs/en/api/compliance/apps/chats/messages/list)) now also return these chats. A chat that continues in a cloud session comes back as one chat; the work Claude does there appears in each message's `content` as `tool_use` blocks (`name`, `input`) and `tool_result` blocks (matched by `tool_use_id`). [Delete chat](https://platform.claude.com/docs/en/api/compliance/apps/chats/delete) on such a chat also deletes the cloud sessions started for it, but not sessions those sessions started.
+- **Claude Docs as Word files:** Claude Docs documents are listed by [List code artifacts](https://platform.claude.com/docs/en/api/compliance/code/artifacts/list) with `artifact_type` `claude_docs` (empty `versions`, `published_version_id` `null`). Download the current text with `GET /v1/compliance/apps/code/artifacts/{artifact_id}/content?multi_file_format=zip`: a ZIP with one Word (.docx) file per tab that holds text. Comments, uploaded files and edit history aren't included.
+
+```bash
+curl "https://api.anthropic.com/v1/compliance/apps/code/artifacts/$ARTIFACT_ID/content?multi_file_format=zip" \
+  -H "x-api-key: $ANTHROPIC_COMPLIANCE_ACCESS_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -o claude-doc.zip
+```
 
 ---
 

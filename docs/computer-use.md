@@ -1,9 +1,10 @@
 # Computer Use & Browser Use
 
-> **Last updated:** 2026-08-24  
+> **Last updated:** 2026-10-10  
 > **Computer use toolset status:** GA as of 2026-08-19 (`computer_toolset_20260801`, no beta header)  
 > **Browser use toolset status:** GA as of 2026-08-19 (`browser_toolset_20260801`, no beta header)  
-> **Available on:** Claude Fable 5, Claude Mythos 5, Claude Opus 5, Claude Sonnet 5, Claude Opus 4.8
+> **Available on:** Claude Fable 5, Claude Mythos 5, Claude Opus 5, Claude Sonnet 5, Claude Opus 4.8  
+> **Claude Haiku 5.5 (Oct 7, 2026):** supports `computer_toolset_20260801` and `browser_toolset_20260801` on the Claude API and Google Cloud; on Amazon Bedrock use `computer_20251124` (beta `computer-use-2025-11-24`). `computer_20250124` returns 400 on Haiku 5.5 on every platform.
 
 ## Overview
 
@@ -227,6 +228,137 @@ const response = await client.messages.create({
 | Tasks requiring visual inspection of non-web content | Computer use |
 
 ---
+
+## SDK Toolset Classes (Beta, Oct 7, 2026)
+
+The Python and TypeScript SDKs include classes for the browser use tool and the computer use tool. You subclass one and write one method per member tool (such as `navigate` or `left_click`) against your own browser or desktop automation. The SDK runs the tool loop, your URL and file policies (browser only) and your approval callback. Source: [Browser and computer use with the SDK toolsets](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-sdk).
+
+| Class                                  | Python import                | TypeScript import                         |
+| -------------------------------------- | ---------------------------- | ----------------------------------------- |
+| `BetaAbstractBrowserToolset20260801`   | `anthropic.tools.browser`    | `@anthropic-ai/sdk/helpers/beta/toolsets` |
+| `BetaAbstractComputerToolset20260801`  | `anthropic.tools.computer`   | (see the TypeScript computer toolset guide) |
+
+- The SDK ships **no** browser, desktop, ready-made driver or URL policy. Minimal CDP (browser) and VNC (computer) examples are in the `claude-quickstarts` repo; they aren't production code. Browser Use, Browserbase, Daytona and E2B publish their own integrations.
+- Pass the driver instance itself as the `tools` entry of the tool runner. Members you don't implement are sent as disabled. The runner never closes the toolset; close it yourself.
+- Constructor options (both SDKs, can't change after construction): `configs`, `confirm`, `url_policy` / `urlPolicy`, `file_policy` / `filePolicy`, `tool_configs` / `toolConfigs`, and the `_browser_state` method / `browserState` option (required state report). The computer class takes only `configs`, `confirm` and `tool_configs`.
+- Computer class: if you implement `type`, `key` or `hold_key`, the constructor raises a configuration error unless you pass `confirm` or disable those tools with `configs`. The SDK doesn't resize computer screenshots; the API rejects images over the model's limits.
+- Limitations: the URL policy sees only `navigate` calls (not redirects, link clicks or subrequests); approvals use the last state report; calls on one toolset run one at a time.
+- Before running against anything but a throwaway browser: write a URL policy, block private ranges and `169.254.169.254` with container egress rules, and use a browser profile that isn't signed in to accounts you wouldn't hand to Claude.
+
+Trimmed from the official quick start (`backend` is your own wrapper around e.g. Playwright):
+
+```python
+from anthropic import Anthropic
+from anthropic.tools import ToolError
+from anthropic.tools.browser import (
+    BetaAbstractBrowserToolset20260801,
+    BetaBrowserNavigateResult,
+    BetaBrowserState,
+    BetaToolsetCallContext,
+    BetaURLContext,
+)
+from anthropic.types.beta import BetaBrowserNavigateInput, BetaBrowserStateTabEntryParam
+
+
+class MyBrowser(BetaAbstractBrowserToolset20260801):
+    def __init__(self, backend, **options):
+        super().__init__(**options)
+        self.backend = backend
+
+    def _browser_state(self, context: BetaToolsetCallContext) -> BetaBrowserState:
+        return BetaBrowserState(
+            tabs=[
+                BetaBrowserStateTabEntryParam(
+                    tab_id=tab.id, title=tab.title, url=tab.url,
+                    active=tab.id == self.backend.active,
+                )
+                for tab in self.backend.tabs()
+            ],
+            state_changes=self.backend.drain_changes(),
+        )
+
+    def navigate(
+        self, context: BetaToolsetCallContext, input: BetaBrowserNavigateInput
+    ) -> BetaBrowserNavigateResult:
+        page = self.backend.goto(input.url, input.tab_id)
+        return BetaBrowserNavigateResult(url=page.url, status=page.status, title=page.title)
+
+
+def url_policy(context: BetaURLContext, url: str) -> None:
+    if not is_allowed(url):  # your own allowlist check
+        raise ToolError(f"blocked: {url} is not on an allowed host")
+
+
+client = Anthropic()
+with MyBrowser(backend, url_policy=url_policy) as browser:
+    runner = client.beta.messages.tool_runner(
+        model="claude-opus-5-5",
+        max_tokens=1024,
+        tools=[browser],
+        messages=[{"role": "user", "content": "Open example.com and tell me the page heading."}],
+        stream=True,
+        run_tools_eagerly=True,  # so a call can start before the response ends
+    )
+    for stream in runner:
+        print(stream.get_final_message())
+```
+
+```typescript
+import Anthropic from "@anthropic-ai/sdk";
+import {
+  BetaAbstractBrowserToolset20260801,
+  type BetaBrowserNavigateResult,
+  type BetaBrowserToolsetOptions,
+  type BetaToolsetCallContext,
+  type BetaURLContext,
+  ToolError,
+} from "@anthropic-ai/sdk/helpers/beta/toolsets";
+import type { BetaBrowserNavigateInput } from "@anthropic-ai/sdk/resources/beta";
+
+class MyBrowser extends BetaAbstractBrowserToolset20260801 {
+  constructor(private backend: Backend, options: Omit<BetaBrowserToolsetOptions, "browserState"> = {}) {
+    super({
+      ...options,
+      browserState: () => ({
+        tabs: backend.tabs().map((tab) => ({
+          tab_id: tab.id, title: tab.title, url: tab.url, active: tab.id === backend.active,
+        })),
+        state_changes: backend.drainChanges(),
+      }),
+    });
+  }
+
+  protected override async navigate(
+    ctx: BetaToolsetCallContext,
+    input: BetaBrowserNavigateInput,
+  ): Promise<BetaBrowserNavigateResult> {
+    const page = await this.backend.goto(input.url, input.tab_id);
+    return { url: page.url, status: page.status, title: page.title };
+  }
+}
+
+function urlPolicy(ctx: BetaURLContext, url: string): void {
+  if (!isAllowed(url)) throw new ToolError(`blocked: ${url} is not on an allowed host`);
+}
+
+const client = new Anthropic();
+const browser = new MyBrowser(backend, { urlPolicy });
+try {
+  const runner = client.beta.messages.toolRunner({
+    model: "claude-opus-5-5",
+    max_tokens: 1024,
+    tools: [browser],
+    messages: [{ role: "user", content: "Open example.com and tell me the page heading." }],
+    stream: true,
+    runToolsEagerly: true,
+  });
+  for await (const stream of runner) console.log(await stream.finalMessage());
+} finally {
+  await browser.close();
+}
+```
+
+The SDK versions that first shipped these classes weren't confirmed this run (SDK changelogs not fetched).
 
 ## Security Considerations
 

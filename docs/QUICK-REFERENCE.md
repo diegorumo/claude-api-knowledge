@@ -1,6 +1,6 @@
 # Quick Reference
 
-> **Last updated:** 2026-09-07  
+> **Last updated:** 2026-10-10  
 > Common patterns for developers building with the Claude API.
 
 ## Authentication
@@ -45,20 +45,27 @@ console.log(response.content[0].text);
 
 ## Current Model IDs
 
+> Checked against platform.claude.com/docs/en/models/overview on 2026-10-10. See [MODELS.md](./MODELS.md) for prices, limits and retirement dates.
+
 | Model | ID | Use For |
 |-------|-----|--------|
-| Fable 5.1 | `claude-fable-5-1` | Most capable (Sep 2026); 2.5% cache reads; `tool_choice any/tool` unsupported |
-| Opus 5 | `claude-opus-5` | Complex agentic coding; 1M ctx |
-| Sonnet 5 | `claude-sonnet-5` | Best speed/intelligence balance; $2/$10 MTok |
-| Haiku 4.5 | `claude-haiku-4-5-20251001` | Fastest / cheapest; 200k ctx |
+| Opus 5.5 | `claude-opus-5-5` | Recommended starting point for most workloads; 1M ctx; always-on thinking |
+| Fable 5.1 | `claude-fable-5-1` | Demanding reasoning, long-horizon agentic work; 2.5% cache reads; 30-day data retention required; `tool_choice any/tool` unsupported |
+| Sonnet 5.5 | `claude-sonnet-5-5` | Best speed/intelligence balance; $2/$10 MTok |
+| Haiku 5.5 | `claude-haiku-5-5` | Fastest; high-volume, latency-sensitive work; 1M ctx (launched Oct 7, 2026) |
 | Fable 5 | `claude-fable-5` | Legacy (still available) |
-| Opus 4.8 | `claude-opus-4-8` | Legacy Opus 4 |
-| Opus 4.6 | `claude-opus-4-6` | Legacy Opus 4 |
-| Sonnet 4.6 | `claude-sonnet-4-6` | Legacy Sonnet |
+| Opus 5 | `claude-opus-5` | Legacy (still available) |
+| Sonnet 5 | `claude-sonnet-5` | Legacy (still available) |
+| Opus 4.8 | `claude-opus-4-8` | Legacy (still available) |
+| Opus 4.7 | `claude-opus-4-7` | Legacy (still available) |
+| Opus 4.6 | `claude-opus-4-6` | Legacy (still available) |
+| Opus 4.5 | `claude-opus-4-5-20251101` | Legacy (still available) |
+| Sonnet 4.6 | `claude-sonnet-4-6` | Legacy (still available) |
+| Haiku 4.5 | `claude-haiku-4-5-20251001` | Legacy (still available); 200k ctx |
 
-> **New (Sep 2026):** `claude-fable-5-1` — most capable model; always-on adaptive thinking; 2.5% cache reads; requires 30-day data retention; `tool_choice: any/tool` returns 400.  
 > **Invitation-only:** `claude-mythos-5-1` (Project Glasswing) — same specs as Fable 5.1.  
-> **Deprecated:** `claude-opus-4-1` — migrate to `claude-opus-4-6` or newer.
+> **Deprecated:** `claude-sonnet-4-5-20250929` — retires Nov 30, 2026; migrate to `claude-sonnet-5-5`.  
+> **Retired:** `claude-opus-4-1` (Aug 5, 2026) — returns errors; migrate to a current model.
 
 ---
 

@@ -1,6 +1,6 @@
 # Managed Agents (Beta)
 
-> **Last updated:** 2026-09-14  
+> **Last updated:** 2026-10-10  
 > **Status:** Beta — active development  
 > **SDK changelog:** v0.100.0+ (May 2026), v0.115.0 (June 2026), v0.116.0–v1.0.0 Python / v0.110.0–v0.120.0 TypeScript (July–Aug 2026), v1.5.0 Python / v0.125.0 TypeScript (Sep 2026)
 
@@ -426,7 +426,7 @@ dreams = client.beta.dreams.list(
 )
 ```
 
-> **Note:** Dreams require the `agent-memory-2026-07-22` beta header (same as Memory Stores). Both Python (v0.117.0+) and TypeScript (v0.111.0+) SDKs support the Dreams API. Python's `list()` also accepts `created_at_gt` and `created_at_lt` datetime filters. Claude Opus 5 is supported as of Aug 1, 2026; Claude Fable 5 and Sonnet 5 as of Jul 10, 2026.
+> **Note:** Dreams require the `agent-memory-2026-07-22` beta header (same as Memory Stores). Both Python (v0.117.0+) and TypeScript (v0.111.0+) SDKs support the Dreams API. Python's `list()` also accepts `created_at_gt` and `created_at_lt` datetime filters. Claude Opus 5 is supported as of Aug 1, 2026; Claude Fable 5 and Sonnet 5 as of Jul 10, 2026. As of Oct 1, 2026, Dreams (research preview) also supports Claude Opus 5.5, Claude Fable 5.1 and Claude Sonnet 5.5. Full supported list from the [Dreams page](https://platform.claude.com/docs/en/managed-agents/dreams#limits): `claude-opus-5-5`, `claude-fable-5-1`, `claude-opus-5`, `claude-fable-5`, `claude-opus-4-8`, `claude-opus-4-7`, `claude-sonnet-5-5`, `claude-sonnet-5`, `claude-sonnet-4-6`.
 
 ### Dreams `output_behavior` (Python v0.122.0 / TypeScript v0.117.0)
 
@@ -890,6 +890,62 @@ agent = client.beta.agents.create(
 - Either `allowed_domains` or `blocked_domains` can be specified, but not both
 - `max_content_tokens` on `web_fetch` caps tokens consumed per call
 - `user_location` on `web_search` biases results geographically
+
+### `allowed_hosts` Now Applies to Web Tools (Oct 7, 2026)
+
+In a cloud environment with `limited` networking, the environment's `allowed_hosts` now also applies to `web_search` and `web_fetch` (which run on Anthropic's servers):
+
+- A `web_fetch` call for a URL on a host that `allowed_hosts` does not match returns a `url_not_allowed` error result to the agent; `web_search` omits results from such hosts.
+- When `allowed_hosts` is empty, neither tool returns a page or a search result. `allow_package_managers` and `allow_mcp_servers` add no hosts for these tools.
+- Creating a session fails with **400** when an enabled web tool's `allowed_domains` has an entry not within `allowed_hosts`; so does a session update that adds one. An `allowed_hosts` entry matches one exact host unless it starts with `*.` (`docs.example.com` is not within `["example.com"]`). Fix: add the host to `allowed_hosts` or remove the `allowed_domains` entry.
+- Adding a host to `allowed_hosts` also opens it to the sandbox. `unrestricted` networking and self-hosted environments don't limit these tools.
+
+### `web_fetch` Only Fetches URLs Already in the Session (Oct 7, 2026)
+
+The Managed Agents `web_fetch` tool now fetches only URLs that already appeared in the session: in the text of a user message, in a `web_search` result, or in a page `web_fetch` returned earlier. A URL that appears only in Claude's own output, the agent's system prompt, an attached document, or output of a tool such as `bash`, `read` or an MCP tool doesn't count; fetching it returns a `url_not_in_prior_context` error result. To let the agent fetch a URL, send it in the text of a `user.message` event. (Source: release notes, Oct 7, 2026.)
+
+## Dynamic Workflows (Beta, Oct 9, 2026)
+
+An agent can write a **workflow** (a program that runs many agents in phases and combines their results) for work with many pieces, such as reviewing hundreds of documents. The server runs it in the background as a **workflow run** while the agent keeps working or ends its turn. Beta header: `managed-agents-2026-04-01` (no new header). Sources: [Multiagent orchestration → Dynamic workflows](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration#dynamic-workflows), [Workflow runs](https://platform.claude.com/docs/en/managed-agents/workflow-runs).
+
+Turn it on with `multiagent.type: "multiagent_20261001"` and `workflows: {"type": "enabled"}`. With this type, dynamic workflows and delegation (`subagents`) are both on by default; add `"subagents": {"type": "disabled"}` for workflows only. There is no API call to start a run: the agent decides from the `user.message` and its system prompt, so say there when to use a run.
+
+```python
+agent = client.beta.agents.create(
+    name="Contract Reviewer",
+    model="claude-opus-5-5",
+    system="You review contracts. When you're asked to review more than a few contracts, start a workflow run that reads them in parallel and combines the findings. Review one or two contracts yourself, without a run.",
+    tools=[{"type": "agent_toolset_20260401"}],
+    multiagent={"type": "multiagent_20261001", "workflows": {"type": "enabled"}},
+)
+```
+
+```typescript
+const agent = await client.beta.agents.create({
+  name: "Contract Reviewer",
+  model: "claude-opus-5-5",
+  system:
+    "You review contracts. When you're asked to review more than a few contracts, start a workflow run that reads them in parallel and combines the findings. Review one or two contracts yourself, without a run.",
+  tools: [{ type: "agent_toolset_20260401" }],
+  multiagent: { type: "multiagent_20261001", workflows: { type: "enabled" } },
+});
+```
+
+**Run events** (on the session's primary event stream; they don't trigger webhooks):
+
+| Event                                                    | Meaning                                                                                                                         |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `workflow_run.created`                                   | Run started; has `workflow_run_id` (`wrun_…`), `name`, `description` and `phases` (each `id`, `name`, `description`)            |
+| `workflow_run.status_running`                            | Run started executing, or resumed after a budget pause                                                                          |
+| `workflow_run.status_idle`                               | Run paused (for example at the session budget); doesn't say why                                                                 |
+| `workflow_run.phase_started`, `workflow_run.phase_ended` | Workflow entered / left a phase; identified by `workflow_run_phase_id` (look up the name in `created.phases`)                  |
+| `workflow_run.status_ended`                              | Always the run's last event; `result` is `completed`, `stopped`, or `error` (`timeout_error`, `program_error`, `thread_limit_error`, `unknown_error`) |
+| `workflow_run.error`                                     | A run error or a refused start (`workflow_run_id` is `null` when no run was created)                                            |
+
+- Each agent in a run works in its own session thread carrying the run's `workflow_run_id`; the threads share the session sandbox. Only the primary-thread agent can start runs (runs don't nest). `completed` doesn't mean the work passed; check the run's threads.
+- Work is done when every run you saw created has `workflow_run.status_ended` **and** a later `session.status_idle` with `stop_reason: "end_turn"` arrives.
+- Limits: 64 threads working at once per run; 1,000 agents started over a run's life (`thread_limit_error`); 24-hour default lifetime (`timeout_error`); 10 runs open at once per session by default (`max_workflow_runs_error`). Run tokens count toward the session budget and your Messages API rate limits; a run has no price of its own.
+- A run can create more than one thread for the same piece of work, so make the tools your agents call safe to call twice.
 
 ## Self-Hosted Sandbox Memory Stores (v0.125.0 / v0.120.0)
 

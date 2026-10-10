@@ -1,8 +1,55 @@
 # Migration Guides
 
-> **Last updated:** 2026-10-05
+> **Last updated:** 2026-10-10
 
 ## Migrating to Claude 4.x Models
+
+### From claude-haiku-4-5 → claude-haiku-5-5
+
+> **Haiku 5.5 launched Oct 7, 2026.** Haiku 4.5 (`claude-haiku-4-5-20251001`) is now a legacy model, still Active on the deprecations page with retirement not sooner than Oct 15, 2026; no deprecation notice yet. Follow the official [Haiku 5.5 migration guide](https://platform.claude.com/docs/en/models/haiku-5-5/migration-guide). It is **not** a drop-in swap.
+
+| Platform               | Claude Haiku 4.5                                  | Claude Haiku 5.5             |
+| ---------------------- | ------------------------------------------------- | ---------------------------- |
+| Claude API             | `claude-haiku-4-5-20251001` or `claude-haiku-4-5` | `claude-haiku-5-5`           |
+| Amazon Bedrock         | `anthropic.claude-haiku-4-5`                      | `anthropic.claude-haiku-5-5` |
+| Claude Platform on AWS | `claude-haiku-4-5`                                | `claude-haiku-5-5`           |
+| Google Cloud           | `claude-haiku-4-5@20251001`                       | `claude-haiku-5-5`           |
+| Microsoft Foundry      | `claude-haiku-4-5`                                | `claude-haiku-5-5`           |
+
+Checklist from the migration guide (Haiku 4.5 starting point):
+
+1. Swap the model ID (table above).
+2. Recount prompts and revisit `max_tokens` and cost estimates: about 30% more tokens for the same text, more visual tokens for large images, and higher prices for prompts over 100,000 tokens.
+3. Replace `thinking: {"type": "enabled", "budget_tokens": N}` with `{"type": "adaptive"}` and steer with `output_config.effort`.
+4. Select content blocks by `type`; responses can start with `thinking` blocks.
+5. Remove `temperature`, `top_p` and `top_k`.
+6. Replace assistant prefill; end `messages` with a user turn.
+7. Computer use: replace `computer_20250124` with `computer_toolset_20260801` (Claude API, Google Cloud) or `computer_20251124` + `computer-use-2025-11-24` (Amazon Bedrock).
+8. Replay stored conversations through the account that produced them.
+9. Keep conversations append-only if you send thinking blocks back.
+10. Handle `stop_reason: "refusal"` (no server-side fallback on Haiku 5.5).
+11. On Amazon Bedrock, structured outputs aren't available for Haiku 5.5: describe the format in the prompt or use a non-`strict` tool and validate.
+
+Priority Tier is not supported on Haiku 5.5. Coming from Haiku 3.5 or Haiku 3 (both retired on the Claude API), also move to `code_execution_20250825`+ and `text_editor_20250728`, and handle the `refusal` and `model_context_window_exceeded` stop reasons. See [MODELS.md](./MODELS.md) ("Haiku 5.5 API Changes") for the full list.
+
+```python
+# Before
+client.messages.create(
+    model="claude-haiku-4-5",
+    max_tokens=16000,
+    thinking={"type": "enabled", "budget_tokens": 8000},
+    messages=[{"role": "user", "content": "..."}],
+)
+
+# After
+client.messages.create(
+    model="claude-haiku-5-5",
+    max_tokens=16000,
+    thinking={"type": "adaptive"},
+    output_config={"effort": "medium"},
+    messages=[{"role": "user", "content": "..."}],
+)
+```
 
 ### From claude-sonnet-4-5 → claude-sonnet-5-5 (Sonnet 4.5 deprecated)
 

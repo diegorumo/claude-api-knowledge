@@ -1,6 +1,6 @@
 # Claude Models Reference
 
-> **Last updated:** 2026-10-10  
+> **Last updated:** 2026-10-12  
 > **Source:** platform.claude.com/docs/en/about-claude/models/overview, platform.claude.com/docs/en/about-claude/model-deprecations, platform.claude.com/docs/en/about-claude/pricing, platform.claude.com/docs/en/build-with-claude/prompt-caching, platform.claude.com/docs/en/api/models/list, platform.claude.com/docs/en/release-notes/overview (Sep 22 – Oct 7, 2026), platform.claude.com/docs/en/models/haiku-5-5/{overview,whats-new-haiku-5-5,migration-guide}, platform.claude.com/docs/en/models/sonnet-5-5/{overview,whats-new-sonnet-5-5,migration-guide}, platform.claude.com/docs/en/models/sonnet-4-5/overview
 
 ## Current Models (Recommended)
@@ -226,12 +226,14 @@ These models have specific constraints not present on earlier models:
 | Model                                          | Deprecated   | Retired      | Official replacement        |
 | ---------------------------------------------- | ------------ | ------------ | --------------------------- |
 | `claude-opus-4-1-20250805` / `claude-opus-4-1` | Jun 5, 2026  | Aug 5, 2026  | `claude-opus-4-8`           |
-| `claude-sonnet-4-20250514`                     | Apr 14, 2026 | Jun 15, 2026 | `claude-sonnet-4-6`         |
+| `claude-sonnet-4-20250514`                     | Apr 14, 2026 | Jun 15, 2026 | `claude-sonnet-5-5`         |
 | `claude-opus-4-20250514`                       | Apr 14, 2026 | Jun 15, 2026 | `claude-opus-4-8`           |
 | `claude-3-haiku-20240307`                      | Feb 19, 2026 | Apr 20, 2026 | `claude-haiku-4-5-20251001` |
-| `claude-3-7-sonnet-20250219`                   | Oct 28, 2025 | Feb 19, 2026 | `claude-sonnet-4-6`         |
+| `claude-3-7-sonnet-20250219`                   | Oct 28, 2025 | Feb 19, 2026 | `claude-sonnet-5-5`         |
 | `claude-3-5-haiku-20241022`                    | Dec 19, 2025 | Feb 19, 2026 | `claude-haiku-4-5-20251001` |
 
+> **Correction (2026-10-12):** The replacements for `claude-sonnet-4-20250514` and `claude-3-7-sonnet-20250219` were listed as `claude-sonnet-4-6`; the deprecations page names `claude-sonnet-5-5` for both.
+>
 > Older models (Claude 3.5 Sonnet, Claude 3 Opus, Claude 3 Sonnet, Claude 2.x, Claude 1.x / Instant) were retired between Nov 2024 and Jan 2026. Replacements above are the ones named on the deprecations page; a current model from the top table is usually the better target.
 >
 > **Retired models cleanup (June 2026):** Python SDK v0.109.2 and TypeScript SDK v0.104.2 (2026-06-15) removed retired model identifiers from the SDK type definitions. Any models not listed in the tables above should be considered unsupported.

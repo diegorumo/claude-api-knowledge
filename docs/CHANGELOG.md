@@ -1,5 +1,34 @@
 # Knowledge Base Changelog
 
+## 2026-10-12 — Incremental Update
+
+Sources:
+
+- https://platform.claude.com/docs/en/release-notes/overview.md (newest entry Oct 9, 2026; no entries after the 2026-10-10 update)
+- https://platform.claude.com/docs/en/models/overview.md (https://platform.claude.com/docs/en/about-claude/models/overview.md redirects here)
+- https://platform.claude.com/docs/en/about-claude/model-deprecations.md
+- https://platform.claude.com/docs/en/about-claude/pricing.md
+- https://platform.claude.com/docs/en/models/opus-5-5/overview.md
+- https://platform.claude.com/docs/en/models/sonnet-5-5/overview.md
+- https://platform.claude.com/docs/en/models/haiku-5-5/overview.md
+- https://github.com/anthropics/anthropic-sdk-python/releases and https://github.com/anthropics/anthropic-sdk-typescript/releases: **could not fetch** (HTTP 403 from this environment's network proxy). Left for the next scheduled run.
+
+### Changes
+
+- **No new release notes** since the 2026-10-10 update (latest entry is Oct 9, 2026, already covered).
+- **Correction: retired model replacements (no release note)** — `MODELS.md` listed `claude-sonnet-4-6` as the replacement for `claude-sonnet-4-20250514` and `claude-3-7-sonnet-20250219`. The deprecations page names `claude-sonnet-5-5` for both. Fixed.
+- **Models overview diff** — IDs, prices, context, max output, default effort, knowledge cutoffs, retirement dates, platform IDs and the legacy list all match `MODELS.md`. Pricing page cache-read prices match `MODELS.md` and `prompt-caching.md`.
+
+Not verified this run: SDK changelogs (fetch blocked). Content Watermarking and Server-Side Fallbacks for Opus 5.5, Content Watermarking for Sonnet 5.5, and PDF input, mid-conversation tool changes and Content Watermarking for Haiku 5.5 stay `?`: the Opus 5.5, Sonnet 5.5 and Haiku 5.5 overview pages don't mention them. Haiku 4.5's retirement commitment (not sooner than Oct 15, 2026) is still listed as Active with no deprecation notice; worth rechecking next run.
+
+### Files Modified
+
+| File        | Change                                                        |
+| ----------- | ------------------------------------------------------------- |
+| `MODELS.md` | Retired models table: Sonnet 4 / Sonnet 3.7 replacements corrected |
+| `README.md` | Last-updated dates                                            |
+| `CHANGELOG.md` | This entry                                                 |
+
 ## 2026-10-10 — Incremental Update
 
 Sources:

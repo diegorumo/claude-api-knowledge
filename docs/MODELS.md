@@ -1,6 +1,6 @@
 # Claude Models Reference
 
-> **Last updated:** 2026-10-12  
+> **Last updated:** 2026-10-19  
 > **Source:** platform.claude.com/docs/en/about-claude/models/overview, platform.claude.com/docs/en/about-claude/model-deprecations, platform.claude.com/docs/en/about-claude/pricing, platform.claude.com/docs/en/build-with-claude/prompt-caching, platform.claude.com/docs/en/api/models/list, platform.claude.com/docs/en/release-notes/overview (Sep 22 – Oct 7, 2026), platform.claude.com/docs/en/models/haiku-5-5/{overview,whats-new-haiku-5-5,migration-guide}, platform.claude.com/docs/en/models/sonnet-5-5/{overview,whats-new-sonnet-5-5,migration-guide}, platform.claude.com/docs/en/models/sonnet-4-5/overview
 
 ## Current Models (Recommended)
@@ -156,7 +156,7 @@ Other notes:
 - Prompt cache reads cost **5% of base input** ($0.20/MTok).
 - Text between tool calls comes back as progress-update `thinking` blocks (empty unless `thinking.display: "updates"`).
 - Broader safety classifiers: `bio` and `reasoning_extraction` refusal categories join `cyber`.
-- **Fast mode** (research preview, Claude API only): $8 / $40 per MTok.
+- **Fast mode:** $8 / $40 per MTok. Out of research preview since Oct 15, 2026: no beta header or access request needed, default fast mode rate limit in the Start, Build and Scale tiers. Available on the Claude API (including Managed Agents) and on Microsoft Foundry deployments hosted on Azure. See [Fast Mode](./fast-mode.md).
 
 ```python
 response = client.messages.create(

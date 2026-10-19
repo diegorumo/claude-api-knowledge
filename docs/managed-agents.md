@@ -1,6 +1,6 @@
 # Managed Agents (Beta)
 
-> **Last updated:** 2026-10-10  
+> **Last updated:** 2026-10-19  
 > **Status:** Beta — active development  
 > **SDK changelog:** v0.100.0+ (May 2026), v0.115.0 (June 2026), v0.116.0–v1.0.0 Python / v0.110.0–v0.120.0 TypeScript (July–Aug 2026), v1.5.0 Python / v0.125.0 TypeScript (Sep 2026)
 
@@ -352,6 +352,57 @@ for event in client.beta.sessions.events.stream(session_id=session.id):
 ```
 
 Deployment configurations are defined server-side; the client discovers them via the API rather than specifying them inline. This allows ops teams to manage model, tools, and environment separately from application code.
+
+## Scheduled Deployments (Beta; on Claude Platform on AWS since Oct 14, 2026)
+
+Source: [Scheduled deployments](https://platform.claude.com/docs/en/managed-agents/scheduled-deployments). A scheduled deployment starts sessions for an agent on a cron schedule. Requires `managed-agents-2026-04-01`. Since the Oct 14, 2026 release note it is also available on [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws#claude-managed-agents).
+
+- Needs an agent, an environment, and at least one initial event (`user.message` or `user.define_outcome`). Files, GitHub, memory stores and vaults are optional; `file` and `github_repository` resources need a cloud environment.
+- `schedule`: POSIX cron `expression` plus an IANA `timezone`; minute granularity. Literal wall-clock matching: on a spring-forward day a non-existent time (such as 2 AM) doesn't fire, and on a fall-back day a repeated time fires twice. Avoid 1–3 AM local, or use UTC.
+- Optional `budget` (same shape as a session budget) is copied onto **each** run's session; it is not a cumulative cap. Can be removed with `budget: null`.
+- Each attempt writes a **deployment run** (`GET /v1/deployment_runs?deployment_id=...`); a successful run carries the `session_id`.
+- Pause (`POST /v1/deployments/{id}/pause`) stops scheduled triggers only; manual runs (`POST /v1/deployments/{id}/run`, `trigger_context.type: "manual"`) still work.
+- A session-creation rate limit is recorded as a `session_rate_limited_error` run with no retry. An archived agent archives the deployment; an archived subagent, environment or vault records a failed run and pauses the deployment (`paused_reason.error.type` mirrors the run's `error.type`).
+
+**Claude Platform on AWS:** each run creates its session as an IAM role in your AWS account. Set `execution_identity` on the agent to `{"type": "aws_role", "role_arn": "arn:aws:iam::123456789012:role/example-role"}` first, or creating the deployment returns 400. The role's trust policy must let `aws-external-anthropic.amazonaws.com` call `sts:AssumeRole` and `sts:SetSourceIdentity`; the role needs `aws-external-anthropic:CreateSession`, `sts:GetWebIdentityToken` and `sts:TagGetWebIdentityToken`; whoever sets it on the agent needs `iam:PassRole` on it (same account; no managed policy grants it).
+
+```python
+deployment = client.beta.deployments.create(
+    name="Weekly compliance scan",
+    agent=agent.id,
+    environment_id=environment.id,
+    initial_events=[
+        {
+            "type": "user.message",
+            "content": [{"type": "text", "text": "Run the weekly compliance scan."}],
+        },
+    ],
+    schedule={
+        "type": "cron",
+        "expression": "0 20 * * 5",
+        "timezone": "America/New_York",
+    },
+)
+```
+
+```typescript
+const deployment = await client.beta.deployments.create({
+  name: "Weekly compliance scan",
+  agent: agent.id,
+  environment_id: environment.id,
+  initial_events: [
+    {
+      type: "user.message",
+      content: [{ type: "text", text: "Run the weekly compliance scan." }],
+    },
+  ],
+  schedule: {
+    type: "cron",
+    expression: "0 20 * * 5",
+    timezone: "America/New_York",
+  },
+});
+```
 
 ## Dreams API (Python v0.117.0+ / TypeScript v0.111.0+ — Beta)
 
@@ -1001,3 +1052,4 @@ Memory store changes made inside the sandbox (writing files to `mount_path`) are
 - [MCP Integration](./mcp.md)
 - [Files API](./files-api.md)
 - [Agent Patterns](./agent-patterns.md)
+- [OpenTelemetry](./opentelemetry.md) (trace sessions and turns)

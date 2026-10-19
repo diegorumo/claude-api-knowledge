@@ -1,5 +1,47 @@
 # Knowledge Base Changelog
 
+## 2026-10-19 — Incremental Update
+
+Sources:
+
+- https://platform.claude.com/docs/en/release-notes/overview.md (new entries: Oct 14 and Oct 15, 2026)
+- https://platform.claude.com/docs/en/models/overview.md (https://platform.claude.com/docs/en/about-claude/models/overview.md redirects here)
+- https://platform.claude.com/docs/en/about-claude/model-deprecations.md
+- https://platform.claude.com/docs/en/about-claude/pricing.md
+- https://platform.claude.com/docs/en/build-with-claude/fast-mode.md
+- https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry.md
+- https://platform.claude.com/docs/en/manage-claude/opentelemetry.md
+- https://platform.claude.com/docs/en/manage-claude/opentelemetry/sdk.md
+- https://platform.claude.com/docs/en/manage-claude/opentelemetry/api.md
+- https://platform.claude.com/docs/en/managed-agents/scheduled-deployments.md
+- https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws.md
+- https://platform.claude.com/docs/en/manage-claude/compliance-org-data.md
+- https://platform.claude.com/docs/en/manage-claude/compliance-api.md
+- https://github.com/anthropics/anthropic-sdk-python/releases and https://github.com/anthropics/anthropic-sdk-typescript/releases: **could not fetch** (HTTP 403 from this environment's network proxy, same as the last two runs). SDK version history is unchanged; left for the next scheduled run.
+
+### Changes
+
+- **Fast mode out of research preview for Claude Opus 5.5 (Oct 15, 2026)** — no `fast-mode-2026-02-01` header or access request needed for `claude-opus-5-5` (requests that still send the header keep working). Default fast mode rate limit in the Start, Build and Scale tiers. Opus 5 and Opus 4.8 stay in research preview and still need the header. New `fast-mode.md`; `MODELS.md` Opus 5.5 note updated (it said "research preview, Claude API only"). Price unchanged ($8 / $40 per MTok).
+- **Fast mode for Opus 5.5 on Microsoft Foundry (Oct 15, 2026)** — deployments hosted on Azure only, not those hosted on Anthropic. Documented in `fast-mode.md`. Fast mode is still not available on Claude Platform on AWS.
+- **Compliance API user preferences (Oct 15, 2026, beta)** — `GET /v1/compliance/organizations/{org_uuid}/user_preferences` returns claude.ai **Instructions for Claude** and Cowork **Global instructions**; needs `read:compliance_user_data`. Added to `compliance-api.md`.
+- **OpenTelemetry export (Oct 14, 2026, beta)** — SDK tracing (Python, TypeScript, C#, Go, Java, PHP, Ruby) and API telemetry destinations set up in the Console or Admin API (`telemetry-destinations-2026-08-11`). New `opentelemetry.md`.
+- **Scheduled deployments on Claude Platform on AWS (Oct 14, 2026)** — `managed-agents.md` had no scheduled-deployments section, so one was added (cron schedule, per-run budget, deployment runs, pause/manual run, failure behavior) with the AWS `execution_identity` IAM role requirement.
+- **Models overview diff** — IDs, prices, context, max output, default effort, knowledge cutoffs, retirement dates and the legacy list all match `MODELS.md`. No model changes.
+
+Not verified this run: SDK changelogs (fetch blocked). The deprecations page still lists `claude-haiku-4-5-20251001` as Active with "Not sooner than October 15, 2026" and no deprecation date, so `MODELS.md` is unchanged; recheck next run. Foundry page (`claude-in-microsoft-foundry.md`) doesn't mention fast mode itself; the Foundry detail comes from the release note, the fast mode page and the pricing page. The existing "Deployments (v0.109.0+)" section in `managed-agents.md` was left as is; it was not re-checked against the official page this run.
+
+### Files Modified
+
+| File                | Change                                                                 |
+| ------------------- | ---------------------------------------------------------------------- |
+| `fast-mode.md`      | New: fast mode status, usage, pricing, rate limit headers, fallback    |
+| `opentelemetry.md`  | New: OpenTelemetry export (SDK and API tracing)                        |
+| `MODELS.md`         | Opus 5.5 fast mode note                                                |
+| `compliance-api.md` | User preferences endpoint                                              |
+| `managed-agents.md` | Scheduled deployments section, including Claude Platform on AWS        |
+| `README.md`         | Index rows for new files, beta header rows, last-updated dates         |
+| `CHANGELOG.md`      | This entry                                                             |
+
 ## 2026-10-12 — Incremental Update
 
 Sources:

@@ -1,7 +1,7 @@
 # Compliance API: Session Transcripts and Activity Feed
 
-> **Last updated:** 2026-10-10  
-> **Sources:** platform.claude.com/docs/en/manage-claude/compliance-sessions, platform.claude.com/docs/en/manage-claude/compliance-activity-feed, platform.claude.com/docs/en/manage-claude/compliance-content-data, platform.claude.com/docs/en/release-notes/overview (Sep 18, Sep 24 and Oct 8, 2026)
+> **Last updated:** 2026-10-19  
+> **Sources:** platform.claude.com/docs/en/manage-claude/compliance-sessions, platform.claude.com/docs/en/manage-claude/compliance-activity-feed, platform.claude.com/docs/en/manage-claude/compliance-content-data, platform.claude.com/docs/en/manage-claude/compliance-org-data, platform.claude.com/docs/en/release-notes/overview (Sep 18, Sep 24, Oct 8 and Oct 15, 2026)
 
 > **Correction (2026-09-27):** Earlier versions of this file listed wrong endpoint paths (`/v1/compliance/sessions`, `/v1/compliance/local-sessions`), wrong `product_surface` values (`claude_cowork`, `claude_for_microsoft_365`), a `Bearer` auth header, and cursor pagination for sessions. All of that has been replaced with what the official docs say. If you built against the old version of this page, re-check your integration. The 2026-09-28 revision on `main` repeated some of these errors (a `claude_for_microsoft_365` surface, a `?product_surface=` filter on a `/v1/compliance/local-sessions` path, and resolving Activity Feed names through the Admin API); those were dropped too.
 
@@ -180,11 +180,45 @@ curl "https://api.anthropic.com/v1/compliance/apps/code/artifacts/$ARTIFACT_ID/c
   -o claude-doc.zip
 ```
 
+## User Preferences (Oct 15, 2026, beta)
+
+`GET /v1/compliance/organizations/{org_uuid}/user_preferences` returns the text each current member saved as **Instructions for Claude** in claude.ai (`conversation_preferences`) and as **Global instructions** in Cowork (`cowork_global_instructions`). Beta, Claude Enterprise organizations. Source: [List user preferences](https://platform.claude.com/docs/en/manage-claude/compliance-org-data#list-user-preferences).
+
+- **Scope:** needs `read:compliance_user_data` (not `read:compliance_org_data`); a key without it gets 403.
+- **Account-level values:** the same text comes back under every organization the member belongs to.
+- **Filtering:** by default only members who set at least one of the two values are listed. `include_unset=true` lists every current member, with `null` for unset values. `user_ids[]` takes up to 10 user IDs.
+- **Pagination:** `limit` (default 20, max 100) and `page`. Pass `next_page` back unchanged as `page`, and send the same `include_unset` and `user_ids[]` on every page or the call returns 400. A page can hold fewer results than `limit`, or none, and still not be the last: keep going until `next_page` is `null`.
+
+```bash
+curl --fail-with-body -sS \
+  "https://api.anthropic.com/v1/compliance/organizations/$org_uuid/user_preferences" \
+  -H "x-api-key: $ANTHROPIC_COMPLIANCE_ACCESS_KEY" \
+  -H "anthropic-version: 2023-06-01"
+```
+
+```json
+{
+  "data": [
+    {
+      "user": {
+        "id": "user_01XyDMpzjS89pFZXqSFUBDr6",
+        "email_address": "priya@example.com"
+      },
+      "conversation_preferences": "Keep answers brief and cite sources.",
+      "cowork_global_instructions": null
+    }
+  ],
+  "has_more": false,
+  "next_page": null
+}
+```
+
 ---
 
 ## Related
 
 - [Set up the Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api-access)
 - [Retrieve and delete chats, files, and projects](https://platform.claude.com/docs/en/manage-claude/compliance-content-data)
+- [Organization data (users, user preferences, roles, groups, settings)](https://platform.claude.com/docs/en/manage-claude/compliance-org-data)
 - [Compliance API errors](https://platform.claude.com/docs/en/manage-claude/compliance-errors)
 - [API reference](https://platform.claude.com/docs/en/api/compliance/apps)

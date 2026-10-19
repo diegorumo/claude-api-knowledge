@@ -3,7 +3,7 @@
 Comprehensive reference documentation for developers building with the Claude API.
 
 **Last full crawl:** 2026-05-30  
-**Last incremental update:** 2026-10-12  
+**Last incremental update:** 2026-10-19  
 **SDK versions:** Python v1.10.0, TypeScript v0.130.0 (per the Sep 30, 2026 release note; SDK changelogs not fetched)  
 **Primary sources:** anthropic-sdk-python, anthropic-sdk-typescript, anthropic-cookbook
 
@@ -29,7 +29,7 @@ Comprehensive reference documentation for developers building with the Claude AP
 
 | File                                             | Description                                                                                                                                                                                                        | Last Updated |
 | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------ |
-| [MODELS.md](./MODELS.md)                         | Current model IDs, capabilities, context windows, pricing notes; Haiku 5.5 (Haiku 4.5 now legacy); Sonnet 5.5 cache-read price cut; Models API `line` / `thinking.types.disabled` / `server_tools`; Opus 5.5; Sonnet 5.5; retirement dates; Sonnet 4.5 deprecation; retired models (replacements corrected) | 2026-10-12   |
+| [MODELS.md](./MODELS.md)                         | Current model IDs, capabilities, context windows, pricing notes; Haiku 5.5 (Haiku 4.5 now legacy); Sonnet 5.5 cache-read price cut; Models API `line` / `thinking.types.disabled` / `server_tools`; Opus 5.5; Sonnet 5.5; retirement dates; Sonnet 4.5 deprecation; retired models (replacements corrected); Opus 5.5 fast mode out of research preview | 2026-10-19   |
 | [QUICK-REFERENCE.md](./QUICK-REFERENCE.md)       | Common code patterns: auth, messages, streaming, tools, caching                                                                                                                                                    | 2026-10-10   |
 | [authentication.md](./authentication.md)         | API keys (workspace/personal/service-account), HTTP headers, SDK setup, third-party platforms; API credits for Max and Team plans | 2026-10-10   |
 | [messages-api.md](./messages-api.md)             | Messages endpoint: params, content blocks, response format; refusal billing                                                                                                                                        | 2026-09-27   |
@@ -56,9 +56,11 @@ Comprehensive reference documentation for developers building with the Claude AP
 | [citations.md](./citations.md)                                 | Inline document citations                                                                                                                                                                                | Beta                             | 2026-05-30   |
 | [mcp.md](./mcp.md)                                             | Model Context Protocol server integration + MCP Tunnels API                                                                                                                                              | Beta                             | 2026-08-03   |
 | [computer-use.md](./computer-use.md)                           | GUI automation (computer_toolset_20260801 GA); browser use toolset (browser_toolset_20260801 GA); SDK toolset classes (beta) | **GA**                           | 2026-10-10   |
-| [managed-agents.md](./managed-agents.md)                       | Persistent agents, sessions, threads, model effort, environments, budgets, advisor tool, inference geo pinning, web search domain config, sandbox memory; `auto` permission policy; sessions connect CLI; dynamic workflows (workflow runs); `allowed_hosts` for web tools; `web_fetch` prior-context rule | Beta                             | 2026-10-10   |
+| [managed-agents.md](./managed-agents.md)                       | Persistent agents, sessions, threads, model effort, environments, budgets, advisor tool, inference geo pinning, web search domain config, sandbox memory; `auto` permission policy; sessions connect CLI; dynamic workflows (workflow runs); `allowed_hosts` for web tools; `web_fetch` prior-context rule; scheduled deployments (also on Claude Platform on AWS) | Beta                             | 2026-10-19   |
 | [compaction.md](./compaction.md)                               | Automatic and on-demand conversation compaction to extend context in long sessions; `compact-2026-01-12` / `compact-2026-09-04`                                                                          | Beta                             | 2026-09-21   |
-| [compliance-api.md](./compliance-api.md)                       | Compliance API session transcripts (Cowork, Claude Code, Claude Science, Claude for Microsoft 365, Claude in Chrome), Activity Feed, unified-experience chats and Claude Docs downloads (beta); eDiscovery and DLP | Stable (Science, Chrome in beta) | 2026-10-10   |
+| [compliance-api.md](./compliance-api.md)                       | Compliance API session transcripts (Cowork, Claude Code, Claude Science, Claude for Microsoft 365, Claude in Chrome), Activity Feed, unified-experience chats and Claude Docs downloads (beta); user preferences endpoint (beta); eDiscovery and DLP | Stable (Science, Chrome in beta) | 2026-10-19   |
+| [fast-mode.md](./fast-mode.md) | `speed: "fast"` for up to 2.5x output speed; Opus 5.5 out of research preview (no beta header), Opus 5 / Opus 4.8 research preview; pricing, rate limit headers, fallback | Stable (Opus 5.5); research preview (Opus 5, Opus 4.8) | 2026-10-19   |
+| [opentelemetry.md](./opentelemetry.md) | OpenTelemetry export: SDK tracing, API telemetry destinations, content modes, token counting from spans | Beta | 2026-10-19   |
 
 ### Guides
 
@@ -150,4 +152,6 @@ content-type: application/json
 | On-Demand Compaction                                                                                              | `anthropic-beta: compact-2026-09-04`                                                                                            |
 | Inline Tool Definitions (in mid-conversation system messages)                                                     | `anthropic-beta: inline-tools-2026-09-15`                                                                                       |
 | MCP Connector (mid-conversation MCP toolsets, `mcp_tool_listing`; includes everything in `mcp-client-2025-11-20`) | `anthropic-beta: mcp-client-2026-09-15`                                                                                         |
+| Fast Mode (Opus 5 / Opus 4.8 research preview)                                                                    | `anthropic-beta: fast-mode-2026-02-01` (not needed for Opus 5.5 since Oct 15, 2026)                                             |
+| Telemetry Destinations (Admin API)                                                                                | `anthropic-beta: telemetry-destinations-2026-08-11`                                                                             |
 | Cache Diagnostics                                                                                                 | No header needed (GA Sep 23, 2026); `cache-diagnosis-2026-04-07` still accepted                                                 |

@@ -1,5 +1,64 @@
 # Knowledge Base Changelog
 
+## 2026-10-26 — Incremental Update
+
+Sources:
+
+- https://platform.claude.com/docs/en/release-notes/overview.md (new entries: Oct 20 (two entries), Oct 21 and Oct 22, 2026)
+- https://platform.claude.com/docs/en/models/overview.md
+- https://platform.claude.com/docs/en/about-claude/model-deprecations.md
+- https://platform.claude.com/docs/en/about-claude/pricing.md
+- https://platform.claude.com/docs/en/api/migration-2026-10-21.md
+- https://platform.claude.com/docs/en/api/versioning.md
+- https://platform.claude.com/docs/en/cli-sdks-libraries/overview.md
+- https://platform.claude.com/docs/en/manage-claude/user-profiles.md
+- https://platform.claude.com/docs/en/manage-claude/organization-webhooks.md
+- https://platform.claude.com/docs/en/manage-claude/claude-tag-api.md
+- https://platform.claude.com/docs/en/manage-claude/inference-hooks.md
+- https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed.md
+- https://platform.claude.com/docs/en/build-with-claude/fast-mode.md
+- https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-fetch-tool.md
+- https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools.md
+- https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions.md
+- https://platform.claude.com/docs/en/managed-agents/tools.md
+- https://github.com/anthropics/anthropic-sdk-python/releases and https://github.com/anthropics/anthropic-sdk-typescript/releases: **could not fetch** (HTTP 403 from this environment's network proxy, fourth run in a row). Left for the next scheduled run.
+
+### Changes
+
+- **API version `2026-10-21` (Oct 21, 2026, breaking)** — first new `anthropic-version` since `2023-06-01` (which still works). Messages API: `temperature`, `top_p` and `top_k` return 400 on every model; a `document` block directly in an `assistant` message returns 400; a `text` block with non-empty `citations` in a `user` message returns 400. Admin API and Claude Enterprise Analytics API responses drop old field names (`roles`, `group_id`, `name`, `group_type`, `workspace_id` on API keys, `actor.email`, `summaries`). New `api-version-2026-10-21.md`; notes in `messages-api.md`, `citations.md`, `token-counting.md`, `authentication.md`, `README.md`.
+- **New SDK and CLI major versions (Oct 21, 2026, breaking)** — Python 2.0.0, TypeScript 1.0.0, C# 13.0.0, Go 2.0.0, Java 3.0.0, PHP 1.0.0, Ruby 2.0.0, `ant` CLI 2.0.0 send `2026-10-21` by default. SDK changes: `MessageParam` split by role, `betas` removed from non-beta Models methods, API key sent as `Authorization: Bearer`, one credential per client, TypeScript tool runner `compactionControl` and Text Completions removed. License changes from MIT to Apache 2.0. Latest on the SDK overview page: Python 2.3.0, TypeScript 1.3.0. Updated `sdks.md`, `authentication.md`.
+- **User profiles enforcement status (Oct 21, 2026)** — `enforcement_status` and `enforcement_actions` on every profile response, plus the `enforcement_status[]` list filter. Requests with `user-profiles-2026-09-04` or an earlier beta value leave the fields out. New `user-profiles.md`.
+- **Claude Models on Google Cloud (Anthropic managed) (Oct 22, 2026)** — the Claude API run by Anthropic, reached through a Google Cloud project, with Google Cloud IAM for access and Google Cloud Marketplace for billing. No API keys; `AnthropicGoogleCloud` SDK client (beta). Fast mode for Opus 5.5 is available there. Added to `authentication.md`, `MODELS.md` (platform table, retirement-commitment platforms), `fast-mode.md`, `managed-agents.md`, `sdks.md`. The models overview now calls Vertex AI "Claude Models on Google Cloud (Google managed)"; `MODELS.md` and `authentication.md` use the new name.
+- **User profiles launched (Oct 20, 2026)** — non-beta `/v1/user_profiles` endpoints and `anthropic-user-profile-id` header; SDK and CLI support. `messages-api.md` and `token-counting.md` said a `user-profiles` beta header was required; the official page's examples send none, so that's fixed. New `user-profiles.md`; `README.md` beta-header row annotated.
+- **Organization webhooks (Oct 20, 2026, beta)** — `/v1/organizations/webhooks` Admin API endpoints, `webhooks-2026-10-07` header, events `user_profile.enforcement_action_opened` / `user_profile.enforcement_action_resolved`, access on request. In `user-profiles.md`; beta header row added to `README.md`.
+- **Claude Tag API (Oct 20, 2026, beta)** — `/v1/organizations/claude_tag/` endpoints for Slack channel and workspace settings and Access bundles, `experimental-claude-tag-2026-10-21` header, Claude Enterprise Admin API key with `read:claude_tag` / `write:claude_tag`. New `claude-tag-api.md`; beta header row added to `README.md`.
+- **Inference hooks out of beta (Oct 20, 2026)** for Claude Enterprise organizations. New `inference-hooks.md` (wasn't covered before).
+- **Organization web fetch setting (Oct 20, 2026)** — admins can turn web fetch off, or set allowed or blocked web fetch domains, on the Console **Capabilities** page; with it off, Messages requests with the web fetch tool return 400. Added to `web-search.md`.
+- **Managed Agents follow organization web settings (Oct 20, 2026)** — `web_fetch` follows the organization's web fetch domain restrictions (redirect targets too); sessions follow **Allow web search** (since Oct 6) and the web search domain restrictions (since Oct 14). Added to `managed-agents.md`.
+- **Models overview diff** — IDs, prices, context, max output, default effort, knowledge cutoffs, retirement dates and the legacy list all match `MODELS.md`. Only the platform rows changed (Google Cloud renamed and split into Google managed / Anthropic managed). `claude-haiku-4-5-20251001` is still Active on the deprecations page ("Not sooner than October 15, 2026", no deprecation date), so it stays listed as legacy.
+
+Not verified this run: SDK changelogs (fetch blocked), so the per-release contents and dates of Python 2.1–2.3 / TypeScript 1.1–1.3 aren't recorded. The release-note bullet for `capabilities.thinking.types.between_tools` (Oct 15) was already in `MODELS.md`. `fast-mode.md` still lists Claude Platform on AWS and other partner platforms as not supported, from the 2026-10-19 run. The official page this run lists only the supported platforms and doesn't name these exclusions, so that line is marked as not re-checked. The other SDKs' and the CLI's own breaking changes (C#, Go, Java, PHP, Ruby, one-value enums) are only summarized; see the official migration guide.
+
+### Files Modified
+
+| File                        | Change                                                                                   |
+| --------------------------- | ---------------------------------------------------------------------------------------- |
+| `api-version-2026-10-21.md` | New: API version `2026-10-21` breaking changes and SDK/CLI upgrade guide                 |
+| `user-profiles.md`          | New: user profiles, enforcement status, organization webhooks (beta)                     |
+| `claude-tag-api.md`         | New: Claude Tag API (beta)                                                               |
+| `inference-hooks.md`        | New: Inference hooks (out of beta)                                                       |
+| `authentication.md`         | `anthropic-version` values, Bearer header and one-credential rule, Google Cloud (Anthropic managed) |
+| `messages-api.md`           | Sampling parameters and content-block changes in `2026-10-21`; user profile header fix  |
+| `citations.md`              | `citations` on user text blocks rejected in `2026-10-21`                                 |
+| `token-counting.md`         | User profile header fix; `2026-10-21` note                                               |
+| `sdks.md`                   | New majors, license, breaking-change summary, version history rows                       |
+| `web-search.md`             | Organization web fetch setting; web fetch domain matching                                |
+| `managed-agents.md`         | Organization web search / web fetch settings; Google Cloud (Anthropic managed)           |
+| `fast-mode.md`              | Opus 5.5 on Google Cloud (Anthropic managed); Opus 4.6 400 note                          |
+| `MODELS.md`                 | Google Cloud platform rows; retirement-commitment platforms                              |
+| `README.md`                 | Index rows, beta header rows, version note, SDK versions, last-updated dates             |
+| `CHANGELOG.md`              | This entry                                                                               |
+
 ## 2026-10-19 — Incremental Update
 
 Sources:

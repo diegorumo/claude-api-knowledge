@@ -3,8 +3,8 @@
 Comprehensive reference documentation for developers building with the Claude API.
 
 **Last full crawl:** 2026-05-30  
-**Last incremental update:** 2026-10-19  
-**SDK versions:** Python v1.10.0, TypeScript v0.130.0 (per the Sep 30, 2026 release note; SDK changelogs not fetched)  
+**Last incremental update:** 2026-10-26  
+**SDK versions:** Python 2.3.0, TypeScript 1.3.0 (latest on the SDK overview page, 2026-10-26; new majors Python 2.0.0 / TypeScript 1.0.0 on Oct 21, 2026 send API version `2026-10-21`; SDK changelogs not fetched)  
 **Primary sources:** anthropic-sdk-python, anthropic-sdk-typescript, anthropic-cookbook
 
 > **Coverage note:** The Anthropic documentation site (docs.anthropic.com / platform.claude.com/docs)
@@ -29,15 +29,16 @@ Comprehensive reference documentation for developers building with the Claude AP
 
 | File                                             | Description                                                                                                                                                                                                        | Last Updated |
 | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------ |
-| [MODELS.md](./MODELS.md)                         | Current model IDs, capabilities, context windows, pricing notes; Haiku 5.5 (Haiku 4.5 now legacy); Sonnet 5.5 cache-read price cut; Models API `line` / `thinking.types.disabled` / `server_tools`; Opus 5.5; Sonnet 5.5; retirement dates; Sonnet 4.5 deprecation; retired models (replacements corrected); Opus 5.5 fast mode out of research preview | 2026-10-19   |
+| [MODELS.md](./MODELS.md)                         | Current model IDs, capabilities, context windows, pricing notes; Haiku 5.5 (Haiku 4.5 now legacy); Sonnet 5.5 cache-read price cut; Models API `line` / `thinking.types.disabled` / `server_tools`; Opus 5.5; Sonnet 5.5; retirement dates; Sonnet 4.5 deprecation; retired models (replacements corrected); Opus 5.5 fast mode out of research preview; Claude Models on Google Cloud (Anthropic managed) platform row | 2026-10-26   |
 | [QUICK-REFERENCE.md](./QUICK-REFERENCE.md)       | Common code patterns: auth, messages, streaming, tools, caching                                                                                                                                                    | 2026-10-10   |
-| [authentication.md](./authentication.md)         | API keys (workspace/personal/service-account), HTTP headers, SDK setup, third-party platforms; API credits for Max and Team plans | 2026-10-10   |
-| [messages-api.md](./messages-api.md)             | Messages endpoint: params, content blocks, response format; refusal billing                                                                                                                                        | 2026-09-27   |
+| [authentication.md](./authentication.md)         | API keys (workspace/personal/service-account), HTTP headers, SDK setup, third-party platforms; API credits for Max and Team plans; `Authorization: Bearer` and one-credential rule in new SDK majors; Claude Models on Google Cloud (Anthropic managed) | 2026-10-26   |
+| [messages-api.md](./messages-api.md)             | Messages endpoint: params, content blocks, response format; refusal billing; API version `2026-10-21` removals (sampling params, assistant documents, user citations); `user_profile_id` without beta header | 2026-10-26   |
 | [structured-outputs.md](./structured-outputs.md) | JSON schema outputs (`output_config.format`), Pydantic/Zod helpers, strict tool use                                                                                                                                | 2026-10-10   |
 | [streaming.md](./streaming.md)                   | SSE events, delta types, streaming SDK helpers                                                                                                                                                                     | 2026-06-29   |
 | [rate-limits-errors.md](./rate-limits-errors.md) | Error codes, retry logic, rate limit headers                                                                                                                                                                       | 2026-05-30   |
-| [token-counting.md](./token-counting.md)         | Count tokens before sending, context window management                                                                                                                                                             | 2026-07-06   |
-| [sdks.md](./sdks.md)                             | Python and TypeScript SDK reference, async, pagination; Python v1.0.0 breaking changes; Organization API (GA under `client.organization` in Python v1.10.0 / TypeScript v0.130.0); browser/computer toolset classes (beta); version history through Python v1.10.0 / TypeScript v0.130.0 | 2026-10-10   |
+| [token-counting.md](./token-counting.md)         | Count tokens before sending, context window management; user profile header without beta | 2026-10-26   |
+| [sdks.md](./sdks.md)                             | Python and TypeScript SDK reference, async, pagination; Python v1.0.0 breaking changes; Organization API (GA under `client.organization` in Python v1.10.0 / TypeScript v0.130.0); browser/computer toolset classes (beta); version history through Python v1.10.0 / TypeScript v0.130.0; Python 2.0.0 / TypeScript 1.0.0 breaking changes (API version `2026-10-21`, Apache 2.0); `AnthropicGoogleCloud` client | 2026-10-26   |
+| [api-version-2026-10-21.md](./api-version-2026-10-21.md) | API version `2026-10-21`: Messages, Admin API and Enterprise Analytics breaking changes; SDK major versions that send it (Python 2.0.0, TypeScript 1.0.0, ...); SDK and CLI code changes | 2026-10-26   |
 
 ### Features
 
@@ -51,16 +52,19 @@ Comprehensive reference documentation for developers building with the Claude AP
 | [vision.md](./vision.md)                                       | Image inputs: base64, URL, formats, limits                                                                                                                                                               | Stable                           | 2026-05-30   |
 | [pdf-support.md](./pdf-support.md)                             | PDF document inputs, Files API for PDFs                                                                                                                                                                  | Stable                           | 2026-05-30   |
 | [batch-api.md](./batch-api.md)                                 | Async batch processing, results retrieval                                                                                                                                                                | Stable                           | 2026-05-30   |
-| [web-search.md](./web-search.md)                               | Built-in web search and web fetch tools, usage tracking; `content_too_large` error                                                                                                                       | Stable                           | 2026-09-14   |
+| [web-search.md](./web-search.md)                               | Built-in web search and web fetch tools, usage tracking; `content_too_large` error; organization web fetch on/off and domain settings | Stable                           | 2026-10-26   |
 | [files-api.md](./files-api.md)                                 | File upload, reference by ID; file expiration, GA pagination; beta.files uses GA shapes in v1.2.0+                                                                                                       | **GA**                           | 2026-08-31   |
-| [citations.md](./citations.md)                                 | Inline document citations                                                                                                                                                                                | Beta                             | 2026-05-30   |
+| [citations.md](./citations.md)                                 | Inline document citations; `citations` on user text blocks rejected in API version `2026-10-21` | Beta                             | 2026-10-26   |
 | [mcp.md](./mcp.md)                                             | Model Context Protocol server integration + MCP Tunnels API                                                                                                                                              | Beta                             | 2026-08-03   |
 | [computer-use.md](./computer-use.md)                           | GUI automation (computer_toolset_20260801 GA); browser use toolset (browser_toolset_20260801 GA); SDK toolset classes (beta) | **GA**                           | 2026-10-10   |
-| [managed-agents.md](./managed-agents.md)                       | Persistent agents, sessions, threads, model effort, environments, budgets, advisor tool, inference geo pinning, web search domain config, sandbox memory; `auto` permission policy; sessions connect CLI; dynamic workflows (workflow runs); `allowed_hosts` for web tools; `web_fetch` prior-context rule; scheduled deployments (also on Claude Platform on AWS) | Beta                             | 2026-10-19   |
+| [managed-agents.md](./managed-agents.md)                       | Persistent agents, sessions, threads, model effort, environments, budgets, advisor tool, inference geo pinning, web search domain config, sandbox memory; `auto` permission policy; sessions connect CLI; dynamic workflows (workflow runs); `allowed_hosts` for web tools; `web_fetch` prior-context rule; scheduled deployments (also on Claude Platform on AWS); organization web search / web fetch settings apply to sessions; Claude Models on Google Cloud (Anthropic managed) | Beta                             | 2026-10-26   |
 | [compaction.md](./compaction.md)                               | Automatic and on-demand conversation compaction to extend context in long sessions; `compact-2026-01-12` / `compact-2026-09-04`                                                                          | Beta                             | 2026-09-21   |
 | [compliance-api.md](./compliance-api.md)                       | Compliance API session transcripts (Cowork, Claude Code, Claude Science, Claude for Microsoft 365, Claude in Chrome), Activity Feed, unified-experience chats and Claude Docs downloads (beta); user preferences endpoint (beta); eDiscovery and DLP | Stable (Science, Chrome in beta) | 2026-10-19   |
-| [fast-mode.md](./fast-mode.md) | `speed: "fast"` for up to 2.5x output speed; Opus 5.5 out of research preview (no beta header), Opus 5 / Opus 4.8 research preview; pricing, rate limit headers, fallback | Stable (Opus 5.5); research preview (Opus 5, Opus 4.8) | 2026-10-19   |
+| [fast-mode.md](./fast-mode.md) | `speed: "fast"` for up to 2.5x output speed; Opus 5.5 out of research preview (no beta header), Opus 5 / Opus 4.8 research preview; pricing, rate limit headers, fallback; Opus 5.5 on Claude Models on Google Cloud (Anthropic managed) | Stable (Opus 5.5); research preview (Opus 5, Opus 4.8) | 2026-10-26   |
 | [opentelemetry.md](./opentelemetry.md) | OpenTelemetry export: SDK tracing, API telemetry destinations, content modes, token counting from spans | Beta | 2026-10-19   |
+| [user-profiles.md](./user-profiles.md) | User profiles for end-customer attribution (launched Oct 20, 2026); enforcement status and actions; organization webhooks for enforcement events (beta) | Stable (webhooks in beta) | 2026-10-26   |
+| [claude-tag-api.md](./claude-tag-api.md) | Claude Tag API: Slack channel / workspace settings and Access bundles for Claude Enterprise (Admin API key with `read:claude_tag` / `write:claude_tag`) | Beta | 2026-10-26   |
+| [inference-hooks.md](./inference-hooks.md) | Inference hooks: allow/deny verdicts from your AI security server before inference (Claude Enterprise) | Stable | 2026-10-26   |
 
 ### Guides
 
@@ -82,7 +86,7 @@ Comprehensive reference documentation for developers building with the Claude AP
 ## Current Model IDs (Quick Reference)
 
 ```
-# Current models (as of Oct 10, 2026):
+# Current models (as of Oct 26, 2026; unchanged since Oct 10):
 claude-opus-5-5              # Recommended starting point; 1M ctx; $4/$20 MTok; always-on thinking; default effort medium; 5% cache reads
 claude-fable-5-1             # Most capable; 1M ctx; $10/$50 MTok; always-on thinking; 2.5% cache reads
 claude-sonnet-5-5            # Best balance; 1M ctx; $2/$10 MTok; default effort high; 5% cache reads ($0.10/MTok since Oct 7, 2026)
@@ -127,6 +131,8 @@ anthropic-version: 2023-06-01
 content-type: application/json
 ```
 
+API version `2026-10-21` (Oct 21, 2026) is the latest; `2023-06-01` still works. The new SDK majors (Python 2.0.0, TypeScript 1.0.0) send `2026-10-21` and send the key as `Authorization: Bearer`. See [api-version-2026-10-21.md](./api-version-2026-10-21.md).
+
 ## Beta Features (require extra header)
 
 | Feature                                                                                                           | Header                                                                                                                          |
@@ -137,7 +143,7 @@ content-type: application/json
 | Files API (old format only)                                                                                       | `anthropic-beta: files-api-2025-04-14` (GA — no header needed; header keeps old response format)                                |
 | Thinking Token Count                                                                                              | `anthropic-beta: thinking-token-count-2025-05-07`                                                                               |
 | User Profiles                                                                                                     | `anthropic-beta: user-profiles-2026-03-24`                                                                                      |
-| User Profiles (extended — `external_user_details`)                                                                | `anthropic-beta: user-profiles-2026-09-04`                                                                                      |
+| User Profiles (extended — `external_user_details`)                                                                | `anthropic-beta: user-profiles-2026-09-04` (user profiles launched Oct 20, 2026: no header needed; sending this or an earlier `user-profiles-` value leaves out `enforcement_status` / `enforcement_actions`) |
 | Managed Agents                                                                                                    | `anthropic-beta: managed-agents-2026-04-01`                                                                                     |
 | Server-Side Fallback                                                                                              | `anthropic-beta: server-side-fallback-2026-06-01`                                                                               |
 | Memory Stores                                                                                                     | `anthropic-beta: agent-memory-2026-07-22`                                                                                       |
@@ -155,3 +161,5 @@ content-type: application/json
 | Fast Mode (Opus 5 / Opus 4.8 research preview)                                                                    | `anthropic-beta: fast-mode-2026-02-01` (not needed for Opus 5.5 since Oct 15, 2026)                                             |
 | Telemetry Destinations (Admin API)                                                                                | `anthropic-beta: telemetry-destinations-2026-08-11`                                                                             |
 | Cache Diagnostics                                                                                                 | No header needed (GA Sep 23, 2026); `cache-diagnosis-2026-04-07` still accepted                                                 |
+| Organization Webhooks (Admin API)                                                                                 | `anthropic-beta: webhooks-2026-10-07`                                                                                           |
+| Claude Tag API (Claude Enterprise)                                                                                | `anthropic-beta: experimental-claude-tag-2026-10-21`                                                                            |

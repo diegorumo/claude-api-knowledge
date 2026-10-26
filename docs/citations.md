@@ -1,6 +1,6 @@
 # Citations
 
-> **Last updated:** 2026-05-30  
+> **Last updated:** 2026-10-26  
 > **Status:** Beta (`anthropic-beta: citations-2024-11-06`)
 
 ## Overview
@@ -130,6 +130,7 @@ response = client.beta.messages.create(
 - Requires `citations-2024-11-06` beta header
 - Not all text blocks will have citations — only claims traceable to source documents
 - Document `title` field is optional but recommended for readable citation output
+- **API version `2026-10-21` (Oct 21, 2026):** a `text` block with a non-empty `citations` array in a **`user`** message (directly or inside a `search_result` block) returns 400. Citations on `assistant` text blocks that you send back, and `"citations": {"enabled": true}` on documents and search results, are still accepted. A `document` block placed directly in an `assistant` message also returns 400. See [api-version-2026-10-21.md](./api-version-2026-10-21.md).
 
 ## Use Cases
 

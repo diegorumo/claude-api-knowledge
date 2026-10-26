@@ -1,6 +1,6 @@
 # Messages API
 
-> **Last updated:** 2026-09-27
+> **Last updated:** 2026-10-26
 
 ## Overview
 
@@ -20,12 +20,12 @@ The Messages API is the primary interface for interacting with Claude. It accept
 | `tool_choice`     | object          | No       | Control tool selection                                                                                                                                                |
 | `thinking`        | object          | No       | Enable extended thinking                                                                                                                                              |
 | `stream`          | boolean         | No       | Enable SSE streaming                                                                                                                                                  |
-| `temperature`     | float           | No       | Randomness 0–1 (default 1)                                                                                                                                            |
-| `top_p`           | float           | No       | Nucleus sampling 0–1                                                                                                                                                  |
-| `top_k`           | integer         | No       | Top-k sampling                                                                                                                                                        |
+| `temperature`     | float           | No       | Randomness 0–1 (default 1). **Removed in API version `2026-10-21`** (400 on every model); see [api-version-2026-10-21.md](./api-version-2026-10-21.md)              |
+| `top_p`           | float           | No       | Nucleus sampling 0–1. **Removed in API version `2026-10-21`**                                                                                                         |
+| `top_k`           | integer         | No       | Top-k sampling. **Removed in API version `2026-10-21`**                                                                                                               |
 | `stop_sequences`  | array           | No       | Custom stop strings                                                                                                                                                   |
 | `metadata`        | object          | No       | User ID for abuse detection                                                                                                                                           |
-| `user_profile_id` | string          | No       | Attribute request to a specific user profile; sent as `anthropic-user-profile-id` header. Requires `user-profiles` beta header. Added v0.112.0 / TypeScript v0.106.0. |
+| `user_profile_id` | string          | No       | Attribute request to a specific user profile; sent as `anthropic-user-profile-id` header. No beta header needed since user profiles launched (Oct 20, 2026); see [user-profiles.md](./user-profiles.md). Added v0.112.0 / TypeScript v0.106.0. |
 
 ## Message Format
 
@@ -40,6 +40,8 @@ messages = [
 ```
 
 ## Content Block Types
+
+> **API version `2026-10-21`:** a `document` block placed directly in an `assistant` message returns 400 (send documents in `user` messages), and so does a `text` block with a non-empty `citations` array in a `user` message. See [api-version-2026-10-21.md](./api-version-2026-10-21.md).
 
 ```json
 // Text
@@ -202,6 +204,8 @@ message = client.messages.create(
 ```
 
 ## Temperature and Sampling
+
+> **API version `2026-10-21` (Oct 21, 2026):** `temperature`, `top_p` and `top_k` are removed. Sending any of them returns 400 on every model, even at the default value, and the new SDK majors (Python 2.0.0, TypeScript 1.0.0) don't have them. Claude 4.7 and later models already accept only the defaults. The examples below work only on `2023-06-01` with a model that accepts non-default values (such as `claude-sonnet-4-6`). Source: [Migrating to API version 2026-10-21](https://platform.claude.com/docs/en/api/migration-2026-10-21#sampling-parameters-are-removed).
 
 ```python
 # More creative responses

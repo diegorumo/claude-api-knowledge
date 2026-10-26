@@ -1,6 +1,6 @@
 # Token Counting
 
-> **Last updated:** 2026-07-06
+> **Last updated:** 2026-10-26
 
 ## Overview
 
@@ -98,17 +98,19 @@ def trim_messages(messages, model, max_tokens=MAX_CONTEXT):
 
 ## User Profile ID in Token Counting (v0.113.0+)
 
-The `count_tokens` endpoint accepts `user_profile_id` (Python SDK v0.113.0 / TypeScript SDK v0.107.0). Pass this when acting on behalf of a specific user profile to get accurate token estimates that account for the profile context.
+The `count_tokens` endpoint accepts `user_profile_id` (Python SDK v0.113.0 / TypeScript SDK v0.107.0). Pass it when you count tokens on behalf of an end customer; the `anthropic-user-profile-id` header works the same way on token counting as on Messages requests (it attributes the request). See [user-profiles.md](./user-profiles.md).
 
 ```python
 result = client.messages.count_tokens(
     model="claude-sonnet-4-6",
     messages=[{"role": "user", "content": "Hello!"}],
-    user_profile_id="profile_abc123",  # Optional; requires user-profiles beta header
+    user_profile_id="uprof_011CZkZCu8hGbp5mYRQgUmz9",  # Optional; no beta header needed since Oct 20, 2026
 )
 ```
 
 This sends the `anthropic-user-profile-id` header alongside the count request.
+
+> **API version `2026-10-21`:** the Messages breaking changes (no `temperature` / `top_p` / `top_k`, no `document` blocks directly in `assistant` messages, no `citations` on `user` text blocks) apply to token counting too. See [api-version-2026-10-21.md](./api-version-2026-10-21.md).
 
 **Bug fix (v0.113.0):** Async Python `count_tokens` previously had a missing merge block for `output_format`/`output_config` parameters — this caused those fields to be silently dropped in async calls. Fixed in Python SDK v0.113.0.
 

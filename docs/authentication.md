@@ -1,6 +1,6 @@
 # Authentication & API Keys
 
-> **Last updated:** 2026-10-10
+> **Last updated:** 2026-10-26
 
 ## Overview
 
@@ -60,6 +60,20 @@ const client = new Anthropic();
 const client = new Anthropic({ apiKey: 'sk-ant-...' });
 ```
 
+### SDK Major Versions from Oct 21, 2026: `Authorization: Bearer` and One Credential
+
+Python SDK 2.0.0+ and TypeScript SDK 1.0.0+ (and the other new SDK majors and `ant` CLI 2.0.0) send the API key as `Authorization: Bearer <key>` instead of `X-Api-Key`. Update any proxy, gateway, middleware or log filter that reads `X-Api-Key`. Exceptions: `AnthropicFoundry` (Python) and `@anthropic-ai/foundry-sdk` (TypeScript) still send `x-api-key`.
+
+A client now holds **one** credential (`api_key`, `auth_token`, `credentials`, `config` or `profile`). Passing two raises `ValueError` in Python and throws `TypeError` in TypeScript. With none passed, the first set of `ANTHROPIC_API_KEY`, `ANTHROPIC_AUTH_TOKEN`, the profile `ANTHROPIC_PROFILE` names, the workload identity federation variables, and the active profile on disk is used.
+
+```python
+client = anthropic.Anthropic(api_key=key, auth_token=token)
+# Python SDK 1.x: sent both headers
+# Python SDK 2.0.0+: raises ValueError
+```
+
+Source: [Migrating to API version 2026-10-21, SDK and CLI changes](https://platform.claude.com/docs/en/api/migration-2026-10-21#sdk-changes). Full details in [api-version-2026-10-21.md](./api-version-2026-10-21.md).
+
 ### Raw HTTP
 
 ```bash
@@ -76,8 +90,8 @@ curl https://api.anthropic.com/v1/messages \
 
 | Header | Required | Value |
 |--------|----------|-------|
-| `x-api-key` | Yes | Your API key |
-| `anthropic-version` | Yes | `2023-06-01` (current stable) |
+| `x-api-key` | Yes | Your API key (or send it as `Authorization: Bearer <key>`; the Claude API accepts either) |
+| `anthropic-version` | Yes | `2026-10-21` (latest, released Oct 21, 2026) or `2023-06-01` (still supported). See [api-version-2026-10-21.md](./api-version-2026-10-21.md) |
 | `content-type` | Yes | `application/json` |
 | `anthropic-beta` | No | Beta features (e.g. `mcp-client-2025-04-04`) |
 
@@ -120,12 +134,60 @@ client = anthropic.AnthropicBedrock(
 
 ### Google Vertex AI
 
+Now called **Claude Models on Google Cloud (Google managed)** in Anthropic's docs.
+
 ```python
 client = anthropic.AnthropicVertex(
     region="us-east5",
     project_id="your-gcp-project",
 )
 ```
+
+### Claude Models on Google Cloud (Anthropic managed) (Oct 22, 2026)
+
+The Claude API operated by Anthropic and reached through your Google Cloud project. Google Cloud IAM controls access (`roles/claude.user` to call, `roles/claude.admin` to open the Claude Console) and Google Cloud Marketplace handles billing. There are **no API keys**: requests use a Google access token as `Authorization: Bearer`, and the workspace ID goes in the URL, not an `anthropic-workspace-id` header. Model IDs are the same as on the Claude API. The SDK client is in beta.
+
+```bash
+pip install -U "anthropic[google_cloud]"      # Python
+npm install @anthropic-ai/google-cloud-sdk    # TypeScript
+
+export ANTHROPIC_GOOGLE_CLOUD_PROJECT="my-project-id"
+export ANTHROPIC_GOOGLE_CLOUD_WORKSPACE_ID="wrkspc_01AbCdEf23GhIj"
+```
+
+```python
+from anthropic import AnthropicGoogleCloud
+
+client = AnthropicGoogleCloud()
+
+message = client.messages.create(
+    model="claude-opus-5-5",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "Hello, Claude"}],
+)
+print(message)
+```
+
+```typescript
+import { AnthropicGoogleCloud } from "@anthropic-ai/google-cloud-sdk";
+
+const client = new AnthropicGoogleCloud();
+
+const message = await client.messages.create({
+  model: "claude-opus-5-5",
+  max_tokens: 1024,
+  messages: [{ role: "user", content: "Hello, Claude" }]
+});
+console.log(message);
+```
+
+- Base URL: `https://claude.googleapis.com/v1/projects/{project}/locations/global/workspaces/{workspace}/invoke` (organization routes use `.../locations/global/claudeOrganization/invoke`). The SDK builds it from the project, location (`global` by default) and workspace ID.
+- Credentials: a token provider you pass, a Google credentials object, or Application Default Credentials (in that order). The client ignores `ANTHROPIC_API_KEY`, `ANTHROPIC_AUTH_TOKEN` and `ANTHROPIC_BASE_URL`.
+- Setup creates a new Anthropic organization per Google Cloud project; existing organizations can't be converted. Enable `claude.googleapis.com` and `anthropic-managed-claude.cloudpartnerservices.goog` on each calling project.
+- Supported: fast mode (Opus 5.5), tool use (web search, web fetch, code execution, memory, advisor, MCP connector), Agent Skills, Files API, prompt caching, thinking, server-side fallback, streaming, structured outputs, token counting, Message Batches, Models API, Claude Managed Agents. Not supported: API keys, MCP tunnels, memory stores on self-hosted environments, the pre-built self-hosted sandbox workers.
+- Billed through Google Cloud Marketplace in Claude Consumption Units ($0.01 each). Same data retention as the Claude API; ZDR on request. Rate limits are managed by Anthropic. Model lifecycle dates follow Anthropic's deprecations page.
+
+Source: [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed).
 
 ### Azure
 

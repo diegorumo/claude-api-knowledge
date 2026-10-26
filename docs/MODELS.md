@@ -1,7 +1,7 @@
 # Claude Models Reference
 
-> **Last updated:** 2026-10-19  
-> **Source:** platform.claude.com/docs/en/about-claude/models/overview, platform.claude.com/docs/en/about-claude/model-deprecations, platform.claude.com/docs/en/about-claude/pricing, platform.claude.com/docs/en/build-with-claude/prompt-caching, platform.claude.com/docs/en/api/models/list, platform.claude.com/docs/en/release-notes/overview (Sep 22 – Oct 7, 2026), platform.claude.com/docs/en/models/haiku-5-5/{overview,whats-new-haiku-5-5,migration-guide}, platform.claude.com/docs/en/models/sonnet-5-5/{overview,whats-new-sonnet-5-5,migration-guide}, platform.claude.com/docs/en/models/sonnet-4-5/overview
+> **Last updated:** 2026-10-26  
+> **Source:** platform.claude.com/docs/en/about-claude/models/overview, platform.claude.com/docs/en/about-claude/model-deprecations, platform.claude.com/docs/en/about-claude/pricing, platform.claude.com/docs/en/build-with-claude/prompt-caching, platform.claude.com/docs/en/api/models/list, platform.claude.com/docs/en/release-notes/overview (Sep 22 – Oct 7, 2026), platform.claude.com/docs/en/models/haiku-5-5/{overview,whats-new-haiku-5-5,migration-guide}, platform.claude.com/docs/en/models/sonnet-5-5/{overview,whats-new-sonnet-5-5,migration-guide}, platform.claude.com/docs/en/models/sonnet-4-5/overview, platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed (2026-10-26)
 
 ## Current Models (Recommended)
 
@@ -22,7 +22,7 @@
 >
 > **Claude Fable 5** (`claude-fable-5`), **Claude Opus 5** (`claude-opus-5`), **Claude Sonnet 5** (`claude-sonnet-5`, since Sep 28, 2026) and **Claude Haiku 4.5** (`claude-haiku-4-5-20251001`, since Oct 7, 2026) are now legacy (still available) — see Legacy table below.
 >
-> **Retirement commitments (Claude API, Claude Platform on AWS, Foundry):** Fable 5.1 not sooner than Sep 1, 2027; Opus 5.5 not sooner than Sep 22, 2027; Sonnet 5.5 not sooner than Sep 28, 2027; Haiku 5.5 not sooner than Oct 7, 2027. Bedrock and Google Cloud set their own dates.
+> **Retirement commitments (Claude API, Claude Platform on AWS, Claude Models on Google Cloud (Anthropic managed), Foundry):** Fable 5.1 not sooner than Sep 1, 2027; Opus 5.5 not sooner than Sep 22, 2027; Sonnet 5.5 not sooner than Sep 28, 2027; Haiku 5.5 not sooner than Oct 7, 2027. Bedrock and Claude Models on Google Cloud (Google managed) set their own dates.
 >
 > **Choosing:** Anthropic's models overview recommends starting with Opus 5.5 for most workloads and moving to Fable 5.1 for demanding reasoning / long-horizon agentic work, or when Opus 5.5 at higher effort still falls short.
 
@@ -213,7 +213,7 @@ These models have specific constraints not present on earlier models:
 | Claude Sonnet 4.5 | `claude-sonnet-4-5-20250929` (alias `claude-sonnet-4-5`) | 200k tokens | 64k tokens  | $3 / $15                  | **Deprecated; retires Nov 30, 2026** |
 | Claude Opus 4.5   | `claude-opus-4-5-20251101` (alias `claude-opus-4-5`)     | 200k tokens | 64k tokens  | $5 / $25                  | **Nov 24, 2026**             |
 
-> Retirement dates are from the model deprecations page and apply to Anthropic-operated platforms (Claude API, Claude Platform on AWS, Microsoft Foundry). All models above are listed there as "Active" except Claude Sonnet 4.5.
+> Retirement dates are from the model deprecations page and apply to Anthropic-operated platforms (Claude API, Claude Platform on AWS, Claude Models on Google Cloud (Anthropic managed), Microsoft Foundry). All models above are listed there as "Active" except Claude Sonnet 4.5.
 >
 > **Claude Sonnet 4.5 deprecated (Sep 30, 2026):** `claude-sonnet-4-5-20250929` (alias `claude-sonnet-4-5`) still works but retires on the Claude API on **Nov 30, 2026** (a fixed date, not "not sooner than"). Recommended replacement: `claude-sonnet-5-5`. See the [Sonnet 5.5 migration guide, "Migrating from Claude Sonnet 4.5 or earlier"](https://platform.claude.com/docs/en/models/sonnet-5-5/migration-guide#migrating-from-sonnet-45): it is not a drop-in swap (prefill, `budget_tokens` thinking and non-default `temperature`/`top_p`/`top_k` return 400 on Sonnet 5.5; about 30% more tokens for the same text). It is no longer in the models overview's "Legacy models (still available)" list. Amazon Bedrock and Google Cloud set their own dates.
 >
@@ -300,7 +300,8 @@ These models have specific constraints not present on earlier models:
 | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | Claude API             | All current models                                                                                                                     |
 | Amazon Bedrock         | Messages-API IDs: `anthropic.claude-fable-5-1`, `anthropic.claude-opus-5-5`, `anthropic.claude-sonnet-5-5`, `anthropic.claude-haiku-5-5` (legacy Haiku 4.5: `anthropic.claude-haiku-4-5`) |
-| Google Cloud Vertex    | Use same model IDs (`claude-haiku-5-5` for Haiku 5.5); legacy Haiku 4.5 uses `claude-haiku-4-5@20251001`                               |
+| Claude Models on Google Cloud (Google managed) (formerly "Google Cloud Vertex") | Use same model IDs (`claude-haiku-5-5` for Haiku 5.5); legacy Haiku 4.5 uses `claude-haiku-4-5@20251001`; sets its own lifecycle dates |
+| Claude Models on Google Cloud (Anthropic managed) | New Oct 22, 2026. Same IDs as Claude API (`claude-fable-5-1`, `claude-opus-5-5`, `claude-sonnet-5-5`, `claude-haiku-5-5`); follows Anthropic deprecation schedule. See [authentication.md](./authentication.md#claude-models-on-google-cloud-anthropic-managed-oct-22-2026) |
 | Claude Platform on AWS | Same IDs as Claude API (not Bedrock-style); follows Anthropic deprecation schedule                                                     |
 | Microsoft Foundry      | Current models available                                                                                                               |
 

@@ -1,6 +1,6 @@
 # Web Search Tool
 
-> **Last updated:** 2026-09-14
+> **Last updated:** 2026-10-26
 
 ## Overview
 
@@ -123,6 +123,8 @@ You **do not** need to handle tool results for `web_search` — unlike custom to
 - Web search incurs additional cost per search request
 - Results quality depends on the search query Claude generates
 - Claude may search multiple times for complex questions
+- **Organization web fetch setting (Oct 20, 2026):** an organization admin can turn web fetch off on the Claude Console [**Capabilities**](https://platform.claude.com/settings/capabilities) page. With it off, a Messages API request that includes the web fetch tool fails with a 400 `invalid_request_error` saying web fetch is not enabled. With it on, the admin can set allowed or blocked web fetch domains on the same page; request-level `allowed_domains` must be a subset of the organization's allowed list, and a request allow list that includes a domain the organization blocks is rejected with a 400 naming the conflicting entries. A URL blocked by these rules returns `url_not_allowed`. In Managed Agents the same settings apply (see [managed-agents.md](./managed-agents.md)). Source: [Web fetch tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-fetch-tool#how-to-use-web-fetch), [Domain filtering](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools#domain-filtering).
+- **Domain matching:** web fetch matches on the domain only, so an `allowed_domains` / `blocked_domains` entry that includes a path never matches a web fetch URL (paths work for web search).
 - **`content_too_large` error** (Python v1.5.0+ / TypeScript v0.125.0+): `web_fetch` returns this error code when the fetched page content exceeds the allowed size limit. In Managed Agents, use `max_content_tokens` on the toolset config to cap fetched content size proactively.
 
 ## Related

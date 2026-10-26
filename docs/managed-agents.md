@@ -1,6 +1,6 @@
 # Managed Agents (Beta)
 
-> **Last updated:** 2026-10-19  
+> **Last updated:** 2026-10-26  
 > **Status:** Beta — active development  
 > **SDK changelog:** v0.100.0+ (May 2026), v0.115.0 (June 2026), v0.116.0–v1.0.0 Python / v0.110.0–v0.120.0 TypeScript (July–Aug 2026), v1.5.0 Python / v0.125.0 TypeScript (Sep 2026)
 
@@ -954,6 +954,19 @@ In a cloud environment with `limited` networking, the environment's `allowed_hos
 ### `web_fetch` Only Fetches URLs Already in the Session (Oct 7, 2026)
 
 The Managed Agents `web_fetch` tool now fetches only URLs that already appeared in the session: in the text of a user message, in a `web_search` result, or in a page `web_fetch` returned earlier. A URL that appears only in Claude's own output, the agent's system prompt, an attached document, or output of a tool such as `bash`, `read` or an MCP tool doesn't count; fetching it returns a `url_not_in_prior_context` error result. To let the agent fetch a URL, send it in the text of a `user.message` event. (Source: release notes, Oct 7, 2026.)
+
+### Organization Web Search and Web Fetch Settings Apply to Sessions (Oct 20, 2026)
+
+Sessions follow the organization's settings on the Claude Console [**Capabilities**](https://platform.claude.com/settings/capabilities) page:
+
+- **Web search:** the **Allow web search** setting (since Oct 6, 2026) and the organization's web search domain restrictions (since Oct 14, 2026). If web search is disabled, `web_search` calls return an error result to the agent and the session continues. With domain restrictions, the agent receives only results that both the organization's restrictions and the tool's `allowed_domains` / `blocked_domains` allow.
+- **Web fetch:** if an admin turns web fetch off, `web_fetch` calls return an error result to the agent and the session continues. If the organization sets allowed or blocked web fetch domains, a URL (and any URL a redirect leads to) must pass both the organization's list and the tool's per-tool list; otherwise the call returns an error result.
+
+Source: [Restrict web search and web fetch domains](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions); release notes, Oct 20, 2026.
+
+### Claude Models on Google Cloud (Anthropic managed) (Oct 22, 2026)
+
+Managed Agents (agents, environments, sessions, credential vaults, memory stores, scheduled deployments, self-hosted sandboxes) is available through Claude Models on Google Cloud (Anthropic managed). Access is checked when a session or deployment is created, not while it runs: revoking an identity's Google Cloud access doesn't stop its running sessions (send `user.interrupt`) or its scheduled deployments (pause, update or archive them). Not supported there: memory stores on self-hosted environments and the pre-built self-hosted sandbox workers in the `ant` CLI and the Python, TypeScript and Go SDKs (implement your own worker against the Environments Work endpoints). Source: [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed#claude-managed-agents).
 
 ## Dynamic Workflows (Beta, Oct 9, 2026)
 

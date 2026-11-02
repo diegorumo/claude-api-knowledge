@@ -1,6 +1,6 @@
 # PDF Support
 
-> **Last updated:** 2026-05-30
+> **Last updated:** 2026-11-02
 
 ## Overview
 
@@ -112,9 +112,12 @@ response = client.messages.create(
 
 | Limit | Value |
 |-------|-------|
-| Max PDF size | 32 MB |
-| Max pages | 100 pages (some models may differ) |
+| Max request size | 128 MB on the first-party Claude API (since Oct 28, 2026; was 32 MB). Varies by platform; see [Request Size Limits](./rate-limits-errors.md#request-size-limits) |
+| Max pages per request | 600 (100 when the request's context window is under 1M tokens) |
+| Format | Standard PDF (no passwords/encryption) |
 | Content | Text and images within PDF are both processed |
+
+Both limits apply to the whole request payload, including other content sent with the PDFs. For large PDFs, upload with the [Files API](./files-api.md) and reference by `file_id`. (Corrected 2026-11-02: this table said "Max PDF size 32 MB" and "100 pages".)
 
 ## Caching PDFs
 

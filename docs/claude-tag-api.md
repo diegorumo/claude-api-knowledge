@@ -1,9 +1,9 @@
 # Claude Tag API
 
-> **Last updated:** 2026-10-26  
-> **Sources:** platform.claude.com/docs/en/manage-claude/claude-tag-api, platform.claude.com/docs/en/release-notes/overview (Oct 20, 2026)
+> **Last updated:** 2026-11-02  
+> **Sources:** platform.claude.com/docs/en/manage-claude/claude-tag-api, platform.claude.com/docs/en/release-notes/overview (Oct 23, 2026)
 
-**Summary:** Beta Admin API (Oct 20, 2026) for reading and changing [Claude Tag](https://claude.com/docs/claude-tag/overview) (Claude in Slack) settings on Slack channels and workspaces, seeing which settings apply in a channel and where each comes from, and attaching Access bundles. Claude Enterprise organizations only; not available to Claude Platform (Claude Console) organizations.
+**Summary:** Beta Admin API (Oct 23, 2026; this page said Oct 20 until 2026-11-02, the release notes now date it Oct 23) for reading and changing [Claude Tag](https://claude.com/docs/claude-tag/overview) (Claude in Slack) settings on Slack channels and workspaces, seeing which settings apply in a channel and where each comes from, and attaching Access bundles. Claude Enterprise organizations only; not available to Claude Platform (Claude Console) organizations.
 
 ## Requirements
 

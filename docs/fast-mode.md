@@ -1,19 +1,21 @@
 # Fast Mode
 
-> **Last updated:** 2026-10-26  
-> **Sources:** platform.claude.com/docs/en/build-with-claude/fast-mode, platform.claude.com/docs/en/about-claude/pricing (Fast mode pricing), platform.claude.com/docs/en/release-notes/overview (Oct 15 and Oct 22, 2026), platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed
+> **Last updated:** 2026-11-02  
+> **Sources:** platform.claude.com/docs/en/build-with-claude/fast-mode, platform.claude.com/docs/en/about-claude/pricing (Fast mode pricing), platform.claude.com/docs/en/release-notes/overview (Oct 15, Oct 22 and Oct 30, 2026), platform.claude.com/docs/en/models/opus-5-5/migration-guide, platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed
 
 **Summary:** Up to 2.5x higher output tokens per second from the same model at premium pricing. Opt in with `speed: "fast"` on a Messages API request.
 
-## Status (Oct 22, 2026)
+## Status (Oct 30, 2026)
 
 | Model                               | Status                    | Beta header                                   | Platforms                                                                                       |
 | ----------------------------------- | ------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------- |
 | Claude Opus 5.5 (`claude-opus-5-5`) | Out of research preview   | Not needed (`fast-mode-2026-02-01` still accepted) | Claude API (including Managed Agents); Claude in Microsoft Foundry, deployments hosted on Azure; Claude Models on Google Cloud (Anthropic managed) (since Oct 22, 2026) |
 | Claude Opus 5 (`claude-opus-5`)     | Research preview          | `fast-mode-2026-02-01` required               | Claude API (including Managed Agents)                                                           |
-| Claude Opus 4.8 (`claude-opus-4-8`) | Research preview          | `fast-mode-2026-02-01` required               | Claude API (including Managed Agents)                                                           |
+| Claude Opus 4.8 (`claude-opus-4-8`) | Research preview; **deprecated, removed Nov 30, 2026** | `fast-mode-2026-02-01` required               | Claude API (including Managed Agents)                                                           |
 
 - **Opus 5.5:** no access request needed. It has a default fast mode rate limit in the Start, Build and Scale usage tiers. Organizations in the Evaluation tier get it once they move to Start, Build or Scale.
+> ⚠️ **Fast mode on Claude Opus 4.8 is deprecated (Oct 30, 2026) and will be removed on November 30, 2026.** After removal, requests to `claude-opus-4-8` with `speed: "fast"` return an error. The model itself stays available at standard speed. To keep using fast mode, migrate to Claude Opus 5.5 (`claude-opus-5-5`), which needs no beta header. See [Migrating to Claude Opus 5.5 from Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide#migrating-from-claude-opus-4-8): thinking runs on requests that omit `thinking`, the cache minimum drops to 512 tokens, and Priority Tier isn't supported on Opus 5.5.
+
 - **Opus 5 / Opus 4.8:** request access through your account manager or the [waitlist](https://claude.com/fast-mode), and keep sending the beta header.
 - **Not available:** Claude Platform on AWS, Foundry deployments hosted on Anthropic, other partner-operated cloud platforms, the Batch API, and Priority Tier commitments. (The official page lists the supported platforms and the Batch API / Priority Tier exclusions; the platform exclusions here are from the Oct 19 run and weren't restated on the page this run.)
 

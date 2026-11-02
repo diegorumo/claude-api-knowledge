@@ -1,10 +1,12 @@
 # Token Counting
 
-> **Last updated:** 2026-10-26
+> **Last updated:** 2026-11-02
 
 ## Overview
 
 Count tokens in a request before sending it. Useful for estimating cost, checking if input fits the context window, or managing prompt length dynamically.
+
+The endpoint accepts requests up to 128 MB on the first-party Claude API (raised from 32 MB on Oct 28, 2026), the same as the Messages API. See [Request Size Limits](./rate-limits-errors.md#request-size-limits).
 
 **Endpoint:** `POST /v1/messages/count_tokens`
 

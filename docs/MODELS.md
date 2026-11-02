@@ -1,6 +1,6 @@
 # Claude Models Reference
 
-> **Last updated:** 2026-10-26  
+> **Last updated:** 2026-11-02  
 > **Source:** platform.claude.com/docs/en/about-claude/models/overview, platform.claude.com/docs/en/about-claude/model-deprecations, platform.claude.com/docs/en/about-claude/pricing, platform.claude.com/docs/en/build-with-claude/prompt-caching, platform.claude.com/docs/en/api/models/list, platform.claude.com/docs/en/release-notes/overview (Sep 22 – Oct 7, 2026), platform.claude.com/docs/en/models/haiku-5-5/{overview,whats-new-haiku-5-5,migration-guide}, platform.claude.com/docs/en/models/sonnet-5-5/{overview,whats-new-sonnet-5-5,migration-guide}, platform.claude.com/docs/en/models/sonnet-4-5/overview, platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed (2026-10-26)
 
 ## Current Models (Recommended)
@@ -216,6 +216,8 @@ These models have specific constraints not present on earlier models:
 > Retirement dates are from the model deprecations page and apply to Anthropic-operated platforms (Claude API, Claude Platform on AWS, Claude Models on Google Cloud (Anthropic managed), Microsoft Foundry). All models above are listed there as "Active" except Claude Sonnet 4.5.
 >
 > **Claude Sonnet 4.5 deprecated (Sep 30, 2026):** `claude-sonnet-4-5-20250929` (alias `claude-sonnet-4-5`) still works but retires on the Claude API on **Nov 30, 2026** (a fixed date, not "not sooner than"). Recommended replacement: `claude-sonnet-5-5`. See the [Sonnet 5.5 migration guide, "Migrating from Claude Sonnet 4.5 or earlier"](https://platform.claude.com/docs/en/models/sonnet-5-5/migration-guide#migrating-from-sonnet-45): it is not a drop-in swap (prefill, `budget_tokens` thinking and non-default `temperature`/`top_p`/`top_k` return 400 on Sonnet 5.5; about 30% more tokens for the same text). It is no longer in the models overview's "Legacy models (still available)" list. Amazon Bedrock and Google Cloud set their own dates.
+>
+> **Fast mode on Claude Opus 4.8 deprecated (Oct 30, 2026):** `claude-opus-4-8` with `speed: "fast"` returns an error after **Nov 30, 2026**. Only fast mode is removed: `claude-opus-4-8` itself stays Active on the deprecations page (not sooner than May 28, 2027). Move fast mode traffic to `claude-opus-5-5`. See [Fast Mode](./fast-mode.md).
 >
 > **Claude Mythos Preview** (`claude-mythos-preview`, invitation-only) was deprecated Jun 9, 2026; retirement date to be announced.
 >

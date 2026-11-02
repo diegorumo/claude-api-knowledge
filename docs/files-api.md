@@ -1,6 +1,6 @@
 # Files API
 
-> **Last updated:** 2026-08-31  
+> **Last updated:** 2026-11-02  
 > **Status:** GA (out of beta as of 2026-08-19)
 
 ## Overview
@@ -116,7 +116,9 @@ client.files.delete(file_id)
 
 ## File Size Limits
 
-- Maximum file size: 32 MB
+- Maximum file size: **500 MB** per file (a larger upload returns 413). Corrected 2026-11-02; this page said 32 MB.
+- Organization storage: 1 TB (over it, uploads return 400).
+- A file larger than the model's context window returns 400 when used in a `/v1/messages` request.
 
 ## Batch Processing with Files
 

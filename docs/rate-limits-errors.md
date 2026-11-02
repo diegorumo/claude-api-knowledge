@@ -1,6 +1,6 @@
 # Rate Limits & Error Handling
 
-> **Last updated:** 2026-05-30
+> **Last updated:** 2026-11-02
 
 ## Rate Limit Headers
 
@@ -24,9 +24,25 @@ Every API response includes rate limit information:
 | 401 | `authentication_error` | Invalid or missing API key |
 | 403 | `permission_error` | API key lacks permission |
 | 404 | `not_found_error` | Resource not found |
+| 413 | `request_too_large` | Request exceeds the maximum size for the endpoint (see below) |
 | 429 | `rate_limit_error` | Too many requests |
 | 500 | `api_error` | Internal server error |
 | 529 | `overloaded_error` | API temporarily overloaded |
+
+## Request Size Limits
+
+First-party Claude API maximums (raised for Messages and Token Counting from 32 MB to 128 MB on Oct 28, 2026):
+
+| Endpoint                       | Maximum request size |
+| ------------------------------ | -------------------- |
+| Messages, Token Counting       | 128 MB               |
+| Message Batches API            | 256 MB               |
+| Files API                      | 500 MB               |
+| Sessions, Agents, Environments | 32 MB                |
+
+Over the limit, you get a 413 `request_too_large` error. On the first-party Claude API, Cloudflare returns it before the request reaches the API servers.
+
+Partner-operated platforms set their own limits: Amazon Bedrock 20 MB, Claude Models on Google Cloud (Google managed) 30 MB. Claude Platform on AWS, Claude Models on Google Cloud (Anthropic managed) and Microsoft Foundry accept Messages and Token Counting requests up to 32 MB. Check your platform's documentation for current values.
 
 ## Error Response Format
 

@@ -1,12 +1,14 @@
 # Messages API
 
-> **Last updated:** 2026-10-26
+> **Last updated:** 2026-11-02
 
 ## Overview
 
 The Messages API is the primary interface for interacting with Claude. It accepts a list of messages and returns a model-generated response.
 
 **Endpoint:** `POST /v1/messages`
+
+**Maximum request size:** 128 MB on the first-party Claude API (was 32 MB before Oct 28, 2026); larger requests return 413 `request_too_large`. Partner platforms have lower limits. See [Request Size Limits](./rate-limits-errors.md#request-size-limits).
 
 ## Request Parameters
 

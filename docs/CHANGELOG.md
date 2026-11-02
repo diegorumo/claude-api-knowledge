@@ -1,5 +1,56 @@
 # Knowledge Base Changelog
 
+## 2026-11-02 — Incremental Update
+
+Sources:
+
+- https://platform.claude.com/docs/en/release-notes/overview.md (new entries: Oct 23, Oct 28, Oct 29 (two entries) and Oct 30, 2026)
+- https://platform.claude.com/docs/en/about-claude/models/overview.md (redirects to https://platform.claude.com/docs/en/models/overview.md)
+- https://platform.claude.com/docs/en/about-claude/model-deprecations.md
+- https://platform.claude.com/docs/en/about-claude/pricing.md
+- https://platform.claude.com/docs/en/build-with-claude/fast-mode.md
+- https://platform.claude.com/docs/en/models/opus-5-5/migration-guide.md
+- https://platform.claude.com/docs/en/api/overview.md
+- https://platform.claude.com/docs/en/api/errors.md
+- https://platform.claude.com/docs/en/build-with-claude/token-counting.md
+- https://platform.claude.com/docs/en/build-with-claude/pdf-support.md
+- https://platform.claude.com/docs/en/build-with-claude/files.md
+- https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api.md
+- https://platform.claude.com/docs/en/manage-claude/usage-cost-api.md
+- https://platform.claude.com/docs/en/manage-claude/analytics-api.md
+- https://platform.claude.com/docs/en/manage-claude/admin-api.md
+- https://platform.claude.com/docs/en/manage-claude/claude-tag-api.md
+- https://platform.claude.com/docs/en/cli-sdks-libraries/overview.md
+- https://github.com/anthropics/anthropic-sdk-python/releases and https://github.com/anthropics/anthropic-sdk-typescript/releases: **could not fetch** (HTTP 403 from this environment's network proxy, also via api.github.com; fifth run in a row). Left for the next scheduled run.
+
+### Changes
+
+- **Fast mode on Claude Opus 4.8 deprecated (Oct 30, 2026)** — removed on **Nov 30, 2026**; after that, `claude-opus-4-8` with `speed: "fast"` returns an error. `claude-opus-4-8` itself stays Active on the deprecations page. Migrate fast mode traffic to `claude-opus-5-5`. Updated `fast-mode.md` (status table, warning with migration notes) and `MODELS.md` (legacy notes).
+- **Usage and Cost Analytics API (Oct 29, 2026, beta)** — `GET /v1/organizations/analytics/usage` and `/v1/organizations/analytics/cost`, beta header `analytics-usage-cost-2026-08-24`, for Claude Console and Claude Enterprise organizations; filter and group by model, workspace, API key, actor and more. New `usage-cost-analytics-api.md`; beta header row added to `README.md`.
+- **Usage and Cost API and Enterprise usage/cost reports now legacy (Oct 29, 2026)** — `/v1/organizations/usage_report/messages`, `/v1/organizations/cost_report`, and the Claude Enterprise Analytics API `usage_report`, `cost_report`, `user_usage_report`, `user_cost_report` endpoints. All remain supported. Migration tables in `usage-cost-analytics-api.md`.
+- **Maximum request size raised to 128 MB (Oct 28, 2026)** for the Messages API and the Token Counting API on the first-party Claude API (was 32 MB). Batches 256 MB, Files 500 MB, Sessions/Agents/Environments 32 MB; partner platforms lower. New "Request Size Limits" section and 413 `request_too_large` row in `rate-limits-errors.md`; notes in `messages-api.md`, `token-counting.md`, `pdf-support.md`.
+- **Claude Tag API date (Oct 23, 2026)** — the release notes now list the Claude Tag API launch under Oct 23, not Oct 20 as recorded in the 2026-10-26 entry. Content is unchanged on the official page. `claude-tag-api.md` and the `README.md` index row now say Oct 23.
+- **Corrections found while checking linked pages:** `files-api.md` said the maximum file size was 32 MB; the Files page says **500 MB per file** and 1 TB per organization. `pdf-support.md` said "Max PDF size 32 MB" and "100 pages"; the PDF page says 128 MB per request and 600 pages (100 when the context window is under 1M tokens).
+- **Models overview diff** — IDs, prices, context, max output, default effort, knowledge cutoffs, retirement dates, platform IDs and the legacy list all match `MODELS.md`. Deprecations page unchanged (`claude-haiku-4-5-20251001` still Active, "Not sooner than October 15, 2026"; `claude-sonnet-4-5-20250929` still retires Nov 30, 2026).
+
+Not verified this run: SDK changelogs (fetch blocked). The SDK overview page still lists Python 2.3.0 and TypeScript 1.3.0, so the version line in `README.md` is unchanged. The `fast-mode.md` line about platforms without fast mode (from the 2026-10-19 run) is still not restated on the official page.
+
+### Files Modified
+
+| File                          | Change                                                                                    |
+| ----------------------------- | ----------------------------------------------------------------------------------------- |
+| `usage-cost-analytics-api.md` | New: Usage and Cost Analytics API (beta), legacy APIs, migration tables                   |
+| `fast-mode.md`                | Opus 4.8 fast mode deprecation (removed Nov 30, 2026)                                     |
+| `MODELS.md`                   | Opus 4.8 fast mode deprecation note                                                       |
+| `rate-limits-errors.md`       | Request size limits section; 413 `request_too_large`                                      |
+| `messages-api.md`             | 128 MB request size note                                                                  |
+| `token-counting.md`           | 128 MB request size note                                                                  |
+| `pdf-support.md`              | Limits table corrected (128 MB request, 600 pages)                                        |
+| `files-api.md`                | File size limit corrected (500 MB), 1 TB storage                                          |
+| `claude-tag-api.md`           | Launch date Oct 20 → Oct 23                                                               |
+| `README.md`                   | Index rows, new file row, beta header rows, last-updated dates                            |
+| `CHANGELOG.md`                | This entry                                                                                |
+
 ## 2026-10-26 — Incremental Update
 
 Sources:

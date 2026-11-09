@@ -3,8 +3,8 @@
 Comprehensive reference documentation for developers building with the Claude API.
 
 **Last full crawl:** 2026-05-30  
-**Last incremental update:** 2026-11-02  
-**SDK versions:** Python 2.3.0, TypeScript 1.3.0 (latest on the SDK overview page, 2026-10-26; new majors Python 2.0.0 / TypeScript 1.0.0 on Oct 21, 2026 send API version `2026-10-21`; SDK changelogs not fetched)  
+**Last incremental update:** 2026-11-09  
+**SDK versions:** Python 2.6.0, TypeScript 1.6.0 (latest on the SDK overview page, 2026-11-09; new majors Python 2.0.0 / TypeScript 1.0.0 on Oct 21, 2026 send API version `2026-10-21`; SDK changelogs not fetched)  
 **Primary sources:** anthropic-sdk-python, anthropic-sdk-typescript, anthropic-cookbook
 
 > **Coverage note:** The Anthropic documentation site (docs.anthropic.com / platform.claude.com/docs)
@@ -29,7 +29,7 @@ Comprehensive reference documentation for developers building with the Claude AP
 
 | File                                             | Description                                                                                                                                                                                                        | Last Updated |
 | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------ |
-| [MODELS.md](./MODELS.md)                         | Current model IDs, capabilities, context windows, pricing notes; Haiku 5.5 (Haiku 4.5 now legacy); Sonnet 5.5 cache-read price cut; Models API `line` / `thinking.types.disabled` / `server_tools`; Opus 5.5; Sonnet 5.5; retirement dates; Sonnet 4.5 deprecation; retired models (replacements corrected); Opus 5.5 fast mode out of research preview; Claude Models on Google Cloud (Anthropic managed) platform row; Opus 4.8 fast mode deprecation | 2026-11-02   |
+| [MODELS.md](./MODELS.md)                         | Current model IDs, capabilities, context windows, pricing notes; Haiku 5.5 (Haiku 4.5 now legacy); Sonnet 5.5 cache-read price cut; Models API `line` / `thinking.types.disabled` / `server_tools`; Opus 5.5; Sonnet 5.5; retirement dates; Sonnet 4.5 deprecation; retired models (replacements corrected); Opus 5.5 fast mode out of research preview; Claude Models on Google Cloud (Anthropic managed) platform row; Opus 4.8 fast mode deprecation; text watermark coverage (Mythos 5, Opus 4.7, Sonnet 4.6 since Nov 3, 2026); Models API `thinking.types.between_tools` | 2026-11-09   |
 | [QUICK-REFERENCE.md](./QUICK-REFERENCE.md)       | Common code patterns: auth, messages, streaming, tools, caching                                                                                                                                                    | 2026-10-10   |
 | [authentication.md](./authentication.md)         | API keys (workspace/personal/service-account), HTTP headers, SDK setup, third-party platforms; API credits for Max and Team plans; `Authorization: Bearer` and one-credential rule in new SDK majors; Claude Models on Google Cloud (Anthropic managed) | 2026-10-26   |
 | [messages-api.md](./messages-api.md)             | Messages endpoint: params, content blocks, response format; refusal billing; API version `2026-10-21` removals (sampling params, assistant documents, user citations); `user_profile_id` without beta header; 128 MB request size limit | 2026-11-02   |
@@ -39,6 +39,7 @@ Comprehensive reference documentation for developers building with the Claude AP
 | [token-counting.md](./token-counting.md)         | Count tokens before sending, context window management; user profile header without beta; 128 MB request size limit | 2026-11-02   |
 | [sdks.md](./sdks.md)                             | Python and TypeScript SDK reference, async, pagination; Python v1.0.0 breaking changes; Organization API (GA under `client.organization` in Python v1.10.0 / TypeScript v0.130.0); browser/computer toolset classes (beta); version history through Python v1.10.0 / TypeScript v0.130.0; Python 2.0.0 / TypeScript 1.0.0 breaking changes (API version `2026-10-21`, Apache 2.0); `AnthropicGoogleCloud` client | 2026-10-26   |
 | [api-version-2026-10-21.md](./api-version-2026-10-21.md) | API version `2026-10-21`: Messages, Admin API and Enterprise Analytics breaking changes; SDK major versions that send it (Python 2.0.0, TypeScript 1.0.0, ...); SDK and CLI code changes | 2026-10-26   |
+| [message-threads.md](./message-threads.md)       | Message threads (beta, Nov 2, 2026): server-side conversation, send only new messages; SDK thread helper; fixed fields, caching, errors | 2026-11-09   |
 
 ### Features
 
@@ -66,6 +67,7 @@ Comprehensive reference documentation for developers building with the Claude AP
 | [claude-tag-api.md](./claude-tag-api.md) | Claude Tag API: Slack channel / workspace settings and Access bundles for Claude Enterprise (Admin API key with `read:claude_tag` / `write:claude_tag`); launched Oct 23, 2026 | Beta | 2026-11-02   |
 | [inference-hooks.md](./inference-hooks.md) | Inference hooks: allow/deny verdicts from your AI security server before inference (Claude Enterprise) | Stable | 2026-10-26   |
 | [usage-cost-analytics-api.md](./usage-cost-analytics-api.md) | Usage and Cost Analytics API: `/v1/organizations/analytics/usage` and `/cost` for Console and Enterprise orgs; migration from the legacy Usage and Cost API and Enterprise reports | Beta | 2026-11-02   |
+| [organization-security.md](./organization-security.md) | IP allowlisting for Claude Platform and Claude Enterprise organizations; sign a Claude Enterprise member out everywhere (`POST /v1/organizations/users/{user_id}/sign_out`); launched Nov 5, 2026 | Beta | 2026-11-09   |
 
 ### Guides
 
@@ -87,7 +89,7 @@ Comprehensive reference documentation for developers building with the Claude AP
 ## Current Model IDs (Quick Reference)
 
 ```
-# Current models (as of Nov 2, 2026; unchanged since Oct 10):
+# Current models (as of Nov 9, 2026; unchanged since Oct 10):
 claude-opus-5-5              # Recommended starting point; 1M ctx; $4/$20 MTok; always-on thinking; default effort medium; 5% cache reads
 claude-fable-5-1             # Most capable; 1M ctx; $10/$50 MTok; always-on thinking; 2.5% cache reads
 claude-sonnet-5-5            # Best balance; 1M ctx; $2/$10 MTok; default effort high; 5% cache reads ($0.10/MTok since Oct 7, 2026)
@@ -146,7 +148,7 @@ API version `2026-10-21` (Oct 21, 2026) is the latest; `2023-06-01` still works.
 | User Profiles                                                                                                     | `anthropic-beta: user-profiles-2026-03-24`                                                                                      |
 | User Profiles (extended — `external_user_details`)                                                                | `anthropic-beta: user-profiles-2026-09-04` (user profiles launched Oct 20, 2026: no header needed; sending this or an earlier `user-profiles-` value leaves out `enforcement_status` / `enforcement_actions`) |
 | Managed Agents                                                                                                    | `anthropic-beta: managed-agents-2026-04-01`                                                                                     |
-| Server-Side Fallback                                                                                              | `anthropic-beta: server-side-fallback-2026-06-01`                                                                               |
+| Server-Side Fallback                                                                                              | `anthropic-beta: server-side-fallback-2026-07-01` (`2026-06-01` still accepted, explicit-list `fallbacks` only)                 |
 | Memory Stores                                                                                                     | `anthropic-beta: agent-memory-2026-07-22`                                                                                       |
 | MCP Tunnels                                                                                                       | `anthropic-beta: mcp-tunnels-2026-06-22`                                                                                        |
 | Mid-Conversation Tool Changes                                                                                     | `anthropic-beta: mid-conversation-tool-changes-2026-07-01`                                                                      |
@@ -165,3 +167,5 @@ API version `2026-10-21` (Oct 21, 2026) is the latest; `2023-06-01` still works.
 | Organization Webhooks (Admin API)                                                                                 | `anthropic-beta: webhooks-2026-10-07`                                                                                           |
 | Claude Tag API (Claude Enterprise)                                                                                | `anthropic-beta: experimental-claude-tag-2026-10-21`                                                                            |
 | Usage and Cost Analytics API (Admin API)                                                                          | `anthropic-beta: analytics-usage-cost-2026-08-24`                                                                               |
+| Message Threads                                                                                                   | `anthropic-beta: message-threads-2026-08-12`                                                                                    |
+| Member Sign-Out Everywhere (Admin API, Claude Enterprise)                                                         | `anthropic-beta: admin-user-sign-out-2026-10-08`                                                                                |

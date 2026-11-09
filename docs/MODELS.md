@@ -1,7 +1,7 @@
 # Claude Models Reference
 
-> **Last updated:** 2026-11-02  
-> **Source:** platform.claude.com/docs/en/about-claude/models/overview, platform.claude.com/docs/en/about-claude/model-deprecations, platform.claude.com/docs/en/about-claude/pricing, platform.claude.com/docs/en/build-with-claude/prompt-caching, platform.claude.com/docs/en/api/models/list, platform.claude.com/docs/en/release-notes/overview (Sep 22 – Oct 7, 2026), platform.claude.com/docs/en/models/haiku-5-5/{overview,whats-new-haiku-5-5,migration-guide}, platform.claude.com/docs/en/models/sonnet-5-5/{overview,whats-new-sonnet-5-5,migration-guide}, platform.claude.com/docs/en/models/sonnet-4-5/overview, platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed (2026-10-26)
+> **Last updated:** 2026-11-09  
+> **Source:** platform.claude.com/docs/en/about-claude/models/overview, platform.claude.com/docs/en/about-claude/model-deprecations, platform.claude.com/docs/en/about-claude/pricing, platform.claude.com/docs/en/build-with-claude/prompt-caching, platform.claude.com/docs/en/api/models/list, platform.claude.com/docs/en/release-notes/overview (Sep 22 – Oct 7, 2026), platform.claude.com/docs/en/models/haiku-5-5/{overview,whats-new-haiku-5-5,migration-guide}, platform.claude.com/docs/en/models/sonnet-5-5/{overview,whats-new-sonnet-5-5,migration-guide}, platform.claude.com/docs/en/models/sonnet-4-5/overview, platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed (2026-10-26), platform.claude.com/docs/en/build-with-claude/text-watermark and support.claude.com/en/articles/16266773-how-claude-marks-ai-generated-content (2026-11-09)
 
 ## Current Models (Recommended)
 
@@ -256,9 +256,13 @@ These models have specific constraints not present on earlier models:
 | Server-Side Fallbacks         | ✅                      | ?                                    | ✅ (falls back to Sonnet 5)                                 | ❌ | ✅                  | ❌      | ❌        | ❌         | ❌        | ❌              | ❌              |
 | Computer Use                  | ✅                      | ✅ (`computer_toolset_20260801` only) | ✅ (`computer_toolset_20260801` only on API / Google Cloud) | ✅ (`computer_toolset_20260801` on API / Google Cloud; `computer_20251124` on Bedrock) | ✅                  | ✅      | ✅        | ✅         | ✅        | ✅              | ✅              |
 | Mid-conv tool changes         | ✅                      | ✅                                    | ✅                                                          | ? | ✅                  | ✅      | ❌        | ❌         | ✅        | ❌              | ❌              |
-| Content Watermarking          | ✅                      | ?                                    | ?                                                          | ? | ❌                  | ❌      | ❌        | ❌         | ❌        | ❌              | ❌              |
+| Content Watermarking          | ✅                      | ✅                                    | ✅                                                          | ✅ | ✅                  | ✅      | ✅        | ❌ (C2PA only) | ✅        | Opus 4.7 ✅; Opus 4.6 ❌ (C2PA only) | ✅ (see note)   |
 
 `?` = not yet confirmed in the official docs for this model.
+
+> **Text watermark (updated 2026-11-09):** Per the Nov 3, 2026 release note, text from Claude Mythos 5, Claude Opus 4.7 and Claude Sonnet 4.6 now carries Anthropic's text watermark. The Help Center table "Which Claude models support watermarking" lists first-party text watermarks for Fable 5.1, Fable 5, Mythos 5.1, Mythos 5, Opus 5.5, Opus 5, Opus 4.8, Opus 4.7, Sonnet 5.5, Sonnet 5, Sonnet 4.6 and Haiku 5.5; Opus 4.6, Opus 4.5, Sonnet 4.5 and Haiku 4.5 have Content Credentials (C2PA) in files only. On cloud partners (AWS, Google Cloud, Microsoft Foundry) the same models carry it, with the Amazon Bedrock rollout for Mythos 5, Opus 4.7 and Sonnet 4.6 completing by Nov 10, 2026. **Sonnet 4.6:** text from a request that sets `temperature`, `top_p` or `top_k` to a non-default value might not carry the watermark; omit all three if you rely on it. The watermark adds no tokens or hidden characters and needs no request changes. See [Text watermark](https://platform.claude.com/docs/en/build-with-claude/text-watermark).
+>
+> **Correction (2026-11-09):** this row previously showed ❌ for Fable 5 / Mythos 5, Opus 5, Sonnet 5, Opus 4.8 and Opus 4.7, and `?` for Opus 5.5, Sonnet 5.5 and Haiku 5.5. The Help Center table shows ✅ for all of them.
 
 **Knowledge cutoffs:**
 
@@ -331,13 +335,14 @@ for (const model of models.data) {
 **API endpoint:** `GET /v1/models`  
 **Single model:** `GET /v1/models/{model_id}`
 
-Each model object includes `max_input_tokens`, `max_tokens`, `lifecycle`, and a `capabilities` object. Fields added this month:
+Each model object includes `max_input_tokens`, `max_tokens`, `lifecycle`, and a `capabilities` object. Fields added in October 2026:
 
 | Field                                       | Added        | Meaning                                                                                                                                                                                                                       |
 | ------------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `line`                                      | Oct 1, 2026  | Model line: `haiku`, `sonnet`, `opus` or `fable` (more may be added). Opus 4.5 and Opus 4.6 both report `opus`. `null` for a model in no line. Read it instead of parsing the `id`.                                               |
 | `capabilities.thinking.types.disabled`      | Oct 5, 2026  | Whether the model accepts `thinking: {type: "disabled"}`. `false` exactly when that returns 400; `true` on a model without thinking. A `true` model can still reject `disabled` for another reason, such as an effort level. |
 | `capabilities.server_tools`                 | Oct 6, 2026  | `web_search.supported` / `code_execution.supported`: the model accepts at least one version of that tool. `server_tools.supported` is `true` if either is. Doesn't cover other server tools such as web fetch.             |
+| `capabilities.thinking.types.between_tools` | Oct 15, 2026 | Whether the model accepts `thinking: {type: "between_tools"}` (turns off up-front thinking). `false` exactly when that returns 400. A `true` model can still reject it for another reason, such as an effort level. Sonnet 5.5 reports `between_tools` `true` and `disabled` `false`. |
 
 > The top-level `capabilities.code_execution` is a different check: whether code run in the code execution tool can call your request's other tools (programmatic tool calling). For Haiku 4.5, `server_tools.code_execution.supported` is `true` while `code_execution.supported` is `false`. Organization settings (for example, an admin disabling web search) can still make a supported tool fail.
 

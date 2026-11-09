@@ -1,5 +1,46 @@
 # Knowledge Base Changelog
 
+## 2026-11-09 — Incremental Update
+
+Sources:
+
+- https://platform.claude.com/docs/en/release-notes/overview.md (new entries: Nov 2, Nov 3 and Nov 5 (two entries), 2026)
+- https://platform.claude.com/docs/en/about-claude/models/overview.md (redirects to https://platform.claude.com/docs/en/models/overview.md)
+- https://platform.claude.com/docs/en/about-claude/model-deprecations.md
+- https://platform.claude.com/docs/en/about-claude/pricing.md
+- https://platform.claude.com/docs/en/build-with-claude/message-threads.md
+- https://platform.claude.com/docs/en/build-with-claude/text-watermark.md
+- https://support.claude.com/en/articles/16266773-how-claude-marks-ai-generated-content (linked from the Nov 3 release note)
+- https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback.md
+- https://platform.claude.com/docs/en/manage-claude/ip-allowlist.md
+- https://platform.claude.com/docs/en/manage-claude/user-management.md
+- https://platform.claude.com/docs/en/cli-sdks-libraries/overview.md
+- https://github.com/anthropics/anthropic-sdk-python/releases and https://github.com/anthropics/anthropic-sdk-typescript/releases: **could not fetch** (HTTP 403 from this environment's network proxy; sixth run in a row). Left for the next scheduled run.
+
+### Changes
+
+- **Message threads (Nov 2, 2026, beta)** — `thread: {type: "create"}` / `{type: "continue", previous_message_id}` on `POST /v1/messages` with beta header `message-threads-2026-08-12`. The API keeps the conversation on the server, so later requests send only new messages. A thread expires 5 minutes after its last request and is deleted no more than 1 hour after its last use. Claude API, Claude Platform on AWS, Claude Models on Google Cloud (Anthropic managed), Microsoft Foundry. Not ZDR or HIPAA eligible. New `message-threads.md` (SDK thread helper, fixed/create-only fields, 4-breakpoint caching limit, errors, unsupported features); beta header row added to `README.md`.
+- **Text watermark on Mythos 5, Opus 4.7 and Sonnet 4.6 (Nov 3, 2026)** — on Sonnet 4.6, a request with non-default `temperature`, `top_p` or `top_k` might not carry it. Updated the "Content Watermarking" row in `MODELS.md` from the Help Center model table the release note links to, plus a note.
+- **IP allowlisting (Nov 5, 2026, beta)** — Claude Console and Claude Enterprise organizations; IPv4/IPv6 addresses or CIDR ranges, up to 1,000 per organization; blocked API requests get 403 `permission_error`. New `organization-security.md`.
+- **Sign a member out everywhere (Nov 5, 2026, beta)** — `POST /v1/organizations/users/{user_id}/sign_out` for Claude Enterprise, beta header `admin-user-sign-out-2026-10-08`, `write:members` scope. In `organization-security.md`; beta header row added to `README.md`.
+- **Correction: server-side fallback beta header** — `README.md` listed `server-side-fallback-2026-06-01`. The refusals and fallback page uses `server-side-fallback-2026-07-01`, which accepts both `"default"` and the explicit-list form; `2026-06-01` is still accepted but only for the explicit-list form. Row updated (the old value is kept as a note).
+- **Correction: watermark coverage** — `MODELS.md` showed ❌ for Fable 5 / Mythos 5, Opus 5, Sonnet 5, Opus 4.8 and Opus 4.7 and `?` for Opus 5.5, Sonnet 5.5 and Haiku 5.5. The Help Center table shows text watermarks on all of them; Opus 4.6, Opus 4.5, Sonnet 4.5 and Haiku 4.5 have C2PA file credentials only.
+- **Models API `capabilities.thinking.types.between_tools` (Oct 15, 2026)** — missing from the `MODELS.md` Models API fields table; added.
+- **SDK versions** — the SDK overview page now lists Python 2.6.0 and TypeScript 1.6.0 (was 2.3.0 / 1.3.0). Version line in `README.md` updated. Per-release details not verified (changelogs blocked).
+- **Models overview diff** — IDs, prices, context, max output, default effort, knowledge cutoffs, retirement dates, platform IDs and the legacy list all match `MODELS.md`. Deprecations page unchanged (`claude-haiku-4-5-20251001` still Active, "Not sooner than October 15, 2026"; `claude-sonnet-4-5-20250929` still retires Nov 30, 2026).
+
+Not verified this run: SDK changelogs (fetch blocked). The Help Center watermark table is a support article, not a platform docs page; it says the Amazon Bedrock rollout for Mythos 5, Opus 4.7 and Sonnet 4.6 completes by Nov 10, 2026.
+
+### Files Modified
+
+| File                       | Change                                                                                  |
+| -------------------------- | --------------------------------------------------------------------------------------- |
+| `message-threads.md`       | New: message threads (beta)                                                             |
+| `organization-security.md` | New: IP allowlisting (beta) and member sign-out everywhere (beta)                       |
+| `MODELS.md`                | Watermark row and note (corrected); `thinking.types.between_tools` Models API field     |
+| `README.md`                | SDK versions, index rows, new file rows, beta header rows, fallback header fix, dates   |
+| `CHANGELOG.md`             | This entry                                                                              |
+
 ## 2026-11-02 — Incremental Update
 
 Sources:

@@ -1,6 +1,6 @@
 # Prompt Caching
 
-> **Last updated:** 2026-10-10  
+> **Last updated:** 2026-11-16  
 > **Source:** Anthropic cookbook — demonstrated 3.3x speedup on 187K-token document; platform.claude.com/docs/en/build-with-claude/cache-diagnostics; platform.claude.com/docs/en/build-with-claude/prompt-caching; platform.claude.com/docs/en/about-claude/pricing
 
 ## Overview
@@ -14,6 +14,8 @@ Prompt caching stores processed prompt prefixes so subsequent requests reuse the
 >
 > **Haiku 5.5 cache pricing:** `claude-haiku-5-5` is priced by prompt length. Cache reads are $0.01/MTok for prompts up to 100,000 tokens and $0.05/MTok over 100,000 (10% of base input in both bands). Cache writes: $0.125 / $0.625 (5m) and $0.20 / $1 (1h) per MTok. A request's prompt length includes cache reads and writes.
 
+> **Fable 5.2 / Mythos 5.2 cache pricing (Nov 9, 2026):** `claude-fable-5-2` and `claude-mythos-5-2` cache reads cost **0.025x base input** ($0.20/MTok on $8 base). Cache writes: $10/MTok (5m) and $16/MTok (1h). Minimum cacheable prompt 512 tokens.
+
 > **Fable 5.1 / Mythos 5.1 cache pricing:** Cache reads on `claude-fable-5-1` and `claude-mythos-5-1` cost only **2.5% of base input price** ($0.25/MTok vs. $10/MTok full price). This is 4× cheaper than the standard 10% rate on other models.
 
 ## How It Works
@@ -24,11 +26,11 @@ Add `"cache_control": {"type": "ephemeral"}` to content blocks. The API caches e
 
 ## Minimum Token Requirements
 
-Minimums on the Claude API, Claude Platform on AWS, Google Cloud and Microsoft Foundry (source: platform.claude.com/docs/en/build-with-claude/prompt-caching#cache-limitations, checked 2026-10-10):
+Minimums on the Claude API, Claude Platform on AWS, Google Cloud and Microsoft Foundry (source: platform.claude.com/docs/en/build-with-claude/prompt-caching#cache-limitations, checked 2026-10-10; Fable 5.2 / Mythos 5.2 added 2026-11-16):
 
 | Model                                                                                                                  | Minimum Cacheable Tokens |
 | ---------------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| Fable 5.1, Mythos 5.1, Opus 5.5, Opus 5, Sonnet 5.5, Fable 5, Mythos 5, Haiku 5.5                                       | 512 tokens               |
+| Fable 5.2, Mythos 5.2, Fable 5.1, Mythos 5.1, Opus 5.5, Opus 5, Sonnet 5.5, Fable 5, Mythos 5, Haiku 5.5                | 512 tokens               |
 | Opus 4.8, Sonnet 5, Sonnet 4.6, Sonnet 4.5 (deprecated); retired Opus 4.1 / Opus 4 / Sonnet 4                           | 1,024 tokens             |
 | Mythos Preview, Opus 4.7                                                                                               | 2,048 tokens             |
 | Opus 4.6, Opus 4.5                                                                                                     | 4,096 tokens             |
@@ -170,7 +172,7 @@ print(f"Output tokens: {usage.output_tokens}")
 | Token Type    | Cost                    |
 | ------------- | ----------------------- |
 | Cache write   | 1.25× base input price  |
-| Cache read    | 0.10× base input price (0.05× on Opus 5.5 and Sonnet 5.5; 0.025× on Fable 5.1 / Mythos 5.1) |
+| Cache read    | 0.10× base input price (0.05× on Opus 5.5 and Sonnet 5.5; 0.025× on Fable 5.2 / Mythos 5.2 and Fable 5.1 / Mythos 5.1) |
 | Regular input | 1.00× base input price  |
 | Output        | 1.00× base output price |
 

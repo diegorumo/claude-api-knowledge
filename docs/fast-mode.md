@@ -1,23 +1,26 @@
 # Fast Mode
 
-> **Last updated:** 2026-11-02  
-> **Sources:** platform.claude.com/docs/en/build-with-claude/fast-mode, platform.claude.com/docs/en/about-claude/pricing (Fast mode pricing), platform.claude.com/docs/en/release-notes/overview (Oct 15, Oct 22 and Oct 30, 2026), platform.claude.com/docs/en/models/opus-5-5/migration-guide, platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed
+> **Last updated:** 2026-11-16  
+> **Sources:** platform.claude.com/docs/en/build-with-claude/fast-mode, platform.claude.com/docs/en/about-claude/pricing (Fast mode pricing), platform.claude.com/docs/en/release-notes/overview (Oct 15, Oct 22, Oct 30 and Nov 9, 2026), platform.claude.com/docs/en/models/fable-5-2/whats-new-fable-5-2, platform.claude.com/docs/en/models/opus-5-5/migration-guide, platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed
 
 **Summary:** Up to 2.5x higher output tokens per second from the same model at premium pricing. Opt in with `speed: "fast"` on a Messages API request.
 
-## Status (Oct 30, 2026)
+## Status (Nov 9, 2026)
 
 | Model                               | Status                    | Beta header                                   | Platforms                                                                                       |
 | ----------------------------------- | ------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Claude Fable 5.2 (`claude-fable-5-2`) | Available (launched Nov 9, 2026) | Not needed | Claude API; Claude Models on Google Cloud (Anthropic managed); Claude Models on Google Cloud (Google managed); Claude in Microsoft Foundry, deployments hosted on Anthropic (model ID `claude-fable-5-2-fast`). Messages API only (not listed for Managed Agents) |
+| Claude Mythos 5.2 (`claude-mythos-5-2`) | Available (verified organizations only) | Not needed | Same platforms as Fable 5.2 per the fast mode page (Foundry ID `claude-mythos-5-2-fast`); the Nov 9 release note and pricing page mention only the Claude API |
 | Claude Opus 5.5 (`claude-opus-5-5`) | Out of research preview   | Not needed (`fast-mode-2026-02-01` still accepted) | Claude API (including Managed Agents); Claude in Microsoft Foundry, deployments hosted on Azure; Claude Models on Google Cloud (Anthropic managed) (since Oct 22, 2026) |
 | Claude Opus 5 (`claude-opus-5`)     | Research preview          | `fast-mode-2026-02-01` required               | Claude API (including Managed Agents)                                                           |
 | Claude Opus 4.8 (`claude-opus-4-8`) | Research preview; **deprecated, removed Nov 30, 2026** | `fast-mode-2026-02-01` required               | Claude API (including Managed Agents)                                                           |
 
-- **Opus 5.5:** no access request needed. It has a default fast mode rate limit in the Start, Build and Scale usage tiers. Organizations in the Evaluation tier get it once they move to Start, Build or Scale.
+- **Fable 5.2, Mythos 5.2 and Opus 5.5:** no access request needed. They have a default fast mode rate limit in the Start, Build and Scale usage tiers. On Claude Models on Google Cloud (Google managed), Google Cloud manages rate limits and quotas and sets its own prices. Organizations in the Evaluation tier get it once they move to Start, Build or Scale.
 > ⚠️ **Fast mode on Claude Opus 4.8 is deprecated (Oct 30, 2026) and will be removed on November 30, 2026.** After removal, requests to `claude-opus-4-8` with `speed: "fast"` return an error. The model itself stays available at standard speed. To keep using fast mode, migrate to Claude Opus 5.5 (`claude-opus-5-5`), which needs no beta header. See [Migrating to Claude Opus 5.5 from Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide#migrating-from-claude-opus-4-8): thinking runs on requests that omit `thinking`, the cache minimum drops to 512 tokens, and Priority Tier isn't supported on Opus 5.5.
 
 - **Opus 5 / Opus 4.8:** request access through your account manager or the [waitlist](https://claude.com/fast-mode), and keep sending the beta header.
-- **Not available:** Claude Platform on AWS, Foundry deployments hosted on Anthropic, other partner-operated cloud platforms, the Batch API, and Priority Tier commitments. (The official page lists the supported platforms and the Batch API / Priority Tier exclusions; the platform exclusions here are from the Oct 19 run and weren't restated on the page this run.)
+- **Microsoft Foundry:** fast mode has its own model IDs ending in `-fast` (`claude-fable-5-2-fast`, `claude-mythos-5-2-fast`, `claude-opus-5-5-fast`). Send requests to a deployment of the fast model and leave out `speed`; setting `speed` on a standard deployment returns an error. Fable 5.2 / Mythos 5.2: deployments hosted on Anthropic; Opus 5.5: deployments hosted on Azure.
+- **Not available:** Claude Platform on AWS, Amazon Bedrock, the Batch API, and Priority Tier commitments. (The official page lists the supported platforms and the Batch API / Priority Tier exclusions; the platform exclusions here are from the Oct 19 run and weren't restated on the page this run.)
 
 ## How it works
 
@@ -67,6 +70,8 @@ Applies across the full context window, including requests over 200k input token
 
 | Model                           | Input          | Output         |
 | ------------------------------- | -------------- | -------------- |
+| Claude Fable 5.2                | $16 / MTok     | $80 / MTok     |
+| Claude Mythos 5.2               | $16 / MTok     | $80 / MTok     |
 | Claude Opus 5.5                 | $8 / MTok      | $40 / MTok     |
 | Claude Opus 5 / Claude Opus 4.8 | $10 / MTok     | $50 / MTok     |
 

@@ -1,8 +1,29 @@
 # Migration Guides
 
-> **Last updated:** 2026-10-10
+> **Last updated:** 2026-11-16
 
 ## Migrating to Claude 4.x Models
+
+### From claude-fable-5-1 → claude-fable-5-2 (Nov 9, 2026)
+
+Source: [What's new in Claude Fable 5.2](https://platform.claude.com/docs/en/models/fable-5-2/whats-new-fable-5-2) and the [migration guide](https://platform.claude.com/docs/en/models/fable-5-2/migration-guide). Change the model ID, then check four things:
+
+1. **History edits:** Fable 5.2 enforces the thinking-block prefix check on every account. Editing `system`, `tools` or an earlier message and sending back a later Fable 5.2 thinking block returns 400. Keep conversations append-only (or, as a stopgap, `prefix_mismatch_behavior: "drop_block"` with beta header `thinking-binding-controls-2026-08-01`).
+2. **Model switches:** only Fable 5.2 and Mythos 5.2 read Fable 5.2 thinking blocks; routing to Fable 5.1, Opus 5.5 or the fallback models drops them.
+3. **Computer use:** replace `computer_20251124` with `computer_toolset_20260801` (except on Amazon Bedrock).
+4. **Advisor tool:** with a Fable 5.2 executor, set the advisor `model` to `claude-fable-5-2` or `claude-mythos-5-2`.
+
+Then re-run evals with an effort sweep starting at the default, `high`. Price drops from $10 / $50 to $8 / $40 per MTok.
+
+```python
+model = "claude-fable-5-1"  # Before
+model = "claude-fable-5-2"  # After
+```
+
+```typescript
+let model = "claude-fable-5-1"; // Before
+model = "claude-fable-5-2"; // After
+```
 
 ### From claude-haiku-4-5 → claude-haiku-5-5
 

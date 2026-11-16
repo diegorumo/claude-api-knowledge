@@ -1,7 +1,7 @@
 # Compliance API: Session Transcripts and Activity Feed
 
-> **Last updated:** 2026-10-19  
-> **Sources:** platform.claude.com/docs/en/manage-claude/compliance-sessions, platform.claude.com/docs/en/manage-claude/compliance-activity-feed, platform.claude.com/docs/en/manage-claude/compliance-content-data, platform.claude.com/docs/en/manage-claude/compliance-org-data, platform.claude.com/docs/en/release-notes/overview (Sep 18, Sep 24, Oct 8 and Oct 15, 2026)
+> **Last updated:** 2026-11-16  
+> **Sources:** platform.claude.com/docs/en/manage-claude/compliance-sessions, platform.claude.com/docs/en/manage-claude/compliance-activity-feed, platform.claude.com/docs/en/manage-claude/compliance-content-data, platform.claude.com/docs/en/manage-claude/compliance-org-data, platform.claude.com/docs/en/release-notes/overview (Sep 18, Sep 24, Oct 8, Oct 15 and Nov 5, 2026), platform.claude.com/docs/en/manage-claude/compliance-security-posture/overview
 
 > **Correction (2026-09-27):** Earlier versions of this file listed wrong endpoint paths (`/v1/compliance/sessions`, `/v1/compliance/local-sessions`), wrong `product_surface` values (`claude_cowork`, `claude_for_microsoft_365`), a `Bearer` auth header, and cursor pagination for sessions. All of that has been replaced with what the official docs say. If you built against the old version of this page, re-check your integration. The 2026-09-28 revision on `main` repeated some of these errors (a `claude_for_microsoft_365` surface, a `?product_surface=` filter on a `/v1/compliance/local-sessions` path, and resolving Activity Feed names through the Admin API); those were dropped too.
 
@@ -212,6 +212,24 @@ curl --fail-with-body -sS \
   "next_page": null
 }
 ```
+
+## Security Posture (Nov 5, 2026, beta)
+
+The **Security posture** page in claude.ai **Organization settings** (headed **Security Center**) compares your organization's settings with Anthropic's recommended security controls. The Compliance API exposes it two ways. Beta, Claude Enterprise organizations only. Source: [Security posture in the Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/overview).
+
+- **Activity Feed:** records an activity when someone attests to a control, changes an attestation or clears one (and sometimes when one ends automatically). Needs `read:compliance_activities` or `read:org_audit`. Activities never include an attestation's comment.
+- **Current results:** `GET /v1/compliance/organizations/{organization_id}/security_posture` returns one organization's current results, no history. For each control: `id`, `display_name` and `rating`. Needs `read:compliance_org_data` or `read:org_audit`. The response leaves out some controls and some attestations, so the page, the endpoint and the feed don't always match.
+
+| `rating` | Meaning |
+| -------- | ------- |
+| `passed` | Meets the recommended value, or an attestation of Completed or Accepted risk is in effect |
+| `failed` | Doesn't meet the recommended value, or attested as Failed (`control_failed`) |
+| `not_attested` | A manual control with no attestation in effect |
+| `descriptive` | Not rated: information-only controls and controls that don't apply or couldn't be read |
+
+- **Controls** are automatic (e.g. `sso_enabled`), manual (e.g. `oauth_conditional_access`) or information-only (e.g. `allowed_invite_domains`). **Attestations** (`completed`, `accepted_risk`, `control_failed`) are made on the page only; the API can't create them. An attestation ends when someone clears or changes it, at its `review_date` (90 days or none), or when an automatic / information-only control's value changes.
+- **404 cases:** organizations on other plans and Claude Console organizations; organizations where the Security posture page is turned off (even with a parent-organization key); and "for some organizations" even when all conditions hold.
+- **Personal data:** attestation activities record the person's user ID, email, IP address and user agent. With both `read:compliance_org_data` and `read:compliance_user_data` (or `read:org_audit`), the endpoint's `attested_by` returns the attester's user ID where available.
 
 ---
 

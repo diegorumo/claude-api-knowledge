@@ -1,30 +1,87 @@
 # Claude Models Reference
 
-> **Last updated:** 2026-11-09  
-> **Source:** platform.claude.com/docs/en/about-claude/models/overview, platform.claude.com/docs/en/about-claude/model-deprecations, platform.claude.com/docs/en/about-claude/pricing, platform.claude.com/docs/en/build-with-claude/prompt-caching, platform.claude.com/docs/en/api/models/list, platform.claude.com/docs/en/release-notes/overview (Sep 22 – Oct 7, 2026), platform.claude.com/docs/en/models/haiku-5-5/{overview,whats-new-haiku-5-5,migration-guide}, platform.claude.com/docs/en/models/sonnet-5-5/{overview,whats-new-sonnet-5-5,migration-guide}, platform.claude.com/docs/en/models/sonnet-4-5/overview, platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed (2026-10-26), platform.claude.com/docs/en/build-with-claude/text-watermark and support.claude.com/en/articles/16266773-how-claude-marks-ai-generated-content (2026-11-09)
+> **Last updated:** 2026-11-16  
+> **Source:** platform.claude.com/docs/en/about-claude/models/overview, platform.claude.com/docs/en/about-claude/model-deprecations, platform.claude.com/docs/en/about-claude/pricing, platform.claude.com/docs/en/build-with-claude/prompt-caching, platform.claude.com/docs/en/api/models/list, platform.claude.com/docs/en/release-notes/overview (Sep 22 – Oct 7, 2026), platform.claude.com/docs/en/models/haiku-5-5/{overview,whats-new-haiku-5-5,migration-guide}, platform.claude.com/docs/en/models/sonnet-5-5/{overview,whats-new-sonnet-5-5,migration-guide}, platform.claude.com/docs/en/models/sonnet-4-5/overview, platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed (2026-10-26), platform.claude.com/docs/en/build-with-claude/text-watermark and support.claude.com/en/articles/16266773-how-claude-marks-ai-generated-content (2026-11-09), platform.claude.com/docs/en/models/{fable-5-2,mythos-5-2,fable-5-1}/overview, platform.claude.com/docs/en/models/fable-5-2/whats-new-fable-5-2, platform.claude.com/docs/en/build-with-claude/fast-mode (2026-11-16)
 
 ## Current Models (Recommended)
 
 | Model            | API ID                      | Alias              | Context     | Max Output  | Price (input/output MTok) | Best For                                                                                                                                                 |
 | ---------------- | --------------------------- | ------------------ | ----------- | ----------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Claude Fable 5.1 | `claude-fable-5-1`          | `claude-fable-5-1` | 1M tokens   | 128k tokens | $10 / $50                 | Most capable; demanding reasoning and long-horizon agentic work (always-on adaptive thinking)                                                            |
+| Claude Fable 5.2 | `claude-fable-5-2`          | `claude-fable-5-2` | 1M tokens   | 128k tokens | $8 / $40                  | Most capable; demanding reasoning and long-horizon agentic work (always-on adaptive thinking, default effort `high`); launched Nov 9, 2026              |
 | Claude Opus 5.5  | `claude-opus-5-5`           | `claude-opus-5-5`  | 1M tokens   | 128k tokens | $4 / $20                  | **Recommended starting point for most workloads**; long-running agentic coding and knowledge work (always-on adaptive thinking, default effort `medium`) |
 | Claude Sonnet 5.5 | `claude-sonnet-5-5`        | `claude-sonnet-5-5` | 1M tokens  | 128k tokens | $2 / $10                  | Best balance of speed and intelligence (adaptive thinking, default effort `high`); launched Sep 28, 2026                                                 |
 | Claude Haiku 5.5 | `claude-haiku-5-5`          | `claude-haiku-5-5` | 1M tokens   | 128k tokens | From $0.10 / $0.50 (see note) | Fastest; high-volume, latency-sensitive work such as classification, extraction and routing (adaptive thinking, default effort `medium`); launched Oct 7, 2026 |
 
-> **Tokenizer note (Fable 5.1, Fable 5, Sonnet 5.5, Sonnet 5, Haiku 5.5, Opus 4.7+):** These models use the tokenizer introduced with Claude Opus 4.7. Compared to models before Opus 4.7, the same text produces **roughly 30% more tokens**. Measure your prompts with the [token counting API](./token-counting.md) when migrating.
+> **Tokenizer note (Fable 5.2, Fable 5.1, Fable 5, Sonnet 5.5, Sonnet 5, Haiku 5.5, Opus 4.7+):** These models use the tokenizer introduced with Claude Opus 4.7. Compared to models before Opus 4.7, the same text produces **roughly 30% more tokens**. Measure your prompts with the [token counting API](./token-counting.md) when migrating.
 >
 > **Haiku 5.5 pricing (prompt-length tiers):** $0.10 input / $0.50 output per MTok for prompts up to 100,000 tokens; $0.50 / $2.50 for prompts over 100,000 tokens. A request's prompt length counts all input tokens, including cache reads and writes. Batch API: $0.05 / $0.25 and $0.25 / $1.25. Haiku 5.5 is the only current model that does not get the full 1M context at standard pricing.
 >
 > **Pricing note:** Sonnet 5 pricing is locked at $2/$10 per MTok (the scheduled Sept 1, 2026 increase to $3/$15 was cancelled on Aug 10, 2026).
 >
-> **Claude Mythos 5.1** (`claude-mythos-5-1`) shares Fable 5.1's specs and pricing but is invitation-only (Project Glasswing). Not generally available.
+> **Claude Mythos 5.2** (`claude-mythos-5-2`, launched Nov 9, 2026) shares Fable 5.2's specs and pricing ($8 / $40) but is available only to organizations verified through Anthropic's verification programs, such as the Cyber Verification Program ("limited availability" on the models overview).
 >
-> **Claude Fable 5** (`claude-fable-5`), **Claude Opus 5** (`claude-opus-5`), **Claude Sonnet 5** (`claude-sonnet-5`, since Sep 28, 2026) and **Claude Haiku 4.5** (`claude-haiku-4-5-20251001`, since Oct 7, 2026) are now legacy (still available) — see Legacy table below.
+> **Claude Mythos 5.1** (`claude-mythos-5-1`) shares Fable 5.1's specs and pricing ($10 / $50); the models overview lists it as limited availability (verification programs). Not generally available.
 >
-> **Retirement commitments (Claude API, Claude Platform on AWS, Claude Models on Google Cloud (Anthropic managed), Foundry):** Fable 5.1 not sooner than Sep 1, 2027; Opus 5.5 not sooner than Sep 22, 2027; Sonnet 5.5 not sooner than Sep 28, 2027; Haiku 5.5 not sooner than Oct 7, 2027. Bedrock and Claude Models on Google Cloud (Google managed) set their own dates.
+> **Claude Fable 5.1** (`claude-fable-5-1`, since Nov 9, 2026), **Claude Fable 5** (`claude-fable-5`), **Claude Opus 5** (`claude-opus-5`), **Claude Sonnet 5** (`claude-sonnet-5`, since Sep 28, 2026) and **Claude Haiku 4.5** (`claude-haiku-4-5-20251001`, since Oct 7, 2026) are now legacy (still available) — see Legacy table below.
 >
-> **Choosing:** Anthropic's models overview recommends starting with Opus 5.5 for most workloads and moving to Fable 5.1 for demanding reasoning / long-horizon agentic work, or when Opus 5.5 at higher effort still falls short.
+> **Retirement commitments (Claude API, Claude Platform on AWS, Claude Models on Google Cloud (Anthropic managed), Foundry):** Fable 5.2 and Mythos 5.2 not sooner than Nov 9, 2027; Opus 5.5 not sooner than Sep 22, 2027; Sonnet 5.5 not sooner than Sep 28, 2027; Haiku 5.5 not sooner than Oct 7, 2027. Bedrock and Claude Models on Google Cloud (Google managed) set their own dates.
+>
+> **Choosing:** Anthropic's models overview recommends starting with Opus 5.5 for most workloads and moving to Fable 5.2 for demanding reasoning / long-horizon agentic work, or when Opus 5.5 at higher effort still falls short.
+
+## ⚠️ Fable 5.2 / Mythos 5.2 API Changes (launched Nov 9, 2026)
+
+Claude Fable 5.2 (`claude-fable-5-2`) succeeds Fable 5.1 at a lower price: **$8 / $40 per MTok** (Fable 5.1: $10 / $50). Cache writes $10 (5m) / $16 (1h) per MTok; cache reads $0.20/MTok (0.025x base input, same multiplier as Fable 5.1); Batch API $4 / $20. 1M context, 128k max output, adaptive thinking always on, default effort `high`, reliable knowledge cutoff Jun 2026, Opus 4.7+ tokenizer. Retirement not sooner than Nov 9, 2027. Claude Mythos 5.2 (`claude-mythos-5-2`) has the same specs and prices for verified organizations only.
+
+| Platform | Fable 5.2 ID | Mythos 5.2 ID |
+| -------- | ------------ | ------------- |
+| Claude API | `claude-fable-5-2` | `claude-mythos-5-2` |
+| Amazon Bedrock (`bedrock-runtime` endpoint only) | `global.anthropic.claude-fable-5-2` or `us.anthropic.claude-fable-5-2` | `global.anthropic.claude-mythos-5-2` or `us.anthropic.claude-mythos-5-2` |
+| Claude Platform on AWS | `claude-fable-5-2` | not listed |
+| Claude Models on Google Cloud (Anthropic managed / Google managed) | `claude-fable-5-2` | `claude-mythos-5-2` |
+| Microsoft Foundry (Anthropic infrastructure) | `claude-fable-5-2` | `claude-mythos-5-2` |
+
+Four changes from Fable 5.1 can break your code (per the Nov 9 release note and the what's-new page):
+
+- **Prefix check enforced for every account.** If your code edits `system`, `tools` or an earlier message and then sends back a Fable 5.2 / Mythos 5.2 thinking block, the request returns 400 (`The block is bound to a different conversation`), whatever the account's age. (Fable 5.1 only does this by default on accounts created on or after Aug 31, 2026.) Stopgap: beta header `thinking-binding-controls-2026-08-01` with `thinking.block_binding.prefix_mismatch_behavior: "drop_block"`; dropped blocks are listed in `input_transformations`.
+- **Only Fable 5.2 and Mythos 5.2 read Fable 5.2 thinking blocks.** Moving a conversation to any other model (including Opus 5.5, Fable 5.1 and the fallback models Opus 4.8 / Opus 5) drops those blocks; the request still succeeds and dropped blocks aren't billed. On the Claude API and Claude Models on Google Cloud (Google managed), Fable 5.2 / Mythos 5.2 read blocks from Opus 5.5, Sonnet 5.5, Haiku 5.5, Fable 5.1, Mythos 5.1, Opus 5, Fable 5, Mythos 5 and earlier Opus / Sonnet / Haiku models, so moving onto them keeps the reasoning.
+- **`computer_20251124` returns 400** on every platform except Amazon Bedrock. Use `computer_toolset_20260801`.
+- **Advisor tool (beta):** a Fable 5.2 or Mythos 5.2 executor accepts only `claude-fable-5-2` or `claude-mythos-5-2` as advisor (Fable 5.1 / Mythos 5.1 advisors return 400). Every executor model accepts `claude-fable-5-2` as advisor. Changing the advisor `model` is an edit to `tools`, so do it in new conversations.
+
+Unchanged from Fable 5.1 (but breaking if you come from Opus 5 or earlier): `thinking: {type: "disabled"}` and `{type: "enabled", budget_tokens}` return 400; forced `tool_choice` (`any` / `tool`) returns 400; omit `temperature`, `top_p` and `top_k`. With customer-managed encryption keys (CMEK), structured outputs (strict tool use and JSON outputs) aren't available on Fable 5.2 / Mythos 5.2.
+
+Other notes:
+
+- **Data retention:** both models require 30-day data retention; not available under zero data retention unless expressly authorized by Anthropic.
+- **Account-bound thinking:** blocks work only in the producing account or a linked account; elsewhere they are dropped (`reason: "organization_binding_mismatch"` in `input_transformations` with the binding-controls beta header).
+- **Fallback:** server-side fallback (beta) targets for Fable 5.2 are Opus 4.8 and Opus 5.
+- **Fast mode:** $16 / $80 per MTok, `speed: "fast"`, no beta header. See [Fast Mode](./fast-mode.md).
+- **Dreams** (Managed Agents, research preview) supports Fable 5.2.
+- **Behavior:** prompt lines asking for less thinking don't stop thinking at `medium` effort and above; at `high`+ the model thinks before almost every reply. Re-run evals with an effort sweep starting at `high`.
+
+```python
+# Before (Fable 5.1)
+model = "claude-fable-5-1"
+# After
+model = "claude-fable-5-2"
+
+response = client.messages.create(
+    model="claude-fable-5-2",
+    max_tokens=16000,
+    output_config={"effort": "high"},  # default; low / medium / high / xhigh / max
+    messages=[{"role": "user", "content": "..."}],
+)
+```
+
+```typescript
+const response = await client.messages.create({
+  model: "claude-fable-5-2",
+  max_tokens: 16000,
+  output_config: { effort: "high" },
+  messages: [{ role: "user", content: "..." }],
+});
+```
+
+Details: [What's new in Claude Fable 5.2](https://platform.claude.com/docs/en/models/fable-5-2/whats-new-fable-5-2), [migration guide](https://platform.claude.com/docs/en/models/fable-5-2/migration-guide). See also [migrations.md](./migrations.md).
 
 ## ⚠️ Haiku 5.5 API Changes (launched Oct 7, 2026)
 
@@ -169,7 +226,7 @@ response = client.messages.create(
 
 ## ⚠️ Fable 5.1 / Mythos 5.1 API Restrictions
 
-These models have specific constraints not present on earlier models:
+Fable 5.1 is legacy since Nov 9, 2026 (still Active; retirement not sooner than Sep 1, 2027). Most of these constraints also apply to Fable 5.2 / Mythos 5.2 (see above). These models have specific constraints not present on earlier models:
 
 **`tool_choice` restrictions:**
 
@@ -202,6 +259,7 @@ These models have specific constraints not present on earlier models:
 
 | Model             | API ID                                                   | Context     | Max Output  | Price (input/output MTok) | Retirement (not sooner than) |
 | ----------------- | -------------------------------------------------------- | ----------- | ----------- | ------------------------- | ---------------------------- |
+| Claude Fable 5.1  | `claude-fable-5-1`                                       | 1M tokens   | 128k tokens | $10 / $50                 | Sep 1, 2027                  |
 | Claude Fable 5    | `claude-fable-5`                                         | 1M tokens   | 128k tokens | $10 / $50                 | Jun 9, 2027                  |
 | Claude Opus 5     | `claude-opus-5`                                          | 1M tokens   | 128k tokens | $5 / $25                  | Jul 24, 2027                 |
 | Claude Sonnet 5   | `claude-sonnet-5`                                        | 1M tokens   | 128k tokens | $2 / $10                  | Jun 30, 2027                 |
@@ -260,12 +318,15 @@ These models have specific constraints not present on earlier models:
 
 `?` = not yet confirmed in the official docs for this model.
 
+> **Fable 5.2 / Mythos 5.2 (Nov 9, 2026):** not yet a column here. Confirmed on the official pages this run: adaptive thinking always on (no explicit extended thinking), tool use, vision (text and images in), `tool_choice any/tool` rejected (400), prompt caching (2.5% reads, 512 min), Batch API (50% off), server-side fallback (beta; to Opus 4.8 / Opus 5), computer use via `computer_toolset_20260801` only (except Bedrock), mid-conversation tool changes (beta). Not confirmed: content watermarking (the Help Center model list wasn't re-checked this run) and PDF input.
+
 > **Text watermark (updated 2026-11-09):** Per the Nov 3, 2026 release note, text from Claude Mythos 5, Claude Opus 4.7 and Claude Sonnet 4.6 now carries Anthropic's text watermark. The Help Center table "Which Claude models support watermarking" lists first-party text watermarks for Fable 5.1, Fable 5, Mythos 5.1, Mythos 5, Opus 5.5, Opus 5, Opus 4.8, Opus 4.7, Sonnet 5.5, Sonnet 5, Sonnet 4.6 and Haiku 5.5; Opus 4.6, Opus 4.5, Sonnet 4.5 and Haiku 4.5 have Content Credentials (C2PA) in files only. On cloud partners (AWS, Google Cloud, Microsoft Foundry) the same models carry it, with the Amazon Bedrock rollout for Mythos 5, Opus 4.7 and Sonnet 4.6 completing by Nov 10, 2026. **Sonnet 4.6:** text from a request that sets `temperature`, `top_p` or `top_k` to a non-default value might not carry the watermark; omit all three if you rely on it. The watermark adds no tokens or hidden characters and needs no request changes. See [Text watermark](https://platform.claude.com/docs/en/build-with-claude/text-watermark).
 >
 > **Correction (2026-11-09):** this row previously showed ❌ for Fable 5 / Mythos 5, Opus 5, Sonnet 5, Opus 4.8 and Opus 4.7, and `?` for Opus 5.5, Sonnet 5.5 and Haiku 5.5. The Help Center table shows ✅ for all of them.
 
 **Knowledge cutoffs:**
 
+- Fable 5.2 / Mythos 5.2: reliable Jun 2026, training Jun 2026
 - Fable 5.1 / Mythos 5.1: reliable Jun 2026, training Jun 2026
 - Opus 5.5: reliable Jun 2026, training Jun 2026
 - Sonnet 5.5: reliable Jun 2026, training Jun 2026
@@ -280,6 +341,7 @@ These models have specific constraints not present on earlier models:
 
 **Effort defaults:**
 
+- Fable 5.2 / Mythos 5.2: defaults to `high` on the Claude API; all five levels (`low`, `medium`, `high`, `xhigh`, `max`); adaptive thinking always on (`disabled` returns 400)
 - Opus 5.5: defaults to `medium` on the Claude API; thinking is always on (`disabled` returns 400)
 - Sonnet 5.5: defaults to `high` on the Claude API; adaptive thinking on by default, lowest setting `between_tools` (`disabled` returns 400)
 - Haiku 5.5: defaults to `medium` on the Claude API; adaptive thinking on by default; `thinking: {type: "disabled"}` accepted at `high` effort or below
@@ -291,7 +353,7 @@ These models have specific constraints not present on earlier models:
 
 | Model                                                                                 | Minimum Cacheable Tokens |
 | ------------------------------------------------------------------------------------- | ------------------------ |
-| Fable 5.1, Mythos 5.1, Opus 5.5, Opus 5, Sonnet 5.5, Fable 5, Mythos 5, Haiku 5.5     | 512 tokens               |
+| Fable 5.2, Mythos 5.2, Fable 5.1, Mythos 5.1, Opus 5.5, Opus 5, Sonnet 5.5, Fable 5, Mythos 5, Haiku 5.5 | 512 tokens |
 | Opus 4.8, Sonnet 5, Sonnet 4.6, Sonnet 4.5 (deprecated); retired Opus 4.1 / 4 / Sonnet 4 | 1,024 tokens          |
 | Mythos Preview, Opus 4.7                                                              | 2,048 tokens             |
 | Opus 4.6, Opus 4.5, Haiku 4.5                                                         | 4,096 tokens             |
@@ -305,9 +367,9 @@ These models have specific constraints not present on earlier models:
 | Platform               | Notes                                                                                                                                  |
 | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | Claude API             | All current models                                                                                                                     |
-| Amazon Bedrock         | Messages-API IDs: `anthropic.claude-fable-5-1`, `anthropic.claude-opus-5-5`, `anthropic.claude-sonnet-5-5`, `anthropic.claude-haiku-5-5` (legacy Haiku 4.5: `anthropic.claude-haiku-4-5`) |
+| Amazon Bedrock         | Fable 5.2: `global.anthropic.claude-fable-5-2` / `us.anthropic.claude-fable-5-2` (`bedrock-runtime` endpoint only; Mythos 5.2 likewise). Messages-API IDs: `anthropic.claude-fable-5-1`, `anthropic.claude-opus-5-5`, `anthropic.claude-sonnet-5-5`, `anthropic.claude-haiku-5-5` (legacy Haiku 4.5: `anthropic.claude-haiku-4-5`) |
 | Claude Models on Google Cloud (Google managed) (formerly "Google Cloud Vertex") | Use same model IDs (`claude-haiku-5-5` for Haiku 5.5); legacy Haiku 4.5 uses `claude-haiku-4-5@20251001`; sets its own lifecycle dates |
-| Claude Models on Google Cloud (Anthropic managed) | New Oct 22, 2026. Same IDs as Claude API (`claude-fable-5-1`, `claude-opus-5-5`, `claude-sonnet-5-5`, `claude-haiku-5-5`); follows Anthropic deprecation schedule. See [authentication.md](./authentication.md#claude-models-on-google-cloud-anthropic-managed-oct-22-2026) |
+| Claude Models on Google Cloud (Anthropic managed) | New Oct 22, 2026. Same IDs as Claude API (`claude-fable-5-2`, `claude-opus-5-5`, `claude-sonnet-5-5`, `claude-haiku-5-5`); follows Anthropic deprecation schedule. See [authentication.md](./authentication.md#claude-models-on-google-cloud-anthropic-managed-oct-22-2026) |
 | Claude Platform on AWS | Same IDs as Claude API (not Bedrock-style); follows Anthropic deprecation schedule                                                     |
 | Microsoft Foundry      | Current models available                                                                                                               |
 

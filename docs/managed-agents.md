@@ -1,6 +1,6 @@
 # Managed Agents (Beta)
 
-> **Last updated:** 2026-10-26  
+> **Last updated:** 2026-11-16  
 > **Status:** Beta — active development  
 > **SDK changelog:** v0.100.0+ (May 2026), v0.115.0 (June 2026), v0.116.0–v1.0.0 Python / v0.110.0–v0.120.0 TypeScript (July–Aug 2026), v1.5.0 Python / v0.125.0 TypeScript (Sep 2026)
 
@@ -180,6 +180,23 @@ session = client.beta.sessions.create(
     memory_store_ids=[memory.id],
 )
 ```
+
+## Self-Hosted Claude Managed Agents (Nov 12, 2026)
+
+You can now run the whole Managed Agents service, not only the sandboxes, on your own infrastructure (cloud account or on-premise). Access is by request: contact your Anthropic account team. Source: [Self-hosted Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/self-hosted).
+
+| Option | Sandboxes | Service | Model |
+| ------ | --------- | ------- | ----- |
+| Cloud sandboxes (default) | Anthropic | Anthropic | Anthropic |
+| Self-hosted sandboxes | You | Anthropic | Anthropic |
+| Self-hosted Managed Agents | You | You | Anthropic, or a provider that you choose |
+
+- **Components:** server `cma-server` (API, agent loop, storage for agents, sessions and session history; never runs shell or file tools); PostgreSQL 16+ database (without one, data is in memory and lost on restart); workers (`ant beta:worker` or an SDK worker) that poll the server and run tools in your sandboxes; a console webpage on your server (sign-in through your identity provider); admin CLI `cma-server-admin` (Linux x86-64 / Arm, macOS on Apple silicon) for environments and environment keys.
+- **Same API as the hosted service**, so the SDKs and `ant` CLI work against your server; some features exist only on the hosted service (see [Differences from the hosted service](https://platform.claude.com/docs/en/managed-agents/self-hosted/differences)).
+- **Inference provider:** the Claude API by default, or Amazon Bedrock, Claude Models on Google Cloud (Google managed), Microsoft Foundry, or your own model gateway.
+- **Credentials:** a server API key (your apps, `ant` CLI and admin CLI → your server), an inference credential (server → provider), and environment keys (workers → one environment's queue).
+- **Security:** the agent's `bash` tool is a real shell with the worker's permissions; isolation comes from what the worker runs in (the Docker Compose stack and `cma-sandboxes` Helm chart give each session its own container or pod). Each trust level needs its own deployment. Model calls send the conversation (including tool inputs and results) to your inference provider; calls to the Claude API also carry the session, agent and environment IDs.
+- Licensed under the Software License Agreement: Claude Managed Agents Server. Each release archive includes `operator-guide.md`.
 
 ## Self-Hosted Sandbox Worker
 

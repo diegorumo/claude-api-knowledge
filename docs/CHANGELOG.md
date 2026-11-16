@@ -1,5 +1,56 @@
 # Knowledge Base Changelog
 
+## 2026-11-16 — Incremental Update
+
+Sources:
+
+- https://platform.claude.com/docs/en/release-notes/overview.md (new entries: Nov 9 and Nov 12, 2026; also the Nov 5 Security posture entry, which the 2026-11-09 run did not cover)
+- https://platform.claude.com/docs/en/about-claude/models/overview.md (redirects to https://platform.claude.com/docs/en/models/overview.md)
+- https://platform.claude.com/docs/en/about-claude/model-deprecations.md
+- https://platform.claude.com/docs/en/about-claude/pricing.md
+- https://platform.claude.com/docs/en/models/fable-5-2/overview.md
+- https://platform.claude.com/docs/en/models/fable-5-2/whats-new-fable-5-2.md
+- https://platform.claude.com/docs/en/models/fable-5-2/migration-guide.md
+- https://platform.claude.com/docs/en/models/mythos-5-2/overview.md
+- https://platform.claude.com/docs/en/models/fable-5-1/overview.md
+- https://platform.claude.com/docs/en/build-with-claude/fast-mode.md
+- https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md
+- https://platform.claude.com/docs/en/build-with-claude/preserved-thinking.md
+- https://platform.claude.com/docs/en/build-with-claude/text-watermark.md
+- https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool.md
+- https://platform.claude.com/docs/en/managed-agents/dreams.md
+- https://platform.claude.com/docs/en/managed-agents/self-hosted.md
+- https://platform.claude.com/docs/en/manage-claude/api-and-data-retention.md
+- https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/overview.md
+- https://platform.claude.com/docs/en/cli-sdks-libraries/overview.md
+- https://github.com/anthropics/anthropic-sdk-python/releases and https://github.com/anthropics/anthropic-sdk-typescript/releases: **could not fetch** (HTTP 403 from this environment's network proxy; seventh run in a row). Left for the next scheduled run.
+
+### Changes
+
+- **Claude Fable 5.2 and Claude Mythos 5.2 (Nov 9, 2026, new models)** — `claude-fable-5-2` / `claude-mythos-5-2` (Mythos for verified organizations only). 1M context, 128k max output, always-on adaptive thinking, default effort `high`, knowledge cutoff Jun 2026. **$8 / $40 per MTok** (Fable 5.1 / Mythos 5.1: $10 / $50); cache writes $10 (5m) / $16 (1h), cache reads $0.20 (0.025x); Batch $4 / $20. Retirement not sooner than Nov 9, 2027. Bedrock IDs `global.anthropic.claude-fable-5-2` / `us.anthropic.claude-fable-5-2` (and the Mythos equivalents) on `bedrock-runtime` only. Breaking vs. Fable 5.1: prefix check enforced on every account; only Fable 5.2 / Mythos 5.2 read their thinking blocks; `computer_20251124` returns 400 except on Bedrock; advisor tool needs a Fable 5.2 / Mythos 5.2 advisor for those executors. 30-day data retention required; account-bound thinking blocks; Dreams supports Fable 5.2. New section in `MODELS.md`; `QUICK-REFERENCE.md`, `README.md`, `migrations.md`, `prompt-caching.md` updated.
+- **Claude Fable 5.1 now legacy** — the models overview's "Latest models" table shows Fable 5.2 in its place; the Fable 5.1 page says "Legacy" and the deprecations page still lists `claude-fable-5-1` as Active, not sooner than Sep 1, 2027. Moved to the legacy table in `MODELS.md` (not removed).
+- **Fast mode for Fable 5.2 / Mythos 5.2 (Nov 9, 2026)** — `speed: "fast"`, no beta header, $16 / $80 per MTok. The release note says Claude API; the fast mode page also lists Claude Models on Google Cloud (Anthropic managed and Google managed) and Microsoft Foundry deployments hosted on Anthropic (`claude-fable-5-2-fast`, `claude-mythos-5-2-fast`). Fast mode isn't listed for Fable 5.2 in Managed Agents. Updated `fast-mode.md` (status table, pricing, Foundry `-fast` IDs) and the fast mode beta header row in `README.md`.
+- **Self-hosted Claude Managed Agents (Nov 12, 2026)** — run the whole Managed Agents service (server `cma-server`, PostgreSQL 16+, workers, console, admin CLI) on your own infrastructure, with Anthropic or another inference provider. Access through your account team. New section in `managed-agents.md`.
+- **Compliance API Security posture (Nov 5, 2026, beta; missed last run)** — Activity Feed records attestation changes on the claude.ai Security posture page; `GET /v1/compliance/organizations/{organization_id}/security_posture` returns current results. Claude Enterprise only. New section in `compliance-api.md`.
+- **SDK versions** — the SDK overview page now lists Python 2.8.0 and TypeScript 1.8.0 (was 2.6.0 / 1.6.0). Version line in `README.md` updated. Per-release details not verified (changelogs blocked).
+- **Models overview diff** — apart from Fable 5.2 / Mythos 5.2 and Fable 5.1 moving to legacy, IDs, prices, context, max output, default effort, knowledge cutoffs, retirement dates and the legacy list match `MODELS.md`. Deprecations page otherwise unchanged (`claude-opus-4-5-20251101` Active, not sooner than Nov 24, 2026; `claude-sonnet-4-5-20250929` retires Nov 30, 2026).
+
+Not verified this run: SDK changelogs (fetch blocked); whether Fable 5.2 / Mythos 5.2 carry the text watermark (the text watermark page points to a Help Center list that wasn't re-checked) and PDF input on these models, so `MODELS.md` adds a note instead of a capabilities column; the "Prompting Claude Fable 5.2" page wasn't fetched.
+
+### Files Modified
+
+| File                 | Change                                                                                       |
+| -------------------- | -------------------------------------------------------------------------------------------- |
+| `MODELS.md`          | Fable 5.2 / Mythos 5.2 section, current/legacy tables, retirement, cutoffs, effort, caching  |
+| `fast-mode.md`       | Fable 5.2 / Mythos 5.2 status, platforms, Foundry `-fast` IDs, pricing                       |
+| `managed-agents.md`  | Self-hosted Claude Managed Agents                                                            |
+| `compliance-api.md`  | Security posture (beta)                                                                      |
+| `prompt-caching.md`  | Fable 5.2 / Mythos 5.2 cache pricing and minimum                                             |
+| `migrations.md`      | Fable 5.1 → Fable 5.2                                                                        |
+| `QUICK-REFERENCE.md` | Current model IDs                                                                            |
+| `README.md`          | SDK versions, model ID list, index descriptions and dates, fast mode header row             |
+| `CHANGELOG.md`       | This entry                                                                                   |
+
 ## 2026-11-09 — Incremental Update
 
 Sources:

@@ -45,14 +45,15 @@ console.log(response.content[0].text);
 
 ## Current Model IDs
 
-> Checked against platform.claude.com/docs/en/models/overview on 2026-10-10. See [MODELS.md](./MODELS.md) for prices, limits and retirement dates.
+> Checked against platform.claude.com/docs/en/models/overview on 2026-11-16. See [MODELS.md](./MODELS.md) for prices, limits and retirement dates.
 
 | Model | ID | Use For |
 |-------|-----|--------|
 | Opus 5.5 | `claude-opus-5-5` | Recommended starting point for most workloads; 1M ctx; always-on thinking |
-| Fable 5.1 | `claude-fable-5-1` | Demanding reasoning, long-horizon agentic work; 2.5% cache reads; 30-day data retention required; `tool_choice any/tool` unsupported |
+| Fable 5.2 | `claude-fable-5-2` | Demanding reasoning, long-horizon agentic work; $8/$40 MTok; 2.5% cache reads; 30-day data retention required; `tool_choice any/tool` unsupported (launched Nov 9, 2026) |
 | Sonnet 5.5 | `claude-sonnet-5-5` | Best speed/intelligence balance; $2/$10 MTok |
 | Haiku 5.5 | `claude-haiku-5-5` | Fastest; high-volume, latency-sensitive work; 1M ctx (launched Oct 7, 2026) |
+| Fable 5.1 | `claude-fable-5-1` | Legacy (still available) since Nov 9, 2026 |
 | Fable 5 | `claude-fable-5` | Legacy (still available) |
 | Opus 5 | `claude-opus-5` | Legacy (still available) |
 | Sonnet 5 | `claude-sonnet-5` | Legacy (still available) |
@@ -63,7 +64,7 @@ console.log(response.content[0].text);
 | Sonnet 4.6 | `claude-sonnet-4-6` | Legacy (still available) |
 | Haiku 4.5 | `claude-haiku-4-5-20251001` | Legacy (still available); 200k ctx |
 
-> **Invitation-only:** `claude-mythos-5-1` (Project Glasswing) — same specs as Fable 5.1.  
+> **Limited availability (verified organizations):** `claude-mythos-5-2` — same specs and pricing as Fable 5.2; `claude-mythos-5-1` — same specs as Fable 5.1.  
 > **Deprecated:** `claude-sonnet-4-5-20250929` — retires Nov 30, 2026; migrate to `claude-sonnet-5-5`.  
 > **Retired:** `claude-opus-4-1` (Aug 5, 2026) — returns errors; migrate to a current model.
 

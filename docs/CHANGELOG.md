@@ -1,5 +1,41 @@
 # Knowledge Base Changelog
 
+## 2026-11-23 — Incremental Update
+
+Sources:
+
+- https://platform.claude.com/docs/en/release-notes/overview.md (new entries: Nov 16 (two entries) and Nov 17, 2026)
+- https://platform.claude.com/docs/en/about-claude/models/overview.md (redirects to https://platform.claude.com/docs/en/models/overview.md)
+- https://platform.claude.com/docs/en/about-claude/model-deprecations.md
+- https://platform.claude.com/docs/en/about-claude/pricing.md
+- https://platform.claude.com/docs/en/manage-claude/oauth-apps/organization-billing-connections.md
+- https://platform.claude.com/docs/en/manage-claude/user-profiles.md
+- https://platform.claude.com/docs/en/manage-claude/organization-webhooks.md
+- https://platform.claude.com/docs/en/build-with-claude/text-watermark.md
+- https://support.claude.com/en/articles/16266773-how-claude-marks-ai-generated-content (linked from the Nov 16 release note)
+- https://platform.claude.com/docs/en/cli-sdks-libraries/overview.md
+- https://github.com/anthropics/anthropic-sdk-python/releases and https://github.com/anthropics/anthropic-sdk-typescript/releases: **could not fetch** (HTTP 403 from this environment's network proxy; eighth run in a row). Left for the next scheduled run.
+
+### Changes
+
+- **Linked billing (Nov 17, 2026, beta)** — customers link their own Claude Platform organization to your OAuth app, and you set `billing_policy: {type: "billing_policy", bill_to: "user_profile" | "self"}` on each `/v1/messages` or `/v1/chat/completions` request to choose who pays. Beta header `user-profiles-billing-2026-10-01`, plus the `anthropic-user-profile-id` header. Only for customers whose organization pays Anthropic directly; not on Message Batches; billable code execution features return 400 when billing the customer. Customers can set a spend cap for your app or unlink it in the Console. New file `linked-billing.md` (setup, linking flow, Python / TypeScript examples, expected errors, spend caps); beta header row in `README.md`; `user-profiles.md` no longer says profiles aren't billable.
+- **Text watermark on Opus 4.6, Opus 4.5, Sonnet 4.5 and Haiku 4.5 (Nov 16, 2026)** — non-default `temperature`, `top_p` or `top_k` might drop the watermark on these models. The Help Center table also now lists Fable 5.2 / Mythos 5.2 (resolving last run's open question) and Opus 3 (model access on request; first-party only). Updated the Content Watermarking row and note in `MODELS.md` (Haiku 4.5 and Opus 4.6 were ❌ (C2PA only)).
+- **Encryption key events for organization webhooks (Nov 16, 2026, beta)** — `external_key.failed` and `external_key.recovered` for customer-managed encryption keys. Also: organizations that can use CMEK have organization webhooks without requesting access. New subsection in `user-profiles.md`.
+- **SDK versions** — the SDK overview page now lists Python 2.12.0 and TypeScript 1.12.0 (was 2.8.0 / 1.8.0). Version line in `README.md` updated. Per-release details not verified (changelogs blocked).
+- **Models overview diff** — no mismatches: IDs, prices, context, max output, default effort, knowledge cutoffs, retirement dates and the legacy list match `MODELS.md`. Deprecations page unchanged (`claude-opus-4-5-20251101` Active, not sooner than Nov 24, 2026; `claude-sonnet-4-5-20250929` retires Nov 30, 2026).
+
+Not verified this run: SDK changelogs (fetch blocked); PDF input on Fable 5.2 / Mythos 5.2; the Linked billing page's per-connection OAuth token flow is summarized only (see the official page).
+
+### Files Modified
+
+| File                | Change                                                                          |
+| ------------------- | ------------------------------------------------------------------------------- |
+| `linked-billing.md` | New: Linked billing (beta)                                                      |
+| `user-profiles.md`  | Encryption key webhook events, webhook access rule, Linked billing link         |
+| `MODELS.md`         | Watermark row and note (Opus 4.6 / 4.5, Sonnet 4.5, Haiku 4.5, Fable 5.2)       |
+| `README.md`         | SDK versions, index rows and dates, Linked billing beta header row              |
+| `CHANGELOG.md`      | This entry                                                                      |
+
 ## 2026-11-16 — Incremental Update
 
 Sources:

@@ -1,9 +1,9 @@
 # User Profiles and Organization Webhooks
 
-> **Last updated:** 2026-10-26  
-> **Sources:** platform.claude.com/docs/en/manage-claude/user-profiles, platform.claude.com/docs/en/manage-claude/organization-webhooks, platform.claude.com/docs/en/release-notes/overview (Oct 20 and Oct 21, 2026)
+> **Last updated:** 2026-11-23  
+> **Sources:** platform.claude.com/docs/en/manage-claude/user-profiles, platform.claude.com/docs/en/manage-claude/organization-webhooks, platform.claude.com/docs/en/release-notes/overview (Oct 20, Oct 21, Nov 16 and Nov 17, 2026)
 
-**Summary:** User profiles tell Anthropic which of your end customers each API request is for, so a safety enforcement action can apply to one end customer instead of your whole organization. Launched on Oct 20, 2026 on the non-beta `/v1/user_profiles` endpoints (`client.user_profiles` in Python, `client.userProfiles` in TypeScript); earlier SDK releases had them in beta behind `user-profiles-*` headers. Profiles aren't billable. Since Oct 21, 2026 a profile also shows whether Anthropic has restricted or banned that end customer, and organization webhooks (beta) can notify you when that changes.
+**Summary:** User profiles tell Anthropic which of your end customers each API request is for, so a safety enforcement action can apply to one end customer instead of your whole organization. Launched on Oct 20, 2026 on the non-beta `/v1/user_profiles` endpoints (`client.user_profiles` in Python, `client.userProfiles` in TypeScript); earlier SDK releases had them in beta behind `user-profiles-*` headers. On their own, profiles don't change billing or pricing; with [Linked billing](./linked-billing.md) (beta, Nov 17, 2026) a profile is also how you identify the customer to bill. Since Oct 21, 2026 a profile also shows whether Anthropic has restricted or banned that end customer, and organization webhooks (beta) can notify you when that changes.
 
 ## Who gets a profile
 
@@ -117,7 +117,7 @@ profile = client.user_profiles.update(
 
 ## Organization webhooks (beta, Oct 20, 2026)
 
-Admin API endpoints that register HTTPS endpoints for enforcement events. Beta header `webhooks-2026-10-07` (the SDK and CLI send it). Access by request through your Anthropic account team; not available with HIPAA readiness enabled. Credentials: an Admin API key, an OAuth bearer token with `org:admin`, or a personal / service account key not scoped to a workspace.
+Admin API endpoints that register HTTPS endpoints for enforcement events and (since Nov 16, 2026) encryption key events. Beta header `webhooks-2026-10-07` (the SDK and CLI send it). Access: organizations with HIPAA readiness enabled can't use them; organizations that can use customer-managed encryption keys (CMEK) have them; any other organization requests access through its Anthropic account team. Without access, requests return `404`. Credentials: an Admin API key, an OAuth bearer token with `org:admin`, or a personal / service account key not scoped to a workspace.
 
 | Event                                      | Trigger                                                      |
 | ------------------------------------------ | ------------------------------------------------------------ |
@@ -125,6 +125,22 @@ Admin API endpoints that register HTTPS endpoints for enforcement events. Beta h
 | `user_profile.enforcement_action_resolved` | An action ends (resolved, or its `expires_at` passes)        |
 
 Events carry IDs only (`data.id` is the profile, `data.enforcement_action_id` the action); retrieve the profile to see what changed. Deleting a profile ends its actions without a resolved event. Actions opened before you registered an endpoint send no event, so also list profiles by `enforcement_status[]`.
+
+### Encryption key events (Nov 16, 2026)
+
+For organizations using [customer-managed encryption keys](https://platform.claude.com/docs/en/manage-claude/cmek) (the Admin API calls such a key an external key):
+
+| Event                    | Trigger                                                                                              |
+| ------------------------ | ---------------------------------------------------------------------------------------------------- |
+| `external_key.failed`    | Your KMS keeps refusing Anthropic's use of a key (e.g. the key was disabled or access was removed)   |
+| `external_key.recovered` | After `external_key.failed`, the key works again                                                     |
+
+- `data.id` names the key (`ekey_` prefix); the event doesn't name a workspace. Only a real refusal triggers these; there's no test event.
+- Typical timing with about one Messages API request a minute per workspace: `failed` within 30 minutes of the key being disabled, `recovered` about 30 minutes after it works again. Less traffic means longer.
+- After returning `2xx`, validate the key with `POST /v1/organizations/external_keys/{external_key_id}/validate`. On `success`, still check each workspace that uses the key (list workspaces with `include_default=true`, match `external_key_id`, send a Messages request): requests can succeed for up to 1 hour after a key stops working.
+- Events can be missed (no traffic on the key, KMS outage, multi-org failures, or the Default Workspace's own key failing), so also alert on the `cmek_key_*` Messages API errors and periodically catch up on missed events.
+- Admins can also manage endpoints for these events in the Console (**Webhooks** page, **Organization** tab).
+- If your Default Workspace uses CMEK, endpoint `name`, `description` and signing secret are encrypted with that key; while the key is unusable, deliveries and most endpoint requests fail (usually `500`) and undeliverable events are dropped.
 
 | Task                    | Request                                                                    |
 | ----------------------- | -------------------------------------------------------------------------- |
@@ -171,3 +187,4 @@ console.log(endpoint.id);
 - [Token Counting](./token-counting.md)
 - [User profiles (official)](https://platform.claude.com/docs/en/manage-claude/user-profiles)
 - [Organization webhooks (official)](https://platform.claude.com/docs/en/manage-claude/organization-webhooks)
+- [Linked billing](./linked-billing.md)
